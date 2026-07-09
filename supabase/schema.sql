@@ -80,6 +80,9 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
+-- Trigger-only helper: do not expose via PostgREST RPC
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+
 -- Weekly speed leaderboard
 create table if not exists public.speed_scores (
   id bigserial primary key,
@@ -164,11 +167,24 @@ create policy "Authenticated can create rooms"
   with check (auth.uid() = host_id);
 
 drop policy if exists "Authenticated can update rooms" on public.game_rooms;
-create policy "Authenticated can update rooms"
+drop policy if exists "Members or host can update rooms" on public.game_rooms;
+create policy "Members or host can update rooms"
   on public.game_rooms for update
   to authenticated
-  using (true)
-  with check (true);
+  using (
+    auth.uid() = host_id
+    or exists (
+      select 1 from public.room_members m
+      where m.room_id = game_rooms.id and m.user_id = auth.uid()
+    )
+  )
+  with check (
+    auth.uid() = host_id
+    or exists (
+      select 1 from public.room_members m
+      where m.room_id = game_rooms.id and m.user_id = auth.uid()
+    )
+  );
 
 create table if not exists public.room_members (
   room_id uuid not null references public.game_rooms (id) on delete cascade,
