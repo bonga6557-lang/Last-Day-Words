@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BookOpen,
   Trophy,
@@ -16,19 +15,26 @@ import {
   LogIn,
   Snowflake,
   Puzzle,
+  Star,
 } from "lucide-react";
-import { UserProgress } from "../types";
-import { chaptersData, allWordsList } from "../data/words";
+import { Season, UserProgress } from "../types";
+import { Chapter, WordTerm } from "../data/words";
 import { getReviewWordIds } from "../utils/gameLogic";
 import { getTodayKey } from "../utils/dailyChallenge";
 import { STREAK_MILESTONES, milestoneTitle } from "../utils/streaks";
 import { FRAGMENTS_NEEDED } from "../data/studyContent";
+import { progressToNextRank } from "../data/ranks";
+import { COSMETICS } from "../data/cosmetics";
 import { motion, useReducedMotion } from "motion/react";
 import EllenWhiteAvatar from "./EllenWhiteAvatar";
 
 interface DashboardProps {
   progress: UserProgress;
+  chapters: Chapter[];
   dailyBonusWordId: string;
+  wordOfTheWeek?: WordTerm | null;
+  featuredAnnouncement?: string | null;
+  seasons?: Season[];
   onStartChapters: () => void;
   onStartDailyChallenge: () => void;
   onStartSpeedRound: () => void;
@@ -42,11 +48,16 @@ interface DashboardProps {
   onViewShareCard: () => void;
   onEnableNotifications: () => void;
   onResetProgress: () => void;
+  onSelectCosmetic?: (cosmeticId: string) => void;
 }
 
 export default function Dashboard({
   progress,
+  chapters,
   dailyBonusWordId,
+  wordOfTheWeek,
+  featuredAnnouncement,
+  seasons = [],
   onStartChapters,
   onStartDailyChallenge,
   onStartSpeedRound,
@@ -60,8 +71,11 @@ export default function Dashboard({
   onViewShareCard,
   onEnableNotifications,
   onResetProgress,
+  onSelectCosmetic,
 }: DashboardProps) {
   const rm = useReducedMotion();
+  const chaptersData = chapters;
+  const allWordsList = chaptersData.flatMap((chapter) => chapter.words);
   const totalWords = allWordsList.length;
   const solvedCount = progress.solvedWordIds.length;
   const reviewCount = getReviewWordIds(progress.wordStats).length;
@@ -87,6 +101,11 @@ export default function Dashboard({
   const maxStars = chaptersData.length * 3;
   const bonusWord = allWordsList.find((w) => w.id === dailyBonusWordId);
 
+  const xp = progress.xp ?? 0;
+  const rankProgress = progressToNextRank(xp);
+  const unlocked = new Set(progress.unlockedCosmetics ?? ["candle-classic"]);
+  const candleCosmetics = COSMETICS.filter((c) => c.kind === "candle");
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto py-4 px-2">
       <motion.div
@@ -106,6 +125,28 @@ export default function Dashboard({
           <span className="text-[#6b5537] not-italic font-sans text-xs uppercase tracking-[0.2em] mt-1.5 block">— Revelation 3:11</span>
         </p>
 
+        {/* Rank + XP */}
+        <div className="relative mx-auto mb-4 max-w-md w-full pcard rounded-2xl p-4 text-left border border-[#e6c98a]">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <Star className="w-4 h-4 text-[#b45309] fill-[#b45309]" aria-hidden="true" />
+              <span className="text-sm font-bold text-[#2a2018]">{rankProgress.current.title}</span>
+            </div>
+            <span className="font-mono text-sm font-bold text-[#92400e]">{xp} XP</span>
+          </div>
+          <div className="w-full bg-[#e7d6b0] h-2 rounded-full overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-[#b45309] to-[#f59e0b] h-full rounded-full transition-all"
+              style={{ width: `${Math.round(rankProgress.ratio * 100)}%` }}
+            />
+          </div>
+          <p className="text-[10px] text-[#6b5537] mt-1.5 font-medium">
+            {rankProgress.next
+              ? `${rankProgress.xpInto} / ${rankProgress.xpNeeded} XP to ${rankProgress.next.title}`
+              : "Max rank — Prophetic Scholar"}
+          </p>
+        </div>
+
         {/* Big streak flame */}
         <div className="relative mx-auto mb-6 inline-flex flex-col items-center gap-1 px-6 py-4 rounded-2xl bg-[#2a2018] text-[#fbbf24] parchment-glow">
           <span className="text-4xl leading-none" aria-hidden="true">🔥</span>
@@ -122,6 +163,52 @@ export default function Dashboard({
           {totalWords} prophetic terms across {chaptersData.length} chapters — with expert mode, daily challenge, and verified study unlocks.
         </p>
       </motion.div>
+
+      {/* Word of the Week */}
+      {wordOfTheWeek && (
+        <motion.div
+          initial={rm ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full text-left bg-gradient-to-r from-[#e8f0fe] to-[#fbf5e9] border border-[#b8c9e8] rounded-2xl p-5 parchment-glow"
+        >
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-blue-100 rounded-xl text-blue-800 border border-blue-200">
+              <BookOpen className="w-6 h-6" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[10px] uppercase font-bold tracking-[0.15em] text-blue-800 mb-1">
+                Word of the Week
+              </div>
+              <h3 className="text-lg font-bold text-[#2a2018] font-display tracking-wide">
+                {wordOfTheWeek.word}
+              </h3>
+              <p className="text-sm text-[#5c4a33] mt-1 line-clamp-2">{wordOfTheWeek.clue}</p>
+              <p className="text-[11px] text-[#6b5537] mt-1 font-scripture italic">
+                {wordOfTheWeek.verse}
+              </p>
+              {featuredAnnouncement && (
+                <p className="text-xs text-blue-900 font-semibold mt-2">{featuredAnnouncement}</p>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Season chips */}
+      {seasons.length > 0 && (
+        <div className="flex flex-wrap gap-2 justify-center">
+          {seasons.map((s) => (
+            <button
+              key={s.id}
+              onClick={onStartChapters}
+              className="px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border border-[#e6c98a] bg-[#fbf5e9] text-[#92400e] hover:border-[#b45309] cursor-pointer"
+              title={s.description}
+            >
+              {s.title}
+            </button>
+          ))}
+        </div>
+      )}
 
       <motion.button
         initial={rm ? false : { opacity: 0, y: 10 }}
@@ -148,7 +235,7 @@ export default function Dashboard({
               {streakAtRisk ? (
                 <p className="text-sm text-red-700 font-semibold">Day {dailyStreak} — don’t break your lamp streak!</p>
               ) : (
-                <p className="text-sm text-[#6b5537]">5 mixed terms · ~2–4 min · same puzzle for everyone</p>
+                <p className="text-sm text-[#6b5537]">5 mixed terms · ~2–4 min · same puzzle for everyone · +50 XP</p>
               )}
               {bonusWord && (
                 <p className="text-[11px] text-[#92400e] font-semibold mt-1">
@@ -238,6 +325,36 @@ export default function Dashboard({
         </div>
       </motion.div>
 
+      {/* Candle cosmetics quick-select */}
+      {onSelectCosmetic && (
+        <div className="pcard rounded-2xl p-4">
+          <div className="text-[10px] uppercase font-bold tracking-wider text-[#6b5537] mb-2">Lamp Style</div>
+          <div className="flex flex-wrap gap-2">
+            {candleCosmetics.map((c) => {
+              const isUnlocked = unlocked.has(c.id);
+              const isSelected = (progress.selectedCandle ?? "candle-classic") === c.id;
+              return (
+                <button
+                  key={c.id}
+                  disabled={!isUnlocked}
+                  onClick={() => isUnlocked && onSelectCosmetic(c.id)}
+                  className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ${
+                    isSelected
+                      ? "bg-[#2a2018] text-[#fbbf24] border-[#b45309]"
+                      : isUnlocked
+                        ? "bg-[#fbf5e9] text-[#2a2018] border-[#e2d2ac] hover:border-[#b45309] cursor-pointer"
+                        : "bg-[#f0e3c8]/50 text-[#6b5537] border-[#e2d2ac] opacity-60 cursor-not-allowed"
+                  }`}
+                  title={isUnlocked ? c.description : `Unlock at ${c.unlockRank}`}
+                >
+                  {c.title}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <button onClick={onViewBadges} className="pcard rounded-xl p-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer hover:border-[#b45309]">
           <Medal className="w-3.5 h-3.5" /> Badges
@@ -274,7 +391,7 @@ export default function Dashboard({
             </div>
             <h3 className="text-xl font-display font-bold text-[#2a2018] tracking-wide">Chapter Challenge</h3>
             <p className="text-[#5c4a33] text-sm leading-relaxed">
-              Mastery bars unlock verified Scripture &amp; EGW study. Toggle Expert Mode on the chapter screen.
+              Mastery bars unlock verified Scripture &amp; EGW study. Daniel &amp; Revelation seasonal tracks included.
             </p>
           </div>
           <button onClick={onStartChapters}
@@ -337,7 +454,7 @@ export default function Dashboard({
             Reset Game Data
           </button>
           <span aria-hidden="true">•</span>
-          <span>Version 1.2.0</span>
+          <span>Version 1.3.0</span>
         </div>
       </motion.div>
     </div>

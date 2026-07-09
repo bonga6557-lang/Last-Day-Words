@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft, Clock, Zap } from "lucide-react";
-import { WordTerm, allWordsList } from "../data/words";
+import { Chapter, WordTerm } from "../data/words";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import {
-  MAX_MISTAKES,
   isLetter,
   normalizeWord,
   isWordSolved,
   getDepthHint,
-  getChapterForWord,
+  getChapterForWordInChapters,
   getWordDifficulty,
   getMaxMistakes,
   shuffleArray,
@@ -32,11 +31,20 @@ import { flashScreen } from "../utils/flash";
 interface SpeedRoundGameProps {
   highScore: number;
   highestWordsSolved: number;
+  chapters: Chapter[];
+  candleStyle?: string;
   onGameFinished: (finalScore: number, wordsCount: number) => void;
   onBack: () => void;
 }
 
-export default function SpeedRoundGame({ highScore, highestWordsSolved, onGameFinished, onBack }: SpeedRoundGameProps) {
+export default function SpeedRoundGame({
+  highScore,
+  highestWordsSolved,
+  chapters,
+  candleStyle = "classic",
+  onGameFinished,
+  onBack,
+}: SpeedRoundGameProps) {
   const rm = useReducedMotion();
   const [reaction, setReaction] = useState<AvatarReaction>("idle");
   const reactionTimer = useRef<NodeJS.Timeout | null>(null);
@@ -65,6 +73,7 @@ export default function SpeedRoundGame({ highScore, highestWordsSolved, onGameFi
 
   const difficulty = currentWordObj ? getWordDifficulty(currentWordObj) : "medium";
   const maxMistakes = getMaxMistakes(difficulty);
+  const allWordsList = useMemo(() => chapters.flatMap((chapter) => chapter.words), [chapters]);
 
   const showFeedback = useCallback((text: string, tone: FeedbackTone) => {
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
@@ -84,7 +93,7 @@ export default function SpeedRoundGame({ highScore, highestWordsSolved, onGameFi
       available = shuffleArray(allWordsList);
       setUsedWordIds([]);
     }
-    const selected = pickWeightedWord(available);
+    const selected = pickWeightedWord(available, allWordsList);
     const evt = rollSpeedEvent();
     setSpeedEvent(evt);
     eventMultRef.current = evt === "golden-word" ? GOLDEN_WORD_SCORE_MULT : 1;
@@ -101,7 +110,7 @@ export default function SpeedRoundGame({ highScore, highestWordsSolved, onGameFi
     setGuessedLetters([]);
     setMistakes(0);
     solvedRef.current = false;
-  }, [usedWordIds]);
+  }, [allWordsList, usedWordIds]);
 
   useEffect(() => {
     if (startCountdown > 0) {
@@ -133,7 +142,7 @@ export default function SpeedRoundGame({ highScore, highestWordsSolved, onGameFi
   const wordText = currentWordObj ? normalizeWord(currentWordObj.word) : "";
   const solved = currentWordObj ? isWordSolved(wordText, guessedLetters) : false;
   const depthHint = currentWordObj ? getDepthHint(currentWordObj, mistakes, difficulty) : null;
-  const chapter = currentWordObj ? getChapterForWord(currentWordObj.id) : undefined;
+  const chapter = currentWordObj ? getChapterForWordInChapters(currentWordObj.id, chapters) : undefined;
   const comboMult = getSpeedComboMultiplier(wordStreak);
 
   const makeGuess = useCallback(
@@ -155,17 +164,23 @@ export default function SpeedRoundGame({ highScore, highestWordsSolved, onGameFi
           const next = prev + 1;
           if (next >= maxMistakes) {
             setWordStreak(0);
+            const penaltyEndsRound = timeLeft <= SPEED_SKIP_PENALTY;
             setTimeLeft((t) => Math.max(0, t - SPEED_SKIP_PENALTY));
             setTimeBonusFeedback(`-${SPEED_SKIP_PENALTY}s Skip!`);
             setTimeout(() => setTimeBonusFeedback(null), 1200);
-            setTimeout(() => loadNextWord(), 500);
+            if (penaltyEndsRound) {
+              setIsGameOver(true);
+              if (timerRef.current) clearInterval(timerRef.current);
+            } else {
+              setTimeout(() => loadNextWord(), 500);
+            }
           }
           vibrate([80, 50, 80]);
           return next;
         });
       }
     },
-    [isPlaying, isGameOver, currentWordObj, guessedLetters, wordText, loadNextWord, maxMistakes, comboMult, flashReaction]
+    [isPlaying, isGameOver, currentWordObj, guessedLetters, wordText, loadNextWord, maxMistakes, comboMult, flashReaction, timeLeft]
   );
 
   useEffect(() => {
@@ -303,7 +318,7 @@ export default function SpeedRoundGame({ highScore, highestWordsSolved, onGameFi
         </motion.div>
       )}
 
-      <PropheticCandles mistakes={mistakes} maxMistakes={maxMistakes} compact />
+      <PropheticCandles mistakes={mistakes} maxMistakes={maxMistakes} compact style={candleStyle} />
 
       {currentWordObj && (
         <WordSlots wordText={wordText} guessedLetters={guessedLetters} mistakes={mistakes} maxMistakes={maxMistakes} size="compact" revealOnFailure={false} />

@@ -42,6 +42,10 @@ export function getChapterForWord(wordId: string): Chapter | undefined {
   return chaptersData.find((c) => c.words.some((w) => w.id === wordId));
 }
 
+export function getChapterForWordInChapters(wordId: string, chapters: Chapter[]): Chapter | undefined {
+  return chapters.find((c) => c.words.some((w) => w.id === wordId));
+}
+
 // ---- Mastery / spaced repetition ----
 export const REVIEW_STRUGGLE_THRESHOLD = 3;
 export type MasteryTier = 0 | 25 | 50 | 100;
@@ -97,9 +101,9 @@ export function getChapterMastery(
 }
 
 /** Build a review "chapter" of the words the player has struggled with. */
-export function buildReviewChapter(stats?: Record<string, WordStat>): Chapter {
+export function buildReviewChapter(stats?: Record<string, WordStat>, wordsList: WordTerm[] = allWordsList): Chapter {
   const dueIds = getReviewWordIds(stats);
-  const words = allWordsList.filter((w) => dueIds.includes(w.id));
+  const words = wordsList.filter((w) => dueIds.includes(w.id));
   return {
     id: "review-session",
     title: "Spaced Review",
@@ -143,8 +147,8 @@ export function shuffleArray<T>(arr: T[]): T[] {
   return copy;
 }
 
-export function pickWeightedWord(words: WordTerm[]): WordTerm {
-  if (words.length === 0) return allWordsList[0];
+export function pickWeightedWord(words: WordTerm[], fallbackWords: WordTerm[] = allWordsList): WordTerm {
+  if (words.length === 0) return fallbackWords[0];
   const pool = words.flatMap((w) => {
     const d = getWordDifficulty(w);
     const weight = d === "hard" ? 3 : d === "medium" ? 2 : 1;
@@ -153,10 +157,10 @@ export function pickWeightedWord(words: WordTerm[]): WordTerm {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-export function buildTeamsRound(): WordTerm[] {
+export function buildTeamsRound(wordsList: WordTerm[] = allWordsList): WordTerm[] {
   const needed = TEAMS_QUESTIONS_PER_SIDE * 2;
   const weighted = shuffleArray(
-    allWordsList.flatMap((w) => {
+    wordsList.flatMap((w) => {
       const d = getWordDifficulty(w);
       const weight = d === "hard" ? 3 : d === "medium" ? 2 : 1;
       return Array(weight).fill(w);
@@ -170,7 +174,7 @@ export function buildTeamsRound(): WordTerm[] {
     picked.push(w);
     if (picked.length >= needed) break;
   }
-  for (const w of shuffleArray(allWordsList)) {
+  for (const w of shuffleArray(wordsList)) {
     if (picked.length >= needed) break;
     if (!used.has(w.id)) {
       picked.push(w);

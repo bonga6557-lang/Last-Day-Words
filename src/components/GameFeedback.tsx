@@ -1,4 +1,3 @@
-import React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 
 export type FeedbackTone = "success" | "danger" | "streak" | "combo";

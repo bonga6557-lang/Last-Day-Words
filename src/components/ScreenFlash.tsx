@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Mounted once at the app root. Listens for "game-flash" window events

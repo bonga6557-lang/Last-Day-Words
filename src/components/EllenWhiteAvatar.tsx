@@ -1,4 +1,3 @@
-import React from "react";
 
 export type AvatarReaction = "idle" | "correct" | "incorrect";
 

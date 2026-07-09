@@ -15,6 +15,8 @@ export interface Chapter {
   title: string;
   description: string;
   words: WordTerm[];
+  /** Optional seasonal track id (daniel | revelation). */
+  seasonId?: string;
 }
 
 const rawChaptersData: Chapter[] = [
@@ -413,6 +415,408 @@ const rawChaptersData: Chapter[] = [
         verse: "Revelation 16:16",
         scripture: "And he gathered them together into a place called in the Hebrew tongue Armageddon.",
         summary: "Armageddon is not a literal valley battle alone, but the climactic conflict of the ages where all humanity chooses sides for or against God."
+      }
+    ]
+  },
+  // --- Daniel Track (season) — 5 chapters × 4 terms ---
+  {
+    id: "daniel-image",
+    title: "Daniel: The Great Image",
+    description: "Nebuchadnezzar's dream of the multi-metal statue and the stone cut without hands.",
+    seasonId: "daniel",
+    words: [
+      {
+        id: "daniel-image-1",
+        word: "GREAT IMAGE",
+        clue: "The enormous statue of mixed metals that filled the king's dream of successive world empires.",
+        verse: "Daniel 2:31",
+        scripture: "Thou, O king, sawest, and behold a great image. This great image, whose brightness was excellent, stood before thee; and the form thereof was terrible.",
+        summary: "God revealed the outline of history through a single dream-image, showing that earthly kingdoms rise and fall under His sovereignty."
+      },
+      {
+        id: "daniel-image-2",
+        word: "HEAD OF GOLD",
+        clue: "The top of the image representing Babylon, the first kingdom in the prophetic succession.",
+        verse: "Daniel 2:38",
+        scripture: "And wheresoever the children of men dwell, the beasts of the field and the fowls of the heaven hath he given into thine hand, and hath made thee ruler over them all. Thou art this head of gold.",
+        summary: "Babylon's glory is symbolized by gold — yet even the head of gold is temporary before the everlasting kingdom of God."
+      },
+      {
+        id: "daniel-image-3",
+        word: "FEET OF IRON AND CLAY",
+        clue: "The divided toes of the image showing a mixed, unstable end-time political order.",
+        verse: "Daniel 2:41",
+        scripture: "And whereas thou sawest the feet and toes, part of potters' clay, and part of iron, the kingdom shall be divided; but there shall be in it of the strength of the iron, forasmuch as thou sawest the iron mixed with miry clay.",
+        summary: "The final phase of earthly power is strong yet brittle — never fully united until Christ returns."
+      },
+      {
+        id: "daniel-image-4",
+        word: "STONE CUT WITHOUT HANDS",
+        clue: "The supernatural stone that smashes the image and becomes a mountain filling the whole earth.",
+        verse: "Daniel 2:34",
+        scripture: "Thou sawest till that a stone was cut out without hands, which smote the image upon his feet that were of iron and clay, and brake them to pieces.",
+        summary: "Christ's kingdom is not of human origin. It ends all earthly empires and fills the earth with righteousness forever."
+      }
+    ]
+  },
+  {
+    id: "daniel-beasts",
+    title: "Daniel: Four Beasts",
+    description: "The night vision of four great beasts rising from the sea — successive world powers.",
+    seasonId: "daniel",
+    words: [
+      {
+        id: "daniel-beasts-1",
+        word: "FOUR GREAT BEASTS",
+        clue: "Four diverse animals that came up from the sea, representing four kings or kingdoms.",
+        verse: "Daniel 7:3",
+        scripture: "And four great beasts came up from the sea, diverse one from another.",
+        summary: "From the turbulent sea of nations rise successive empires — a second line of prophecy paralleling the metallic image."
+      },
+      {
+        id: "daniel-beasts-2",
+        word: "LION WITH EAGLES WINGS",
+        clue: "The first beast of Daniel 7, swift and royal, matching Babylon's golden head.",
+        verse: "Daniel 7:4",
+        scripture: "The first was like a lion, and had eagle's wings: I beheld till the wings thereof were plucked, and it was lifted up from the earth, and made stand upon the feet as a man, and a man's heart was given to it.",
+        summary: "Wings of speed give way to a humbled, humanized form — Babylon's pride is checked by the God of heaven."
+      },
+      {
+        id: "daniel-beasts-3",
+        word: "BEAR RAISED UP",
+        clue: "The second beast that raised itself on one side and had three ribs in its mouth.",
+        verse: "Daniel 7:5",
+        scripture: "And behold another beast, a second, like to a bear, and it raised up itself on one side, and it had three ribs in the mouth of it between the teeth of it: and they said thus unto it, Arise, devour much flesh.",
+        summary: "Medo-Persia's lopsided strength and conquests fulfill the second stage of the four-beast vision."
+      },
+      {
+        id: "daniel-beasts-4",
+        word: "LEOPARD WITH FOUR WINGS",
+        clue: "The third beast of rapid conquest with four heads, pointing to a divided Greek empire.",
+        verse: "Daniel 7:6",
+        scripture: "After this I beheld, and lo another, like a leopard, which had upon the back of it four wings of a fowl; the beast had also four heads; and dominion was given to it.",
+        summary: "Swift as a leopard, Greece under Alexander spreads quickly, then divides into four successor domains."
+      }
+    ]
+  },
+  {
+    id: "daniel-horn",
+    title: "Daniel: The Little Horn",
+    description: "The blasphemous power that rises among the ten horns and speaks great words against the Most High.",
+    seasonId: "daniel",
+    words: [
+      {
+        id: "daniel-horn-1",
+        word: "LITTLE HORN",
+        clue: "A horn that arises among ten, uprooting three, with eyes like a man and a mouth speaking great things.",
+        verse: "Daniel 7:8",
+        scripture: "I considered the horns, and, behold, there came up among them another little horn, before whom there were three of the first horns plucked up by the roots: and, behold, in this horn were eyes like the eyes of man, and a mouth speaking great things.",
+        summary: "A religio-political power emerges after imperial Rome, marked by intelligence, speech, and the displacement of rivals."
+      },
+      {
+        id: "daniel-horn-2",
+        word: "SPEAK GREAT WORDS",
+        clue: "The little horn's blasphemous claims against the Most High.",
+        verse: "Daniel 7:25",
+        scripture: "And he shall speak great words against the most High, and shall wear out the saints of the most High, and think to change times and laws: and they shall be given into his hand until a time and times and the dividing of time.",
+        summary: "Blasphemy, persecution of the saints, and attempts to alter divine times and laws identify this power in history and prophecy."
+      },
+      {
+        id: "daniel-horn-3",
+        word: "TIME TIMES AND DIVIDING",
+        clue: "The prophetic period during which the saints are given into the little horn's hand.",
+        verse: "Daniel 7:25",
+        scripture: "And he shall speak great words against the most High, and shall wear out the saints of the most High, and think to change times and laws: and they shall be given into his hand until a time and times and the dividing of time.",
+        summary: "A fixed prophetic timespan limits oppression; God sets the bounds of the little horn's dominion."
+      },
+      {
+        id: "daniel-horn-4",
+        word: "JUDGMENT WAS SET",
+        clue: "The heavenly court session that sits and takes away the little horn's dominion.",
+        verse: "Daniel 7:26",
+        scripture: "But the judgment shall sit, and they shall take away his dominion, to consume and to destroy it unto the end.",
+        summary: "Heaven's judgment answers blasphemy with final justice; the horn's dominion ends under the verdict of God."
+      }
+    ]
+  },
+  {
+    id: "daniel-sanctuary",
+    title: "Daniel: Sanctuary Cleansed",
+    description: "The 2300-day prophecy and the cleansing of the sanctuary in heaven.",
+    seasonId: "daniel",
+    words: [
+      {
+        id: "daniel-sanctuary-1",
+        word: "TWO THOUSAND THREE HUNDRED DAYS",
+        clue: "The long prophetic period after which the sanctuary shall be cleansed.",
+        verse: "Daniel 8:14",
+        scripture: "And he said unto me, Unto two thousand and three hundred days; then shall the sanctuary be cleansed.",
+        summary: "This prophetic span anchors Advent hope in a heavenly Day of Atonement work before the Second Coming."
+      },
+      {
+        id: "daniel-sanctuary-2",
+        word: "SANCTUARY BE CLEANSED",
+        clue: "The climactic phrase of Daniel 8:14 announcing purification of the heavenly sanctuary.",
+        verse: "Daniel 8:14",
+        scripture: "And he said unto me, Unto two thousand and three hundred days; then shall the sanctuary be cleansed.",
+        summary: "Cleansing points to Christ's priestly ministry removing the record of confessed sin in the true tabernacle."
+      },
+      {
+        id: "daniel-sanctuary-3",
+        word: "DAILY SACRIFICE",
+        clue: "The continual ministry cast down by the little horn in Daniel 8's vision of the ram and goat.",
+        verse: "Daniel 8:11",
+        scripture: "Yea, he magnified himself even to the prince of the host, and by him the daily sacrifice was taken away, and the place of his sanctuary was cast down.",
+        summary: "Counterfeit systems obscure Christ's continual priesthood; the sanctuary truth restores the true ministry."
+      },
+      {
+        id: "daniel-sanctuary-4",
+        word: "EVENING AND MORNING",
+        clue: "The prophetic day unit used when the vision of the daily and the transgression is explained.",
+        verse: "Daniel 8:26",
+        scripture: "And the vision of the evening and the morning which was told is true: wherefore shut thou up the vision; for it shall be for many days.",
+        summary: "Evening-morning language marks prophetic days; the vision reaches far beyond Daniel's own lifetime."
+      }
+    ]
+  },
+  {
+    id: "daniel-stand",
+    title: "Daniel: Michael Stands Up",
+    description: "The close of the book of Daniel — Michael, the sealed book, and the wise who shine.",
+    seasonId: "daniel",
+    words: [
+      {
+        id: "daniel-stand-1",
+        word: "MICHAEL STAND UP",
+        clue: "The great prince who stands for God's people at the time of unprecedented trouble.",
+        verse: "Daniel 12:1",
+        scripture: "And at that time shall Michael stand up, the great prince which standeth for the children of thy people: and there shall be a time of trouble, such as never was since there was a nation even to that same time: and at that time thy people shall be delivered, every one that shall be found written in the book.",
+        summary: "When Michael stands, deliverance comes for those written in the book — after the final crisis of earth's history."
+      },
+      {
+        id: "daniel-stand-2",
+        word: "WRITTEN IN THE BOOK",
+        clue: "The record that identifies who will be delivered when Michael stands up.",
+        verse: "Daniel 12:1",
+        scripture: "And at that time shall Michael stand up, the great prince which standeth for the children of thy people: and there shall be a time of trouble, such as never was since there was a nation even to that same time: and at that time thy people shall be delivered, every one that shall be found written in the book.",
+        summary: "Salvation is personal and recorded. Only those found written in the book share Michael's deliverance."
+      },
+      {
+        id: "daniel-stand-3",
+        word: "MANY SHALL RUN TO AND FRO",
+        clue: "The end-time increase of knowledge and earnest searching of prophecy.",
+        verse: "Daniel 12:4",
+        scripture: "But thou, O Daniel, shut up the words, and seal the book, even to the time of the end: many shall run to and fro, and knowledge shall be increased.",
+        summary: "As the end nears, sealed prophecy opens and diligent study multiplies understanding among the faithful."
+      },
+      {
+        id: "daniel-stand-4",
+        word: "WISE SHALL SHINE",
+        clue: "Those who turn many to righteousness, shining as the brightness of the firmament.",
+        verse: "Daniel 12:3",
+        scripture: "And they that be wise shall shine as the brightness of the firmament; and they that turn many to righteousness as the stars for ever and ever.",
+        summary: "Wisdom in prophecy leads to soul-winning; the reward is everlasting brightness with the redeemed."
+      }
+    ]
+  },
+  // --- Revelation Track (season) — 5 chapters × 4 terms ---
+  {
+    id: "rev-churches",
+    title: "Revelation: Seven Churches",
+    description: "Christ's letters to the seven churches of Asia — counsel for every age of the church.",
+    seasonId: "revelation",
+    words: [
+      {
+        id: "rev-churches-1",
+        word: "SEVEN CHURCHES",
+        clue: "The congregations in Asia to whom John is commanded to write the Revelation.",
+        verse: "Revelation 1:11",
+        scripture: "Saying, I am Alpha and Omega, the first and the last: and, What thou seest, write in a book, and send it unto the seven churches which are in Asia; unto Ephesus, and unto Smyrna, and unto Pergamos, and unto Thyatira, and unto Sardis, and unto Philadelphia, and unto Laodicea.",
+        summary: "Seven local churches receive living messages that also map the spiritual eras of Christian history."
+      },
+      {
+        id: "rev-churches-2",
+        word: "FIRST LOVE",
+        clue: "What Ephesus left behind, and what Christ calls them to remember and do again.",
+        verse: "Revelation 2:4",
+        scripture: "Nevertheless I have somewhat against thee, because thou hast left thy first love.",
+        summary: "Orthodoxy without love is incomplete. Christ invites the church to return to the affection of its beginning."
+      },
+      {
+        id: "rev-churches-3",
+        word: "LAODICEA",
+        clue: "The lukewarm church that says it is rich yet needs gold, raiment, and eyesalve from Christ.",
+        verse: "Revelation 3:16",
+        scripture: "So then because thou art lukewarm, and neither cold nor hot, I will spue thee out of my mouth.",
+        summary: "End-time self-satisfaction is the danger; Christ's rebuke is love calling His people to repentance and zeal."
+      },
+      {
+        id: "rev-churches-4",
+        word: "OPEN DOOR",
+        clue: "The door Christ sets before Philadelphia that no man can shut.",
+        verse: "Revelation 3:8",
+        scripture: "I know thy works: behold, I have set before thee an open door, and no man can shut it: for thou hast a little strength, and hast kept my word, and hast not denied my name.",
+        summary: "Mission opportunity and heavenly access open to a faithful remnant who keep His word despite little strength."
+      }
+    ]
+  },
+  {
+    id: "rev-seals",
+    title: "Revelation: Seven Seals",
+    description: "The Lamb opens the sealed book — conquest, conflict, scarcity, and the cry of the martyrs.",
+    seasonId: "revelation",
+    words: [
+      {
+        id: "rev-seals-1",
+        word: "BOOK SEALED",
+        clue: "The scroll in God's right hand, sealed with seven seals, that only the Lamb can open.",
+        verse: "Revelation 5:1",
+        scripture: "And I saw in the right hand of him that sat on the throne a book written within and on the backside, sealed with seven seals.",
+        summary: "Human history's sealed decrees open only through Christ's worthiness as the slain yet risen Lamb."
+      },
+      {
+        id: "rev-seals-2",
+        word: "WHITE HORSE",
+        clue: "The first seal's rider going forth conquering and to conquer.",
+        verse: "Revelation 6:2",
+        scripture: "And I saw, and behold a white horse: and he that sat on him had a bow; and a crown was given unto him: and he went forth conquering, and to conquer.",
+        summary: "The pure advance of the gospel is pictured as a conquering rider under the first seal."
+      },
+      {
+        id: "rev-seals-3",
+        word: "SOULS UNDER THE ALTAR",
+        clue: "The fifth-seal cry of the martyrs asking how long until their blood is avenged.",
+        verse: "Revelation 6:9",
+        scripture: "And when he had opened the fifth seal, I saw under the altar the souls of them that were slain for the word of God, and for the testimony which they held:",
+        summary: "Persecuted saints are not forgotten; their appeal rises until the final vindication of God."
+      },
+      {
+        id: "rev-seals-4",
+        word: "SIXTH SEAL",
+        clue: "The seal of cosmic signs — earthquake, darkened sun, falling stars — before the great day.",
+        verse: "Revelation 6:12",
+        scripture: "And I beheld when he had opened the sixth seal, and, lo, there was a great earthquake; and the sun became black as sackcloth of hair, and the moon became as blood;",
+        summary: "Nature itself signals the nearness of judgment, calling the world to prepare for the Lamb's day."
+      }
+    ]
+  },
+  {
+    id: "rev-trumpets",
+    title: "Revelation: Seven Trumpets",
+    description: "Trumpet judgments that warn the earth as history moves toward the final crisis.",
+    seasonId: "revelation",
+    words: [
+      {
+        id: "rev-trumpets-1",
+        word: "SEVEN TRUMPETS",
+        clue: "The series of angel-blown warnings that follow the opening of the seventh seal's silence.",
+        verse: "Revelation 8:6",
+        scripture: "And the seven angels which had the seven trumpets prepared themselves to sound.",
+        summary: "Trumpets in Scripture summon, warn, and announce war — here they mark successive judgments on a rebellious world."
+      },
+      {
+        id: "rev-trumpets-2",
+        word: "INCENSE WITH PRAYERS",
+        clue: "What the angel offers with the prayers of the saints upon the golden altar before the throne.",
+        verse: "Revelation 8:3",
+        scripture: "And another angel came and stood at the altar, having a golden censer; and there was given unto him much incense, that he should offer it with the prayers of all saints upon the golden altar which was before the throne.",
+        summary: "Before trumpets sound, intercession and prayer rise with incense — mercy still mingles with judgment."
+      },
+      {
+        id: "rev-trumpets-3",
+        word: "WOE WOE WOE",
+        clue: "The triple cry of the eagle announcing the last three trumpets upon earth's inhabitants.",
+        verse: "Revelation 8:13",
+        scripture: "And I beheld, and heard an angel flying through the midst of heaven, saying with a loud voice, Woe, woe, woe, to the inhabiters of the earth by reason of the other voices of the trumpet of the three angels, which are yet to sound!",
+        summary: "The final three trumpets intensify crisis; heaven itself warns that greater trouble still approaches."
+      },
+      {
+        id: "rev-trumpets-4",
+        word: "MYSTERY OF GOD FINISHED",
+        clue: "What is completed in the days of the voice of the seventh angel when he begins to sound.",
+        verse: "Revelation 10:7",
+        scripture: "But in the days of the voice of the seventh angel, when he shall begin to sound, the mystery of God should be finished, as he hath declared to his servants the prophets.",
+        summary: "The seventh trumpet era closes the prophetic mystery and ushers in the finishing of God's plan of salvation."
+      }
+    ]
+  },
+  {
+    id: "rev-beast",
+    title: "Revelation: The Beast System",
+    description: "Sea beast, earth beast, and the image that enforces false worship in the final crisis.",
+    seasonId: "revelation",
+    words: [
+      {
+        id: "rev-beast-1",
+        word: "BEAST FROM THE SEA",
+        clue: "The composite leopard-bear-lion power that rises from the sea with seven heads and ten horns.",
+        verse: "Revelation 13:1",
+        scripture: "And I stood upon the sand of the sea, and saw a beast rise up out of the sea, having seven heads and ten horns, and upon his horns ten crowns, and upon his heads the name of blasphemy.",
+        summary: "A blasphemous world power unites features of prior empires and receives authority for a limited prophetic period."
+      },
+      {
+        id: "rev-beast-2",
+        word: "BEAST FROM THE EARTH",
+        clue: "The second beast with two lamb-like horns that speaks as a dragon.",
+        verse: "Revelation 13:11",
+        scripture: "And I beheld another beast coming up out of the earth; and he had two horns like a lamb, and he spake as a dragon.",
+        summary: "Gentle appearance with dragon speech points to a power that begins with liberty yet ends enforcing tyranny."
+      },
+      {
+        id: "rev-beast-3",
+        word: "IMAGE OF THE BEAST",
+        clue: "The structure the earth beast causes to be made, which both speaks and kills dissenters.",
+        verse: "Revelation 13:15",
+        scripture: "And he had power to give life unto the image of the beast, that the image of the beast should both speak, and cause that as many as would not worship the image of the beast should be killed.",
+        summary: "An image copies the first beast's principle of enforced religion — the final test of worship for every soul."
+      },
+      {
+        id: "rev-beast-4",
+        word: "NUMBER OF HIS NAME",
+        clue: "The number of a man associated with the beast — six hundred threescore and six.",
+        verse: "Revelation 13:18",
+        scripture: "Here is wisdom. Let him that hath understanding count the number of the beast: for it is the number of a man; and his number is Six hundred threescore and six.",
+        summary: "Wisdom and understanding are required to identify the beast; Scripture invites careful, prayerful study — not superstition."
+      }
+    ]
+  },
+  {
+    id: "rev-millennium",
+    title: "Revelation: The Millennium",
+    description: "The thousand years, the binding of Satan, and the final judgment after the first resurrection.",
+    seasonId: "revelation",
+    words: [
+      {
+        id: "rev-millennium-1",
+        word: "THOUSAND YEARS",
+        clue: "The millennial period during which Satan is bound and the saints reign with Christ.",
+        verse: "Revelation 20:2",
+        scripture: "And he laid hold on the dragon, that old serpent, which is the Devil, and Satan, and bound him a thousand years,",
+        summary: "A fixed thousand-year epoch separates the first resurrection of the just from the final destruction of evil."
+      },
+      {
+        id: "rev-millennium-2",
+        word: "FIRST RESURRECTION",
+        clue: "The blessed rising of those who share in life with Christ at the start of the thousand years.",
+        verse: "Revelation 20:6",
+        scripture: "Blessed and holy is he that hath part in the first resurrection: on such the second death hath no power, but they shall be priests of God and of Christ, and shall reign with him a thousand years.",
+        summary: "Participation in the first resurrection means eternal safety from the second death and shared reign with Christ."
+      },
+      {
+        id: "rev-millennium-3",
+        word: "SECOND DEATH",
+        clue: "The final destruction that has no power over those in the first resurrection.",
+        verse: "Revelation 20:14",
+        scripture: "And death and hell were cast into the lake of fire. This is the second death.",
+        summary: "Death itself is destroyed; the second death ends sin permanently for those who refuse the first resurrection's hope."
+      },
+      {
+        id: "rev-millennium-4",
+        word: "BOOK OF LIFE",
+        clue: "The register opened at the great white throne; those not found written are judged accordingly.",
+        verse: "Revelation 20:15",
+        scripture: "And whosoever was not found written in the book of life was cast into the lake of fire.",
+        summary: "Eternal destiny turns on the book of life — a call to trust Christ now while mercy still invites."
       }
     ]
   }

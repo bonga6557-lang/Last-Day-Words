@@ -1,4 +1,3 @@
-import React from "react";
 
 interface SoulLampProps {
   /** Remaining time as a fraction 0..1 */

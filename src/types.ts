@@ -61,6 +61,33 @@ export interface UserProgress {
   wordStats?: Record<string, WordStat>;
   notificationsEnabled?: boolean;
   displayName?: string;
+  /** Cumulative XP for rank progression. */
+  xp?: number;
+  /** Current rank id (novice | student | watchman | berean | prophetic-scholar). */
+  rank?: string;
+  /** Cosmetic ids unlocked by rank. */
+  unlockedCosmetics?: string[];
+  /** Active candle style cosmetic id. */
+  selectedCandle?: string;
+  /** Active chapter banner cosmetic id (empty = default). */
+  selectedBanner?: string;
+  /** Date key when study-guide open XP was already awarded. */
+  studyGuideXpDate?: string;
+}
+
+export interface Season {
+  id: string;
+  title: string;
+  description: string;
+  startsOn?: string | null;
+  endsOn?: string | null;
+  chapterIds: string[];
+}
+
+export interface FeaturedContent {
+  weekKey: string;
+  wordId?: string | null;
+  announcement?: string | null;
 }
 
 export interface GameState {

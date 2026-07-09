@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Trophy } from "lucide-react";
 import { supabase, isSupabaseConfigured, LeaderboardRow } from "../lib/supabase";
 import { getIsoWeekKey } from "../utils/streaks";

@@ -1,18 +1,23 @@
-import React, { useState } from "react";
-import { Award, ArrowLeft, Lock } from "lucide-react";
+import { Award, ArrowLeft, Lock, Sparkles } from "lucide-react";
 import { UserProgress } from "../types";
 import { STREAK_BADGES } from "../utils/streaks";
+import { COSMETICS } from "../data/cosmetics";
+import { progressToNextRank } from "../data/ranks";
 import { motion, useReducedMotion } from "motion/react";
 
 interface BadgesScreenProps {
   progress: UserProgress;
+  onSelectCosmetic?: (cosmeticId: string) => void;
   onBack: () => void;
 }
 
-export default function BadgesScreen({ progress, onBack }: BadgesScreenProps) {
+export default function BadgesScreen({ progress, onSelectCosmetic, onBack }: BadgesScreenProps) {
   const rm = useReducedMotion();
   const earned = new Set(progress.earnedBadgeIds ?? []);
   const streak = progress.dailyChallengeStreak ?? 0;
+  const unlockedCosmetics = new Set(progress.unlockedCosmetics ?? ["candle-classic"]);
+  const xp = progress.xp ?? 0;
+  const rankInfo = progressToNextRank(xp);
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto py-2 px-2">
@@ -23,8 +28,87 @@ export default function BadgesScreen({ progress, onBack }: BadgesScreenProps) {
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Back
         </button>
-        <h2 className="text-lg font-display font-bold tracking-[0.1em] text-[#2a2018]">BADGE COLLECTION</h2>
+        <h2 className="text-lg font-display font-bold tracking-[0.1em] text-[#2a2018]">BADGES &amp; RANKS</h2>
         <div className="w-16" />
+      </div>
+
+      <div className="pcard rounded-2xl p-5 parchment-glow">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-bold text-[#2a2018]">{rankInfo.current.title}</span>
+          <span className="font-mono text-sm font-bold text-[#92400e]">{xp} XP</span>
+        </div>
+        <div className="w-full bg-[#e7d6b0] h-2 rounded-full overflow-hidden">
+          <div
+            className="bg-gradient-to-r from-[#b45309] to-[#f59e0b] h-full rounded-full"
+            style={{ width: `${Math.round(rankInfo.ratio * 100)}%` }}
+          />
+        </div>
+        <p className="text-[11px] text-[#6b5537] mt-2">
+          {rankInfo.next
+            ? `${rankInfo.xpInto} / ${rankInfo.xpNeeded} XP until ${rankInfo.next.title}`
+            : "Highest rank reached"}
+        </p>
+      </div>
+
+      <div>
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#6b5537] mb-3 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5" /> Cosmetics
+        </h3>
+        <div className="space-y-3">
+          {COSMETICS.map((c, i) => {
+            const unlocked = unlockedCosmetics.has(c.id);
+            const selected =
+              c.kind === "candle"
+                ? (progress.selectedCandle ?? "candle-classic") === c.id
+                : (progress.selectedBanner ?? "") === c.id;
+            return (
+              <motion.div
+                key={c.id}
+                initial={rm ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: rm ? 0 : i * 0.04 }}
+                className={`pcard rounded-2xl p-4 flex items-start gap-3 ${unlocked ? "" : "opacity-70"}`}
+              >
+                <div
+                  className={`p-2.5 rounded-xl border ${
+                    unlocked
+                      ? "bg-[#2a2018] text-[#fbbf24] border-[#b45309]/40"
+                      : "bg-[#f0e3c8] text-[#6b5537] border-[#e2d2ac]"
+                  }`}
+                >
+                  {unlocked ? <Sparkles className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h4 className="font-bold text-[#2a2018] text-sm">{c.title}</h4>
+                    <span className="text-[9px] uppercase font-bold px-2 py-0.5 bg-[#f3e8cf] text-[#6b5537] rounded">
+                      {c.kind}
+                    </span>
+                    {selected && unlocked && (
+                      <span className="text-[9px] uppercase font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#5c4a33] mt-0.5">{c.description}</p>
+                  {!unlocked && (
+                    <p className="text-[10px] text-[#92400e] font-semibold mt-1">
+                      Unlocks at {c.unlockRank.replace("-", " ")} rank
+                    </p>
+                  )}
+                  {unlocked && onSelectCosmetic && !selected && (
+                    <button
+                      onClick={() => onSelectCosmetic(c.id)}
+                      className="mt-2 text-[10px] font-bold uppercase tracking-wider text-[#92400e] hover:underline cursor-pointer"
+                    >
+                      Equip
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
 
       <p className="text-center text-sm text-[#5c4a33]">

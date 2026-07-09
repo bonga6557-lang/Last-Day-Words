@@ -1,16 +1,66 @@
-import React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { MAX_MISTAKES } from "../utils/gameLogic";
+
+export type CandleStyleToken = "classic" | "emerald" | "sapphire" | string;
 
 interface PropheticCandlesProps {
   mistakes: number;
   maxMistakes?: number;
   compact?: boolean;
+  /** Cosmetic candle style: classic | emerald | sapphire (or cosmetic id). */
+  style?: CandleStyleToken;
 }
 
-function Candle({ lit, index, compact }: { key?: number; lit: boolean; index: number; compact?: boolean }) {
+const FLAME_PALETTES: Record<string, { base: string; mid: string; tip: string; glow: string; bodyLit: string; baseLit: string }> = {
+  classic: {
+    base: "#F59E0B",
+    mid: "#FBBF24",
+    tip: "#FEF3C7",
+    glow: "rgba(251, 191, 36, 0.45)",
+    bodyLit: "from-amber-50 to-amber-100",
+    baseLit: "from-amber-800 to-amber-950",
+  },
+  emerald: {
+    base: "#059669",
+    mid: "#34D399",
+    tip: "#D1FAE5",
+    glow: "rgba(52, 211, 153, 0.45)",
+    bodyLit: "from-emerald-50 to-emerald-100",
+    baseLit: "from-emerald-800 to-emerald-950",
+  },
+  sapphire: {
+    base: "#2563EB",
+    mid: "#60A5FA",
+    tip: "#DBEAFE",
+    glow: "rgba(96, 165, 250, 0.45)",
+    bodyLit: "from-sky-50 to-blue-100",
+    baseLit: "from-blue-800 to-blue-950",
+  },
+};
+
+function resolvePalette(style?: string) {
+  const token = (style ?? "classic").replace(/^candle-/, "");
+  return FLAME_PALETTES[token] ?? FLAME_PALETTES.classic;
+}
+
+function flameGradientId(index: number, palette: (typeof FLAME_PALETTES)["classic"]): string {
+  return `flameGrad-${index}-${palette.base.replace(/[^A-Za-z0-9_-]/g, "")}`;
+}
+
+function Candle({
+  lit,
+  index,
+  compact,
+  palette,
+}: {
+  key?: number;
+  lit: boolean;
+  index: number;
+  compact?: boolean;
+  palette: (typeof FLAME_PALETTES)["classic"];
+}) {
   const w = compact ? 22 : 28;
-  const h = compact ? 52 : 64;
+  const gradientId = flameGradientId(index, palette);
 
   return (
     <div className="relative flex flex-col items-center" style={{ width: w }}>
@@ -27,7 +77,7 @@ function Candle({ lit, index, compact }: { key?: number; lit: boolean; index: nu
           >
             <div
               className="candle-flame-glow absolute inset-0 rounded-full blur-md"
-              style={{ animationDelay: `${index * 0.18}s` }}
+              style={{ animationDelay: `${index * 0.18}s`, backgroundColor: palette.glow }}
             />
             <svg
               viewBox="0 0 24 32"
@@ -37,20 +87,20 @@ function Candle({ lit, index, compact }: { key?: number; lit: boolean; index: nu
               style={{ animationDelay: `${index * 0.22}s` }}
             >
               <defs>
-                <linearGradient id={`flameGrad-${index}`} x1="0%" y1="100%" x2="0%" y2="0%">
-                  <stop offset="0%" stopColor="#F59E0B" />
-                  <stop offset="45%" stopColor="#FBBF24" />
-                  <stop offset="100%" stopColor="#FEF3C7" />
+                <linearGradient id={gradientId} x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stopColor={palette.base} />
+                  <stop offset="45%" stopColor={palette.mid} />
+                  <stop offset="100%" stopColor={palette.tip} />
                 </linearGradient>
               </defs>
-              <ellipse cx="12" cy="26" rx="5" ry="3" fill="#F59E0B" opacity="0.5" />
+              <ellipse cx="12" cy="26" rx="5" ry="3" fill={palette.base} opacity="0.5" />
               <path
                 d="M12 4 C8 12, 7 18, 9 24 C10 27, 14 27, 15 24 C17 18, 16 12, 12 4Z"
-                fill={`url(#flameGrad-${index})`}
+                fill={`url(#${gradientId})`}
               />
               <path
                 d="M12 10 C11 16, 11 20, 12 22 C12.5 20, 12.5 16, 12 10Z"
-                fill="#FEF9C3"
+                fill={palette.tip}
                 opacity="0.7"
               />
             </svg>
@@ -79,7 +129,7 @@ function Candle({ lit, index, compact }: { key?: number; lit: boolean; index: nu
 
       <div
         className={`relative rounded-t-sm transition-all duration-700 ${
-          lit ? "bg-gradient-to-b from-amber-50 to-amber-100" : "bg-[#d9c39a]"
+          lit ? `bg-gradient-to-b ${palette.bodyLit}` : "bg-[#d9c39a]"
         }`}
         style={{ width: compact ? 10 : 12, height: compact ? 22 : 28 }}
       >
@@ -96,7 +146,7 @@ function Candle({ lit, index, compact }: { key?: number; lit: boolean; index: nu
 
       <div
         className={`rounded-b-md transition-colors duration-500 ${
-          lit ? "bg-gradient-to-b from-amber-800 to-amber-950" : "bg-[#c9b184]"
+          lit ? `bg-gradient-to-b ${palette.baseLit}` : "bg-[#c9b184]"
         }`}
         style={{ width: w, height: compact ? 6 : 8 }}
       />
@@ -108,7 +158,9 @@ export default function PropheticCandles({
   mistakes,
   maxMistakes = MAX_MISTAKES,
   compact = false,
+  style = "classic",
 }: PropheticCandlesProps) {
+  const palette = resolvePalette(style);
   const rm = useReducedMotion();
   const remaining = maxMistakes - mistakes;
   const isDanger = remaining <= 2 && remaining > 0;
@@ -126,7 +178,7 @@ export default function PropheticCandles({
       </span>
       <div className={`flex items-end ${compact ? "gap-2" : "gap-3"}`}>
         {Array.from({ length: maxMistakes }, (_, i) => (
-          <Candle key={i} index={i} lit={i >= mistakes} compact={compact} />
+          <Candle key={i} index={i} lit={i >= mistakes} compact={compact} palette={palette} />
         ))}
       </div>
       {mistakes > 0 && mistakes < maxMistakes && (

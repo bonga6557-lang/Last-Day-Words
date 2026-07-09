@@ -1,14 +1,17 @@
-import React, { useState } from "react";
-import { ArrowLeft, BookOpen, ChevronDown, ChevronUp, Star, Search, Sparkles } from "lucide-react";
-import { chaptersData, WordTerm, allWordsList } from "../data/words";
+import { useState } from "react";
+import { ArrowLeft, BookOpen, ChevronDown, ChevronUp, Search, Sparkles } from "lucide-react";
+import { chaptersData as bundledChapters, WordTerm, Chapter } from "../data/words";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 
 interface AboutStudyGuideProps {
+  chapters?: Chapter[];
   onBack: () => void;
 }
 
-export default function AboutStudyGuide({ onBack }: AboutStudyGuideProps) {
+export default function AboutStudyGuide({ chapters = bundledChapters, onBack }: AboutStudyGuideProps) {
   const rm = useReducedMotion();
+  const chaptersData = chapters;
+  const allWordsList = chaptersData.reduce<WordTerm[]>((acc, ch) => [...acc, ...ch.words], []);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>("signs");
   const [expandedWordId, setExpandedWordId] = useState<string | null>(null);

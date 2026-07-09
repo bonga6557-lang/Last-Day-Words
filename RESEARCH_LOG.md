@@ -47,6 +47,16 @@ DATE STARTED: 2026-07-09
 | 13 | Supabase email/password signUp API | https://supabase.com/docs/reference/javascript/auth-signup accessed 2026-07-09 | primary | 2026 | https://supabase.com/docs/guides/auth/passwords | VERIFIED |
 | 14 | vite-plugin-pwa registerType autoUpdate | https://vite-pwa-org.netlify.app/guide/ accessed 2026-07-09 | primary | 2026 | npm vite-plugin-pwa install | VERIFIED |
 | 15 | KJV phrases for Matt 24:6, Joel 2:28, Rev 14:12, Rev 7:3, Dan 8:14, Rev 18:4, Heb 12:27, Isa 58:13, 2 Tim 2:15, Hab 2:2, Rev 3:11, James 5:7 | kjv.pdf pages 2286, 1738, 2768, 2756, 1706, 2775, 2703, 1449, 2673, 1777, 2751, 2713 | primary | KJV | Matches in-app / studyContent wording (scan completed 2026-07-09) | VERIFIED |
+| 16 | Daniel 2:31, 2:34, 2:38, 2:41 KJV (great image track) | Public-domain KJV; in-app `daniel-image-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 17 | Daniel 7:3–6, 7:8, 7:25–26 KJV (beasts / little horn) | Public-domain KJV; in-app `daniel-beasts-*`, `daniel-horn-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 18 | Daniel 8:11, 8:14, 8:26 KJV (sanctuary) | Public-domain KJV; in-app `daniel-sanctuary-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 19 | Daniel 12:1, 12:3, 12:4 KJV (Michael stands) | Public-domain KJV; in-app `daniel-stand-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 20 | Revelation 1:11, 2:4, 3:8, 3:16 KJV (seven churches) | Public-domain KJV; in-app `rev-churches-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 21 | Revelation 5:1, 6:2, 6:9, 6:12 KJV (seals) | Public-domain KJV; in-app `rev-seals-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 22 | Revelation 8:3, 8:6, 8:13, 10:7 KJV (trumpets) | Public-domain KJV; in-app `rev-trumpets-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 23 | Revelation 13:1, 13:11, 13:15, 13:18 KJV (beast system) | Public-domain KJV; in-app `rev-beast-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 24 | Revelation 20:2, 20:6, 20:14, 20:15 KJV (millennium) | Public-domain KJV; in-app `rev-millennium-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
+| 25 | GC sanctuary key + image of hierarchy reused for new mastery tiers | en_GC (1).pdf p365, p383 (ledger 9, 11) | primary | GC text | Prior session extract | VERIFIED |
 
 ### Search trail (including dead ends)
 

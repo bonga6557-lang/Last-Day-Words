@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowLeft, LogIn, UserPlus, LogOut } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import type { Session } from "@supabase/supabase-js";
@@ -36,7 +36,9 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const client = supabase;
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setError(null);
@@ -47,7 +49,7 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
           setError("Display name must be at least 2 characters.");
           return;
         }
-        const { data, error: err } = await supabase.auth.signUp({
+        const { data, error: err } = await client.auth.signUp({
           email: email.trim(),
           password,
           options: {
@@ -59,19 +61,24 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
         if (data.user && !data.session) {
           setMessage("Check your email to confirm your account, then sign in.");
         } else if (data.session) {
-          onAuthed?.(displayName.trim());
+          const { data: profile } = await client
+            .from("profiles")
+            .select("display_name")
+            .eq("id", data.session.user.id)
+            .maybeSingle();
+          onAuthed?.(profile?.display_name ?? displayName.trim());
           setMessage("Signed up and signed in.");
         }
       } else {
-        const { error: err } = await supabase.auth.signInWithPassword({
+        const { error: err } = await client.auth.signInWithPassword({
           email: email.trim(),
           password,
         });
         if (err) throw err;
-        const { data: profile } = await supabase
+        const { data: profile } = await client
           .from("profiles")
           .select("display_name")
-          .eq("id", (await supabase.auth.getUser()).data.user?.id ?? "")
+          .eq("id", (await client.auth.getUser()).data.user?.id ?? "")
           .maybeSingle();
         onAuthed?.(profile?.display_name ?? displayName);
         setMessage("Signed in.");
@@ -84,7 +91,7 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await client.auth.signOut();
     setMessage("Signed out.");
   };
 

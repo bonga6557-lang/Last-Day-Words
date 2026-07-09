@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Download, Share2 } from "lucide-react";
 import { UserProgress } from "../types";
 import { milestoneTitle, STREAK_MILESTONES } from "../utils/streaks";
@@ -99,7 +99,7 @@ export default function ShareCardScreen({ progress, onBack }: ShareCardScreenPro
   };
 
   // Preview draw on mount
-  React.useEffect(() => {
+  useEffect(() => {
     draw();
   });
 

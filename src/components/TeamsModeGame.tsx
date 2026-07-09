@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft, Lightbulb, RefreshCw, Eye, Trophy, Users, Zap } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import confetti from "canvas-confetti";
@@ -8,7 +8,7 @@ import {
   isWordSolved,
   buildTeamsRound,
   calcTeamPoints,
-  getChapterForWord,
+  getChapterForWordInChapters,
   getWordDifficulty,
   getMaxMistakes,
   getDepthHint,
@@ -25,24 +25,125 @@ import KeyboardGrid from "./KeyboardGrid";
 import WordSlots from "./WordSlots";
 import GameFeedback, { FeedbackTone } from "./GameFeedback";
 import { flashScreen } from "../utils/flash";
+import { Chapter } from "../data/words";
+import type { OnlineTeamsPayload } from "../utils/onlineTeams";
 
 interface TeamsModeGameProps {
+  chapters: Chapter[];
   onBack: () => void;
+  controlled?: {
+    payload: OnlineTeamsPayload;
+    scores: { white: number; black: number };
+    onUpdate: (payload: OnlineTeamsPayload, scores: { white: number; black: number }) => void | Promise<void>;
+  };
 }
 
 type Phase = "intro" | "playing" | "turn-result" | "finished";
 
-export default function TeamsModeGame({ onBack }: TeamsModeGameProps) {
+export default function TeamsModeGame({ chapters, onBack, controlled }: TeamsModeGameProps) {
   const rm = useReducedMotion();
-  const [roundWords, setRoundWords] = useState(() => buildTeamsRound());
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
-  const [mistakes, setMistakes] = useState(0);
-  const [hintsUsed, setHintsUsed] = useState(0);
-  const [phase, setPhase] = useState<Phase>("intro");
-  const [scores, setScores] = useState({ white: 0, black: 0 });
-  const [lastTurnPoints, setLastTurnPoints] = useState(0);
-  const [letterStreak, setLetterStreak] = useState(0);
+  const allWordsList = useMemo(() => chapters.flatMap((chapter) => chapter.words), [chapters]);
+  const wordById = useMemo(() => new Map(allWordsList.map((w) => [w.id, w])), [allWordsList]);
+  const [localRoundWords, setLocalRoundWords] = useState(() => buildTeamsRound(allWordsList));
+  const roundWords = useMemo(() => {
+    if (controlled) {
+      return controlled.payload.wordIds
+        .map((id) => wordById.get(id))
+        .filter((w): w is NonNullable<typeof w> => Boolean(w));
+    }
+    return localRoundWords;
+  }, [controlled, localRoundWords, wordById]);
+  const [localQuestionIndex, setLocalQuestionIndex] = useState(0);
+  const [localGuessedLetters, setLocalGuessedLetters] = useState<string[]>([]);
+  const [localMistakes, setLocalMistakes] = useState(0);
+  const [localHintsUsed, setLocalHintsUsed] = useState(0);
+  const [localPhase, setLocalPhase] = useState<Phase>("intro");
+  const [localScores, setLocalScores] = useState({ white: 0, black: 0 });
+  const [localLastTurnPoints, setLocalLastTurnPoints] = useState(0);
+  const [localLetterStreak, setLocalLetterStreak] = useState(0);
+
+  const questionIndex = controlled?.payload.questionIndex ?? localQuestionIndex;
+  const guessedLetters = controlled?.payload.guessedLetters ?? localGuessedLetters;
+  const mistakes = controlled?.payload.mistakes ?? localMistakes;
+  const hintsUsed = controlled?.payload.hintsUsed ?? localHintsUsed;
+  const phase = controlled?.payload.phase ?? localPhase;
+  const scores = controlled?.scores ?? localScores;
+  const lastTurnPoints = controlled?.payload.lastTurnPoints ?? localLastTurnPoints;
+  const letterStreak = controlled?.payload.letterStreak ?? localLetterStreak;
+
+  const patchControlled = useCallback(
+    (payloadPatch: Partial<OnlineTeamsPayload>, scoresPatch?: Partial<{ white: number; black: number }>) => {
+      if (!controlled) return;
+      const nextPayload = { ...controlled.payload, ...payloadPatch };
+      const nextScores = { ...controlled.scores, ...scoresPatch };
+      void controlled.onUpdate(nextPayload, nextScores);
+    },
+    [controlled]
+  );
+
+  const setQuestionIndex = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      const next = typeof value === "function" ? value(questionIndex) : value;
+      if (controlled) patchControlled({ questionIndex: next });
+      else setLocalQuestionIndex(next);
+    },
+    [controlled, patchControlled, questionIndex]
+  );
+  const setGuessedLetters = useCallback(
+    (value: string[] | ((prev: string[]) => string[])) => {
+      const next = typeof value === "function" ? value(guessedLetters) : value;
+      if (controlled) patchControlled({ guessedLetters: next });
+      else setLocalGuessedLetters(next);
+    },
+    [controlled, guessedLetters, patchControlled]
+  );
+  const setMistakes = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      const next = typeof value === "function" ? value(mistakes) : value;
+      if (controlled) patchControlled({ mistakes: next });
+      else setLocalMistakes(next);
+    },
+    [controlled, mistakes, patchControlled]
+  );
+  const setHintsUsed = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      const next = typeof value === "function" ? value(hintsUsed) : value;
+      if (controlled) patchControlled({ hintsUsed: next });
+      else setLocalHintsUsed(next);
+    },
+    [controlled, hintsUsed, patchControlled]
+  );
+  const setPhase = useCallback(
+    (value: Phase | ((prev: Phase) => Phase)) => {
+      const next = typeof value === "function" ? value(phase) : value;
+      if (controlled) patchControlled({ phase: next });
+      else setLocalPhase(next);
+    },
+    [controlled, patchControlled, phase]
+  );
+  const setScores = useCallback(
+    (value: { white: number; black: number } | ((prev: { white: number; black: number }) => { white: number; black: number })) => {
+      const next = typeof value === "function" ? value(scores) : value;
+      if (controlled) patchControlled({}, next);
+      else setLocalScores(next);
+    },
+    [controlled, patchControlled, scores]
+  );
+  const setLastTurnPoints = useCallback(
+    (value: number) => {
+      if (controlled) patchControlled({ lastTurnPoints: value });
+      else setLocalLastTurnPoints(value);
+    },
+    [controlled, patchControlled]
+  );
+  const setLetterStreak = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      const next = typeof value === "function" ? value(letterStreak) : value;
+      if (controlled) patchControlled({ letterStreak: next });
+      else setLocalLetterStreak(next);
+    },
+    [controlled, letterStreak, patchControlled]
+  );
   const [feedback, setFeedback] = useState<{ text: string; tone: FeedbackTone } | null>(null);
   const [showConfirmExit, setShowConfirmExit] = useState(false);
   const solvedRef = useRef(false);
@@ -52,7 +153,7 @@ export default function TeamsModeGame({ onBack }: TeamsModeGameProps) {
   const wordText = normalizeWord(currentWord.word);
   const activeTeam: TeamId = questionIndex % 2 === 0 ? "white" : "black";
   const roundNumber = Math.floor(questionIndex / 2) + 1;
-  const chapter = getChapterForWord(currentWord.id);
+  const chapter = getChapterForWordInChapters(currentWord.id, chapters);
   const difficulty = getWordDifficulty(currentWord);
   const maxMistakes = getMaxMistakes(difficulty);
   const depthHint = getDepthHint(currentWord, mistakes, difficulty);
@@ -77,6 +178,17 @@ export default function TeamsModeGame({ onBack }: TeamsModeGameProps) {
   const finishTurn = useCallback(
     (wasSolved: boolean) => {
       const pts = calcTeamPoints(mistakes, hintsUsed, wasSolved, letterStreak);
+      if (controlled) {
+        const nextScores = {
+          ...scores,
+          [activeTeam]: scores[activeTeam] + pts,
+        };
+        void controlled.onUpdate(
+          { ...controlled.payload, phase: "turn-result", lastTurnPoints: pts },
+          nextScores
+        );
+        return;
+      }
       setLastTurnPoints(pts);
       setScores((prev) => ({
         ...prev,
@@ -84,18 +196,39 @@ export default function TeamsModeGame({ onBack }: TeamsModeGameProps) {
       }));
       setPhase("turn-result");
     },
-    [mistakes, hintsUsed, activeTeam, letterStreak]
+    [controlled, mistakes, hintsUsed, activeTeam, letterStreak, scores]
   );
 
   const advanceQuestion = useCallback(() => {
     if (questionIndex >= roundWords.length - 1) {
-      setPhase("finished");
+      if (controlled) {
+        void controlled.onUpdate({ ...controlled.payload, phase: "finished" }, controlled.scores);
+      } else {
+        setPhase("finished");
+      }
+      return;
+    }
+    const nextIndex = questionIndex + 1;
+    if (controlled) {
+      void controlled.onUpdate(
+        {
+          ...controlled.payload,
+          questionIndex: nextIndex,
+          phase: "playing",
+          guessedLetters: [],
+          mistakes: 0,
+          hintsUsed: 0,
+          letterStreak: 0,
+          lastTurnPoints: 0,
+        },
+        controlled.scores
+      );
       return;
     }
     setQuestionIndex((i) => i + 1);
     resetTurn();
     setPhase("playing");
-  }, [questionIndex, roundWords.length, resetTurn]);
+  }, [controlled, questionIndex, roundWords.length, resetTurn]);
 
   useEffect(() => {
     if (phase !== "finished") return;
@@ -201,7 +334,7 @@ export default function TeamsModeGame({ onBack }: TeamsModeGameProps) {
           onClick={() => { resetTurn(); setPhase("playing"); }}
           className="px-8 py-3 bg-[#2a2018] hover:bg-[#1c140d] text-[#f8f1e3] rounded-lg text-xs font-bold uppercase tracking-[0.15em] cursor-pointer parchment-glow"
         >
-          Start Match
+          {controlled ? "Continue Match" : "Start Match"}
         </button>
         <button onClick={onBack} className="block mx-auto text-xs text-[#6b5537] hover:text-[#2a2018] cursor-pointer">
           Back to Menu
@@ -233,9 +366,10 @@ export default function TeamsModeGame({ onBack }: TeamsModeGameProps) {
           <button onClick={onBack} className="px-6 py-2.5 border border-[#e2d2ac] bg-[#fbf5e9] hover:bg-[#f3e8cf] text-[#2a2018] rounded-lg text-xs font-semibold cursor-pointer">
             Menu
           </button>
+          {!controlled && (
           <button
             onClick={() => {
-              setRoundWords(buildTeamsRound());
+              setLocalRoundWords(buildTeamsRound(allWordsList));
               setQuestionIndex(0);
               setScores({ white: 0, black: 0 });
               resetTurn();
@@ -245,6 +379,7 @@ export default function TeamsModeGame({ onBack }: TeamsModeGameProps) {
           >
             Rematch
           </button>
+          )}
         </div>
       </div>
     );

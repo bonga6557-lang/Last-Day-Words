@@ -1,23 +1,45 @@
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowLeft, Star, CheckCircle2, BookOpen, Shield } from "lucide-react";
-import { UserProgress } from "../types";
-import { chaptersData } from "../data/words";
+import { Season, UserProgress } from "../types";
+import { chaptersData as bundledChapters, Chapter } from "../data/words";
 import { getChapterMastery, MasteryTier } from "../utils/gameLogic";
 import { CHAPTER_MASTERY_UNLOCKS } from "../data/studyContent";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 
 interface ChapterSelectProps {
   progress: UserProgress;
+  chapters?: Chapter[];
+  seasons?: Season[];
   expertMode: boolean;
   onExpertModeChange: (on: boolean) => void;
   onSelectChapter: (chapterId: string) => void;
   onBack: () => void;
 }
 
-const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+const ROMAN_NUMERALS = [
+  "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
+  "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
+];
+
+type FilterId = "all" | "core" | string;
+
+function bannerClass(selectedBanner: string | undefined, seasonId?: string): string {
+  const token = (selectedBanner ?? "").replace(/^banner-/, "");
+  if (token === "daniel" && seasonId === "daniel") {
+    return "ring-2 ring-amber-600/50 border-amber-700/40";
+  }
+  if (token === "revelation" && seasonId === "revelation") {
+    return "ring-2 ring-violet-500/40 border-violet-600/40";
+  }
+  if (token === "daniel") return "border-l-4 border-l-amber-700";
+  if (token === "revelation") return "border-l-4 border-l-violet-600";
+  return "";
+}
 
 export default function ChapterSelect({
   progress,
+  chapters = bundledChapters,
+  seasons = [],
   expertMode,
   onExpertModeChange,
   onSelectChapter,
@@ -25,6 +47,24 @@ export default function ChapterSelect({
 }: ChapterSelectProps) {
   const rm = useReducedMotion();
   const [unlockPreview, setUnlockPreview] = useState<{ chapterId: string; tier: MasteryTier } | null>(null);
+  const [filter, setFilter] = useState<FilterId>("all");
+
+  const filters = useMemo(() => {
+    const list: { id: FilterId; label: string }[] = [
+      { id: "all", label: "All" },
+      { id: "core", label: "Core Journey" },
+    ];
+    for (const s of seasons) {
+      list.push({ id: s.id, label: s.title });
+    }
+    return list;
+  }, [seasons]);
+
+  const visibleChapters = useMemo(() => {
+    if (filter === "all") return chapters;
+    if (filter === "core") return chapters.filter((c) => !c.seasonId);
+    return chapters.filter((c) => c.seasonId === filter);
+  }, [chapters, filter]);
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto py-2 px-2">
@@ -40,8 +80,24 @@ export default function ChapterSelect({
           CHAPTER CHALLENGE
         </h2>
         <div className="text-xs text-[#5c4a33] psunken px-2.5 py-1 rounded font-semibold">
-          {chaptersData.length} <span className="hidden sm:inline">Prophetic Milestones</span>
+          {chapters.length} <span className="hidden sm:inline">Prophetic Milestones</span>
         </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 justify-center">
+        {filters.map((f) => (
+          <button
+            key={f.id}
+            onClick={() => setFilter(f.id)}
+            className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border cursor-pointer transition-colors ${
+              filter === f.id
+                ? "bg-[#2a2018] text-[#fbbf24] border-[#b45309]"
+                : "bg-[#fbf5e9] text-[#5c4a33] border-[#e2d2ac] hover:border-[#b45309]"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pcard rounded-2xl p-4">
@@ -75,7 +131,9 @@ export default function ChapterSelect({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {chaptersData.map((chapter, index) => {
+        {visibleChapters.map((chapter, index) => {
+          const globalIndex = chapters.findIndex((c) => c.id === chapter.id);
+          const stageLabel = ROMAN_NUMERALS[globalIndex >= 0 ? globalIndex : index] ?? String(index + 1);
           const solvedInChapter = chapter.words.filter((w) => progress.solvedWordIds.includes(w.id)).length;
           const totalInChapter = chapter.words.length;
           const isCompleted = solvedInChapter === totalInChapter;
@@ -83,21 +141,28 @@ export default function ChapterSelect({
           const mastery = getChapterMastery(chapter, progress.wordStats);
           const unlockedTier = progress.masteryUnlocks?.[chapter.id] ?? 0;
           const nextUnlockTier = ([25, 50, 100] as const).find((t) => mastery.tier >= t && unlockedTier < t);
+          const seasonLabel =
+            chapter.seasonId === "daniel"
+              ? "Daniel"
+              : chapter.seasonId === "revelation"
+                ? "Revelation"
+                : null;
 
           return (
             <motion.div
               key={chapter.id}
               initial={rm ? false : { opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: rm ? 0 : index * 0.05 }}
+              transition={{ delay: rm ? 0 : index * 0.04 }}
               className={`pcard rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 parchment-glow hover:-translate-y-0.5 hover:border-[#b45309] ${
                 isCompleted ? "border-[#d8c391]" : ""
-              }`}
+              } ${bannerClass(progress.selectedBanner, chapter.seasonId)}`}
             >
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold font-mono text-[#6b5537] tracking-wider">
-                    STAGE {ROMAN_NUMERALS[index]}
+                    STAGE {stageLabel}
+                    {seasonLabel ? ` · ${seasonLabel}` : ""}
                   </span>
 
                   {isCompleted ? (
@@ -106,7 +171,7 @@ export default function ChapterSelect({
                     </span>
                   ) : solvedInChapter > 0 ? (
                     <span className="text-[11px] text-[#5c4a33] psunken px-2.5 py-0.5 rounded font-semibold">
-                      In Progress: {solvedInChapter}/4
+                      In Progress: {solvedInChapter}/{totalInChapter}
                     </span>
                   ) : (
                     <span className="text-[11px] text-[#6b5537] bg-[#f3e8cf] px-2.5 py-0.5 rounded font-medium border border-[#ecdfc2]">

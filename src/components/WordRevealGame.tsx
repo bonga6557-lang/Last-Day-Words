@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ArrowLeft, Lightbulb, RefreshCw, Star, Eye, Zap } from "lucide-react";
 import { WordTerm, Chapter } from "../data/words";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
@@ -31,6 +31,7 @@ interface WordRevealGameProps {
   chapter: Chapter;
   wordIndex: number;
   expertMode?: boolean;
+  candleStyle?: string;
   onBack: () => void;
   onSolveComplete: (word: WordTerm, mistakes: number, hintsUsed: number) => void;
 }
@@ -39,6 +40,7 @@ export default function WordRevealGame({
   chapter,
   wordIndex,
   expertMode = false,
+  candleStyle = "classic",
   onBack,
   onSolveComplete,
 }: WordRevealGameProps) {
@@ -263,7 +265,7 @@ export default function WordRevealGame({
           <SoulLamp fuel={lampSeconds / EXPERT_MODE_LAMP_TIME} seconds={lampSeconds} />
         </div>
       ) : (
-        <PropheticCandles mistakes={mistakes} maxMistakes={maxMistakes} />
+        <PropheticCandles mistakes={mistakes} maxMistakes={maxMistakes} style={candleStyle} />
       )}
 
       <WordSlots wordText={wordText} guessedLetters={guessedLetters} mistakes={mistakes} maxMistakes={maxMistakes} />

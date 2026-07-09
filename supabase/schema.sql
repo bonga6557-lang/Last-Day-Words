@@ -152,6 +152,14 @@ create table if not exists public.game_rooms (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.room_members (
+  room_id uuid not null references public.game_rooms (id) on delete cascade,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  team text not null check (team in ('white', 'black')),
+  joined_at timestamptz not null default now(),
+  primary key (room_id, user_id)
+);
+
 alter table public.game_rooms enable row level security;
 
 drop policy if exists "Rooms readable by authenticated" on public.game_rooms;
@@ -186,14 +194,6 @@ create policy "Members or host can update rooms"
     )
   );
 
-create table if not exists public.room_members (
-  room_id uuid not null references public.game_rooms (id) on delete cascade,
-  user_id uuid not null references auth.users (id) on delete cascade,
-  team text not null check (team in ('white', 'black')),
-  joined_at timestamptz not null default now(),
-  primary key (room_id, user_id)
-);
-
 alter table public.room_members enable row level security;
 
 drop policy if exists "Members readable by authenticated" on public.room_members;
@@ -225,3 +225,125 @@ create policy "Users leave rooms"
 create index if not exists speed_scores_week_score_idx on public.speed_scores (week_key, score desc);
 create index if not exists daily_scores_day_score_idx on public.daily_scores (day_key, score desc);
 create index if not exists game_rooms_code_idx on public.game_rooms (code);
+
+-- ---------------------------------------------------------------------------
+-- Content catalog (public read) + signed-in progression
+-- ---------------------------------------------------------------------------
+
+create table if not exists public.seasons (
+  id text primary key,
+  title text not null,
+  description text not null default '',
+  starts_on date,
+  ends_on date
+);
+
+create table if not exists public.chapters (
+  id text primary key,
+  title text not null,
+  description text not null default '',
+  sort_order integer not null default 0,
+  season_id text references public.seasons (id) on delete set null
+);
+
+create table if not exists public.words (
+  id text primary key,
+  chapter_id text not null references public.chapters (id) on delete cascade,
+  word text not null,
+  clue text not null,
+  expert_clue text,
+  verse text not null default '',
+  scripture text not null default '',
+  summary text not null default '',
+  sort_order integer not null default 0
+);
+
+create table if not exists public.season_chapters (
+  season_id text not null references public.seasons (id) on delete cascade,
+  chapter_id text not null references public.chapters (id) on delete cascade,
+  primary key (season_id, chapter_id)
+);
+
+create table if not exists public.content_featured (
+  week_key text primary key,
+  word_id text references public.words (id) on delete set null,
+  announcement text
+);
+
+create table if not exists public.user_progress (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  xp integer not null default 0 check (xp >= 0),
+  rank text not null default 'novice',
+  unlocked_cosmetics text[] not null default '{}',
+  selected_candle text not null default 'candle-classic',
+  selected_banner text not null default '',
+  game_state jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.seasons enable row level security;
+alter table public.chapters enable row level security;
+alter table public.words enable row level security;
+alter table public.season_chapters enable row level security;
+alter table public.content_featured enable row level security;
+alter table public.user_progress enable row level security;
+
+drop policy if exists "Seasons public read" on public.seasons;
+create policy "Seasons public read"
+  on public.seasons for select
+  using (true);
+
+drop policy if exists "Chapters public read" on public.chapters;
+create policy "Chapters public read"
+  on public.chapters for select
+  using (true);
+
+drop policy if exists "Words public read" on public.words;
+create policy "Words public read"
+  on public.words for select
+  using (true);
+
+drop policy if exists "Season chapters public read" on public.season_chapters;
+create policy "Season chapters public read"
+  on public.season_chapters for select
+  using (true);
+
+drop policy if exists "Featured public read" on public.content_featured;
+create policy "Featured public read"
+  on public.content_featured for select
+  using (true);
+
+drop policy if exists "Users read own progress" on public.user_progress;
+create policy "Users read own progress"
+  on public.user_progress for select
+  to authenticated
+  using (auth.uid() = user_id);
+
+drop policy if exists "Users insert own progress" on public.user_progress;
+create policy "Users insert own progress"
+  on public.user_progress for insert
+  to authenticated
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Users update own progress" on public.user_progress;
+create policy "Users update own progress"
+  on public.user_progress for update
+  to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create index if not exists words_chapter_sort_idx on public.words (chapter_id, sort_order);
+create index if not exists chapters_sort_idx on public.chapters (sort_order);
+create index if not exists user_progress_xp_idx on public.user_progress (xp desc);
+
+-- Seed seasons (Daniel + Revelation tracks)
+insert into public.seasons (id, title, description, starts_on, ends_on)
+values
+  ('daniel', 'Daniel Track', 'Prophetic milestones from the book of Daniel — image, beasts, little horn, sanctuary, and Michael.', null, null),
+  ('revelation', 'Revelation Track', 'Prophetic milestones from Revelation — churches, seals, trumpets, beast system, and the millennium.', null, null)
+on conflict (id) do update set
+  title = excluded.title,
+  description = excluded.description;
+
+-- Full 80-term / 20-chapter catalog: run supabase/seed_content.sql after this schema.
+-- Regenerate with: npx tsx scripts/generate-seed.ts

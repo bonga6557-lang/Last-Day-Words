@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Award, Book, ArrowRight, Star, RefreshCw, Lightbulb, Sparkles } from "lucide-react";
 import { WordTerm } from "../data/words";
 import { getRandomFunFact } from "../data/funFacts";

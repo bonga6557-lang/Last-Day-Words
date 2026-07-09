@@ -1,4 +1,4 @@
-import { getTodayKey } from "./dailyChallenge";
+import { getTodayKey, getIsoWeekKey } from "./calendarKeys";
 import { BadgeDef, UserProgress } from "../types";
 
 export const STREAK_MILESTONES = [7, 30, 100] as const;
@@ -35,15 +35,7 @@ export function badgeIdForStreak(streak: number): string | null {
   return badge?.id ?? null;
 }
 
-/** ISO week key like 2026-W28 for freeze earning once per week. */
-export function getIsoWeekKey(date = new Date()): string {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
-  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`;
-}
+export { getIsoWeekKey };
 
 function yesterdayKey(todayKey: string): string {
   const d = new Date(todayKey + "T12:00:00");

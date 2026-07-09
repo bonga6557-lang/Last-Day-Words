@@ -1,10 +1,8 @@
 import { Chapter, WordTerm } from "../data/words";
+import { getTodayKey } from "./calendarKeys";
 
 export const DAILY_WORD_COUNT = 5;
-
-export function getTodayKey(date = new Date()): string {
-  return date.toISOString().slice(0, 10);
-}
+export { getTodayKey };
 
 function dateToSeed(dateKey: string): number {
   return dateKey.split("-").reduce((acc, n) => acc * 31 + parseInt(n, 10), 0);
