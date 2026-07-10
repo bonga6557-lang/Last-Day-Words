@@ -1,4 +1,10 @@
 import type { UserProgress, WordStat } from "../types";
+import { getLeaderboardWeekKey } from "./calendarKeys";
+import {
+  STREAK_BADGE_IDS,
+  leaderboardBadgesFromRanks,
+  type LeaderboardRanks,
+} from "./leaderboard";
 
 /** Fields stored in user_progress.game_state (everything except rank/xp/cosmetics columns). */
 export type GameStateSnapshot = Omit<
@@ -12,6 +18,10 @@ export function extractGameState(progress: UserProgress): GameStateSnapshot {
     chapterStars: progress.chapterStars,
     speedRoundHighScore: progress.speedRoundHighScore,
     speedRoundHighestWordsSolved: progress.speedRoundHighestWordsSolved,
+    speedMixedHighScore: progress.speedMixedHighScore,
+    speedMixedHighestWordsSolved: progress.speedMixedHighestWordsSolved,
+    speedChapterHighScore: progress.speedChapterHighScore,
+    speedChapterHighestWordsSolved: progress.speedChapterHighestWordsSolved,
     totalTimePlayedSec: progress.totalTimePlayedSec,
     soundEnabled: progress.soundEnabled,
     dailyChallengeCompletedDate: progress.dailyChallengeCompletedDate,
@@ -20,6 +30,7 @@ export function extractGameState(progress: UserProgress): GameStateSnapshot {
     streakFreezes: progress.streakFreezes,
     lastFreezeEarnedWeek: progress.lastFreezeEarnedWeek,
     earnedBadgeIds: progress.earnedBadgeIds,
+    leaderboardRanks: progress.leaderboardRanks,
     masteryUnlocks: progress.masteryUnlocks,
     fragmentIds: progress.fragmentIds,
     fragmentsComplete: progress.fragmentsComplete,
@@ -80,9 +91,74 @@ function preferTrue(a?: boolean, b?: boolean): boolean | undefined {
   return a ?? b;
 }
 
+function mergeOptionalMax(a?: number, b?: number): number | undefined {
+  if (a == null) return b;
+  if (b == null) return a;
+  return Math.max(a, b);
+}
+
+function normalizeLeaderboardRanks(
+  ranks: LeaderboardRanks | undefined,
+  currentWeekKey: string
+): LeaderboardRanks {
+  if (!ranks || ranks.weekKey !== currentWeekKey) {
+    return { weekKey: currentWeekKey, mixed: null, chapter: null };
+  }
+  return {
+    weekKey: currentWeekKey,
+    mixed: ranks.mixed ?? null,
+    chapter: ranks.chapter ?? null,
+  };
+}
+
+function betterRank(
+  a: number | null | undefined,
+  b: number | null | undefined
+): number | null {
+  if (a == null || a > 3) return b ?? null;
+  if (b == null || b > 3) return a;
+  return Math.min(a, b);
+}
+
+function mergeLeaderboardRanks(
+  local: LeaderboardRanks | undefined,
+  remote: LeaderboardRanks | undefined,
+  currentWeekKey: string
+): LeaderboardRanks {
+  const l = normalizeLeaderboardRanks(local, currentWeekKey);
+  const r = normalizeLeaderboardRanks(remote, currentWeekKey);
+  return {
+    weekKey: currentWeekKey,
+    mixed: betterRank(l.mixed, r.mixed),
+    chapter: betterRank(l.chapter, r.chapter),
+  };
+}
+
+function mergeEarnedBadgeIds(
+  local: GameStateSnapshot,
+  remote: GameStateSnapshot,
+  mergedRanks: LeaderboardRanks
+): string[] {
+  const streakIds = mergeStringArrays(
+    (local.earnedBadgeIds ?? []).filter((id) => STREAK_BADGE_IDS.has(id)),
+    (remote.earnedBadgeIds ?? []).filter((id) => STREAK_BADGE_IDS.has(id))
+  );
+  const lbIds = leaderboardBadgesFromRanks(mergedRanks);
+  return [...streakIds, ...lbIds];
+}
+
 /** Merge two game-state snapshots from different devices (union / max / latest). */
-export function mergeGameState(local: GameStateSnapshot, remote: GameStateSnapshot): GameStateSnapshot {
+export function mergeGameState(
+  local: GameStateSnapshot,
+  remote: GameStateSnapshot,
+  currentWeekKey = getLeaderboardWeekKey()
+): GameStateSnapshot {
   const fragmentIds = mergeStringArrays(local.fragmentIds, remote.fragmentIds);
+  const leaderboardRanks = mergeLeaderboardRanks(
+    local.leaderboardRanks,
+    remote.leaderboardRanks,
+    currentWeekKey
+  );
   return {
     solvedWordIds: mergeStringArrays(local.solvedWordIds, remote.solvedWordIds),
     chapterStars: mergeRecordMax(local.chapterStars, remote.chapterStars),
@@ -91,6 +167,19 @@ export function mergeGameState(local: GameStateSnapshot, remote: GameStateSnapsh
       local.speedRoundHighestWordsSolved,
       remote.speedRoundHighestWordsSolved
     ),
+    speedMixedHighScore: mergeOptionalMax(local.speedMixedHighScore, remote.speedMixedHighScore),
+    speedMixedHighestWordsSolved: mergeOptionalMax(
+      local.speedMixedHighestWordsSolved,
+      remote.speedMixedHighestWordsSolved
+    ),
+    speedChapterHighScore: mergeOptionalMax(
+      local.speedChapterHighScore,
+      remote.speedChapterHighScore
+    ),
+    speedChapterHighestWordsSolved: mergeOptionalMax(
+      local.speedChapterHighestWordsSolved,
+      remote.speedChapterHighestWordsSolved
+    ),
     totalTimePlayedSec: Math.max(local.totalTimePlayedSec, remote.totalTimePlayedSec),
     soundEnabled: remote.soundEnabled ?? local.soundEnabled,
     dailyChallengeCompletedDate: latestDate(local.dailyChallengeCompletedDate, remote.dailyChallengeCompletedDate),
@@ -98,7 +187,8 @@ export function mergeGameState(local: GameStateSnapshot, remote: GameStateSnapsh
     lastStreakDate: latestDate(local.lastStreakDate, remote.lastStreakDate),
     streakFreezes: Math.max(local.streakFreezes ?? 0, remote.streakFreezes ?? 0),
     lastFreezeEarnedWeek: latestDate(local.lastFreezeEarnedWeek, remote.lastFreezeEarnedWeek),
-    earnedBadgeIds: mergeStringArrays(local.earnedBadgeIds, remote.earnedBadgeIds),
+    leaderboardRanks,
+    earnedBadgeIds: mergeEarnedBadgeIds(local, remote, leaderboardRanks),
     masteryUnlocks: mergeRecordMax(local.masteryUnlocks, remote.masteryUnlocks),
     fragmentIds,
     fragmentsComplete: preferTrue(local.fragmentsComplete, remote.fragmentsComplete),

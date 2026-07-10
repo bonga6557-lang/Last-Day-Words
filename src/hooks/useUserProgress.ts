@@ -4,10 +4,12 @@ import {
   supabase,
   isSupabaseConfigured,
   fetchUserProgress,
+  fetchWeeklyLeaderboardPlacements,
   upsertUserProgress,
   buildUserProgressRow,
 } from "../lib/supabase";
 import { initializeProgress, LOCAL_STORAGE_KEY } from "../utils/progressInit";
+import { getLeaderboardWeekKey, syncLeaderboardPlacements } from "../utils/leaderboard";
 import { unlockCosmeticsForXp } from "../utils/progression";
 import { logError, mapUserFacingError } from "../utils/errors";
 
@@ -105,6 +107,12 @@ export function useUserProgress(
               "Could not load cloud progress — showing this device's save. Your cloud data was not overwritten."
             );
           }
+        },
+        reconcileLeaderboard: async (userId, p) => {
+          if (!supabase || !isSupabaseConfigured) return p;
+          const week = getLeaderboardWeekKey();
+          const placements = await fetchWeeklyLeaderboardPlacements(userId, week);
+          return syncLeaderboardPlacements(p, week, placements);
         },
       });
       if (!cancelled) setProgress(loaded);

@@ -10,6 +10,9 @@ import {
   getDepthHint,
   isWordSolved,
   normalizeWord,
+  computeSpeedSolveBonus,
+  isPerfectSpeedSolve,
+  getSpeedComboMultiplier,
 } from "./gameLogic";
 import { chaptersData } from "../data/words";
 
@@ -75,5 +78,36 @@ describe("gameLogic", () => {
     const text = normalizeWord("GOD IS LOVE");
     expect(isWordSolved(text, ["G", "O", "D", "I", "S"])).toBe(false);
     expect(isWordSolved(text, ["G", "O", "D", "I", "S", "L", "V", "E"])).toBe(true);
+  });
+});
+
+describe("speed round scoring", () => {
+  it("perfect solve is zero mistakes at solve time", () => {
+    expect(isPerfectSpeedSolve(0)).toBe(true);
+    expect(isPerfectSpeedSolve(1)).toBe(false);
+  });
+
+  it("base solve bonus matches SpeedRoundGame formula", () => {
+    expect(computeSpeedSolveBonus(0, 5, 1, 1)).toBe(2000);
+    expect(computeSpeedSolveBonus(2, 5, 1, 1)).toBe(1600);
+  });
+
+  it("applies combo and golden multipliers", () => {
+    expect(computeSpeedSolveBonus(0, 5, 5, 1)).toBe(4000);
+    expect(computeSpeedSolveBonus(0, 5, 1, 2)).toBe(4000);
+    expect(getSpeedComboMultiplier(5)).toBe(2);
+  });
+
+  it("accumulates multi-solve round totals accurately", () => {
+    const solves = [
+      { mistakes: 0, streak: 1, eventMult: 1 },
+      { mistakes: 1, streak: 2, eventMult: 1 },
+      { mistakes: 0, streak: 3, eventMult: 2 },
+    ];
+    const total = solves.reduce(
+      (sum, s) => sum + computeSpeedSolveBonus(s.mistakes, 5, s.streak, s.eventMult),
+      0
+    );
+    expect(total).toBe(2000 + 2250 + 6000);
   });
 });

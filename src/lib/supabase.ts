@@ -2,6 +2,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { DEFAULT_CANDLE_ID } from "../data/cosmetics";
 import type { UserProgress } from "../types";
 import { extractGameState, type GameStateSnapshot } from "../utils/progressSync";
+import { rankForUser } from "../utils/leaderboard";
 import type { RemoteFetchResult, RemoteWriteResult } from "./syncResult";
 import { writeErr, writeOk } from "./syncResult";
 
@@ -146,26 +147,32 @@ export async function fetchUserProgress(
   return { status: "ok", data: data as UserProgressRow };
 }
 
-export async function upsertDailyScore(
+export async function fetchWeeklyLeaderboardPlacements(
   userId: string,
-  dayKey: string,
-  score: number
-): Promise<RemoteWriteResult> {
-  if (!supabase || !isSupabaseConfigured) return writeOk();
-  const { error } = await supabase.from("daily_scores").upsert(
-    {
-      user_id: userId,
-      day_key: dayKey,
-      score,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id,day_key" }
-  );
-  if (error) {
-    console.error("upsertDailyScore failed:", error.message);
-    return writeErr(error.message);
+  weekKey: string
+): Promise<{ mixed: number | null; chapter: number | null }> {
+  if (!supabase || !isSupabaseConfigured) {
+    return { mixed: null, chapter: null };
   }
-  return writeOk();
+  const modes = ["mixed", "chapter"] as const;
+  const placements: { mixed: number | null; chapter: number | null } = {
+    mixed: null,
+    chapter: null,
+  };
+  for (const mode of modes) {
+    const { data, error } = await supabase
+      .from("speed_scores")
+      .select("user_id, score")
+      .eq("week_key", weekKey)
+      .eq("mode", mode)
+      .order("score", { ascending: false });
+    if (error) {
+      console.error(`fetchWeeklyLeaderboardPlacements(${mode}) failed:`, error.message);
+      continue;
+    }
+    placements[mode] = rankForUser(userId, data ?? []);
+  }
+  return placements;
 }
 
 export async function upsertUserProgress(row: {

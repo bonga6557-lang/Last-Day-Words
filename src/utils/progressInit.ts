@@ -1,6 +1,7 @@
 import type { UserProgress } from "../types";
 import { unlockCosmeticsForXp, mergeProgression } from "./progression";
 import { reconcileStreakOnLoad } from "./streaks";
+import { reconcileLeaderboardBadges } from "./leaderboard";
 import {
   applyGameState,
   extractGameState,
@@ -24,7 +25,8 @@ export function loadProgressFromStorage(
     if (!stored) return defaults;
     const parsed = JSON.parse(stored) as UserProgress;
     const reconciled = reconcileStreakOnLoad(parsed, todayKey);
-    return unlockCosmeticsForXp(reconciled).progress;
+    const withBoard = reconcileLeaderboardBadges(reconciled);
+    return unlockCosmeticsForXp(withBoard).progress;
   } catch {
     return defaults;
   }
@@ -49,6 +51,8 @@ export interface InitializeProgressOptions {
   storage?: Pick<Storage, "getItem" | "setItem">;
   /** Called when remote fetch fails so UI can warn without wiping local progress. */
   onRemoteError?: (message: string) => void;
+  /** Refresh weekly leaderboard placements from cloud (revokes badges if rank dropped). */
+  reconcileLeaderboard?: (userId: string, progress: UserProgress) => Promise<UserProgress>;
 }
 
 /** Single init path: localStorage → optional remote merge → one result. */
@@ -75,6 +79,10 @@ export async function initializeProgress(opts: InitializeProgressOptions): Promi
   }
 
   progress = mergeWithRemoteRow(progress, remote.data);
+  progress = reconcileLeaderboardBadges(progress);
+  if (opts.reconcileLeaderboard) {
+    progress = await opts.reconcileLeaderboard(userId, progress);
+  }
   try {
     storage.setItem(opts.storageKey, JSON.stringify(progress));
   } catch {

@@ -1,6 +1,7 @@
 import { Award, ArrowLeft, Lock, Sparkles } from "lucide-react";
 import { UserProgress } from "../types";
 import { STREAK_BADGES } from "../utils/streaks";
+import { LEADERBOARD_BADGES } from "../utils/leaderboard";
 import { COSMETICS } from "../data/cosmetics";
 import { progressToNextRank } from "../data/ranks";
 import { motion, useReducedMotion } from "motion/react";
@@ -160,6 +161,56 @@ export default function BadgesScreen({ progress, onSelectCosmetic, onBack }: Bad
             </motion.div>
           );
         })}
+      </div>
+
+      <div>
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#6b5537] mb-3 flex items-center gap-1.5">
+          <Award className="w-3.5 h-3.5" /> Weekly leaderboard
+        </h3>
+        <p className="text-xs text-[#5c4a33] mb-3">
+          Top-three badges are live for the current SAST week and are removed if you drop below #3.
+          Boards reset Sunday 00:00 SAST (end of Saturday).
+        </p>
+        <div className="space-y-3">
+          {LEADERBOARD_BADGES.map((badge, i) => {
+            const unlocked = earned.has(badge.id);
+            const placeLabel = badge.threshold === 1 ? "#1" : badge.threshold === 2 ? "#2" : "#3";
+            return (
+              <motion.div
+                key={badge.id}
+                initial={rm ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: rm ? 0 : 0.15 + i * 0.04 }}
+                className={`pcard rounded-2xl p-5 flex items-start gap-4 ${unlocked ? "parchment-glow border-[#d8c391]" : "opacity-70"}`}
+              >
+                <div
+                  className={`p-3 rounded-xl border ${
+                    unlocked
+                      ? "bg-[#2a2018] text-[#fbbf24] border-[#b45309]/40"
+                      : "bg-[#f0e3c8] text-[#6b5537] border-[#e2d2ac]"
+                  }`}
+                >
+                  {unlocked ? <Award className="w-6 h-6" aria-hidden="true" /> : <Lock className="w-6 h-6" aria-hidden="true" />}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-display font-bold text-[#2a2018] text-lg">{badge.title}</h3>
+                    {unlocked ? (
+                      <span className="text-[9px] uppercase font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded">
+                        Earned
+                      </span>
+                    ) : (
+                      <span className="text-[9px] uppercase font-bold px-2 py-0.5 bg-[#f3e8cf] text-[#6b5537] rounded">
+                        Top {placeLabel}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-[#5c4a33] mt-1">{badge.description}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

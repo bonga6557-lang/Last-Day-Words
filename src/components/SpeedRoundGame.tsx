@@ -12,6 +12,7 @@ import {
   shuffleArray,
   pickWeightedWord,
   getSpeedComboMultiplier,
+  computeSpeedSolveBonus,
   getStreakLabel,
   vibrate,
   SPEED_ROUND_TIME,
@@ -224,7 +225,7 @@ export default function SpeedRoundGame({
           setPerfectCount((pc) => pc + 1);
           showFeedback("+25 XP Perfect!", "success");
         }
-        const solveBonus = Math.round((1000 + (maxMistakes - m) * 200) * mult * multAtSolve);
+        const solveBonus = computeSpeedSolveBonus(m, maxMistakes, nextStreak, multAtSolve);
         setScore((p) => p + solveBonus);
         return m;
       });

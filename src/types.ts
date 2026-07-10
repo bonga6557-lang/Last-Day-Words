@@ -50,8 +50,14 @@ export interface UserProgress {
   streakFreezes?: number;
   /** ISO week key (YYYY-Www) when a freeze was last earned. */
   lastFreezeEarnedWeek?: string;
-  /** Badge ids unlocked (streak milestones, etc.). */
+  /** Badge ids unlocked (streak milestones, weekly leaderboard, etc.). */
   earnedBadgeIds?: string[];
+  /** Current weekly board placements (SAST week); drives revocable leaderboard badges. */
+  leaderboardRanks?: {
+    weekKey: string;
+    mixed?: number | null;
+    chapter?: number | null;
+  };
   /** Chapter id → highest mastery tier unlocked (25|50|100). */
   masteryUnlocks?: Record<string, number>;
   /** Mystery fragment passage ids collected. */

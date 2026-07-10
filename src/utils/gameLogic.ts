@@ -227,6 +227,21 @@ export function getSpeedComboMultiplier(streak: number): number {
   return 1;
 }
 
+/** Points awarded for one speed-round word solve (mirrors SpeedRoundGame). */
+export function computeSpeedSolveBonus(
+  mistakes: number,
+  maxMistakes: number,
+  comboStreak: number,
+  eventMultiplier = 1
+): number {
+  const mult = getSpeedComboMultiplier(comboStreak);
+  return Math.round((1000 + (maxMistakes - mistakes) * 200) * mult * eventMultiplier);
+}
+
+export function isPerfectSpeedSolve(mistakes: number): boolean {
+  return mistakes === 0;
+}
+
 export function vibrate(pattern: number | number[]): void {
   if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
     navigator.vibrate(pattern);

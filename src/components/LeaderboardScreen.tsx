@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Trophy } from "lucide-react";
 import { supabase, isSupabaseConfigured, LeaderboardRow } from "../lib/supabase";
-import { getIsoWeekKey } from "../utils/streaks";
+import { getLeaderboardWeekKey } from "../utils/leaderboard";
 import { EmptyState, InlineAlert, LoadingBlock } from "./ErrorState";
 import { logError, mapUserFacingError } from "../utils/errors";
 import type { SpeedBoardMode } from "../utils/speedPools";
+import { assignLeaderboardRanks } from "../utils/leaderboard";
 
 interface LeaderboardScreenProps {
   onBack: () => void;
@@ -19,7 +20,7 @@ export default function LeaderboardScreen({ onBack }: LeaderboardScreenProps) {
   const [loadState, setLoadState] = useState<LoadState>(
     isSupabaseConfigured ? "loading" : "unconfigured"
   );
-  const week = getIsoWeekKey();
+  const week = getLeaderboardWeekKey();
 
   const load = useCallback(async () => {
     if (!supabase || !isSupabaseConfigured) {
@@ -50,13 +51,20 @@ export default function LeaderboardScreen({ onBack }: LeaderboardScreenProps) {
       }
 
       const nameById = new Map((profiles ?? []).map((p) => [p.id, p.display_name]));
-      const mapped = (data ?? []).map((row, i) => ({
-        user_id: row.user_id as string,
-        display_name: nameById.get(row.user_id as string) ?? "Watchman",
-        score: row.score as number,
-        words_solved: row.words_solved as number,
-        week_key: row.week_key as string,
-        rank: i + 1,
+      const ranked = assignLeaderboardRanks(
+        (data ?? []).map((row) => ({
+          user_id: row.user_id as string,
+          score: row.score as number,
+          words_solved: row.words_solved as number,
+        }))
+      );
+      const mapped = ranked.map((row) => ({
+        user_id: row.user_id,
+        display_name: nameById.get(row.user_id) ?? "Watchman",
+        score: row.score,
+        words_solved: row.words_solved ?? 0,
+        week_key: week,
+        rank: row.rank,
       }));
       setRows(mapped);
       setLoadState("ready");
@@ -118,7 +126,7 @@ export default function LeaderboardScreen({ onBack }: LeaderboardScreenProps) {
       </div>
 
       <p className="text-center text-xs text-[#6b5537] uppercase tracking-wider font-bold">
-        {boardLabel} · {week}
+        {boardLabel} · week of {week} (SAST)
       </p>
 
       {loadState === "unconfigured" && (
@@ -150,17 +158,33 @@ export default function LeaderboardScreen({ onBack }: LeaderboardScreenProps) {
               message={`Be the first this week — finish a ${boardLabel} run while signed in.`}
             />
           ) : (
-            rows.map((r) => (
-              <div key={r.user_id} className="pcard rounded-xl px-4 py-3 flex items-center gap-3">
-                <span className="w-8 text-center font-mono font-bold text-[#92400e]">#{r.rank}</span>
-                <Trophy className="w-4 h-4 text-[#b45309]" aria-hidden="true" />
+            rows.map((r) => {
+              const topThree = r.rank <= 3;
+              const rankTone =
+                r.rank === 1
+                  ? "text-[#b45309]"
+                  : r.rank === 2
+                    ? "text-[#6b7280]"
+                    : r.rank === 3
+                      ? "text-[#92400e]"
+                      : "text-[#92400e]";
+              return (
+              <div
+                key={r.user_id}
+                className={`pcard rounded-xl px-4 py-3 flex items-center gap-3 ${topThree ? "border-[#d8c391] parchment-glow" : ""}`}
+              >
+                <span className={`w-8 text-center font-mono font-bold ${rankTone}`}>#{r.rank}</span>
+                <Trophy className={`w-4 h-4 ${topThree ? rankTone : "text-[#b45309]"}`} aria-hidden="true" />
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-[#2a2018] truncate">{r.display_name}</div>
-                  <div className="text-[10px] text-[#6b5537]">{r.words_solved} words</div>
+                  <div className="text-[10px] text-[#6b5537]">
+                    {r.words_solved} words{topThree ? " · top board badge" : ""}
+                  </div>
                 </div>
                 <div className="font-mono font-bold text-[#2a2018]">{r.score}</div>
               </div>
-            ))
+            );
+            })
           )}
         </div>
       )}

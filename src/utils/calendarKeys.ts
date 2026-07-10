@@ -17,6 +17,35 @@ export function getIsoWeekKey(date = new Date()): string {
   return `${local.getFullYear()}-W${String(weekNo).padStart(2, "0")}`;
 }
 
+const SAST_OFFSET_MS = 2 * 60 * 60 * 1000;
+
+/** SAST calendar parts (UTC+2, no DST). */
+function sastParts(date: Date): { y: number; m: number; d: number; dow: number } {
+  const t = date.getTime() + SAST_OFFSET_MS;
+  const sast = new Date(t);
+  return {
+    y: sast.getUTCFullYear(),
+    m: sast.getUTCMonth() + 1,
+    d: sast.getUTCDate(),
+    dow: sast.getUTCDay(),
+  };
+}
+
+/**
+ * Weekly speed leaderboard key: Sunday 00:00 SAST through Saturday 23:59 SAST.
+ * Returns the Sunday (YYYY-MM-DD) that starts the active board week.
+ */
+export function getLeaderboardWeekKey(date = new Date()): string {
+  const { y, m, d, dow } = sastParts(date);
+  const todayUtc = Date.UTC(y, m - 1, d);
+  const sundayUtc = todayUtc - dow * 86_400_000;
+  const sunday = new Date(sundayUtc);
+  const sy = sunday.getUTCFullYear();
+  const sm = String(sunday.getUTCMonth() + 1).padStart(2, "0");
+  const sd = String(sunday.getUTCDate()).padStart(2, "0");
+  return `${sy}-${sm}-${sd}`;
+}
+
 export function msUntilLocalMidnight(from = new Date()): number {
   const next = new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1);
   return Math.max(0, next.getTime() - from.getTime());

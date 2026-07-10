@@ -1,22 +1,25 @@
 import { useCallback, useMemo } from "react";
 import type { Chapter } from "../data/words";
 import type { UserProgress } from "../types";
-import { applyDailyStreakComplete, getIsoWeekKey } from "../utils/streaks";
-import { awardPerfectWordsXp, awardSpeedXp, awardStudyGuideXp } from "../utils/progression";
+import { awardStudyGuideXp } from "../utils/progression";
 import { isValidSpeedScore } from "../utils/speedScoreLimits";
+import {
+  buildSpeedScoreUpsert,
+  getLeaderboardWeekKey,
+  rankForUser,
+  syncLeaderboardPlacementForMode,
+} from "../utils/leaderboard";
+import {
+  applySpeedRoundToProgress,
+  type SpeedRoundResult,
+} from "../utils/speedRoundProgress";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { logError, mapUserFacingError } from "../utils/errors";
-import type { SpeedBoardMode } from "../utils/speedPools";
 
 type SaveProgress = (p: UserProgress) => void;
 type RemoteErrorHandler = (message: string) => void;
 
-export type SpeedRoundResult = {
-  finalScore: number;
-  wordsSolved: number;
-  perfectCount: number;
-  mode: SpeedBoardMode;
-};
+export type { SpeedRoundResult };
 
 /**
  * Speed-arcade session helpers (progress + dual leaderboard upsert).
@@ -35,47 +38,41 @@ export function useGameSession(
 
   const handleSpeedRoundFinished = useCallback(
     async (result: SpeedRoundResult) => {
-      const { finalScore, wordsSolved, perfectCount, mode } = result;
-      const highKey = mode === "mixed" ? "speedMixedHighScore" : "speedChapterHighScore";
-      const wordsKey =
-        mode === "mixed" ? "speedMixedHighestWordsSolved" : "speedChapterHighestWordsSolved";
-
-      const prevHigh =
-        (progress[highKey] as number | undefined) ??
-        (mode === "mixed" ? progress.speedRoundHighScore : 0);
-      const prevWords =
-        (progress[wordsKey] as number | undefined) ??
-        (mode === "mixed" ? progress.speedRoundHighestWordsSolved : 0);
-
-      let next: UserProgress = {
-        ...progress,
-        [highKey]: Math.max(prevHigh, finalScore),
-        [wordsKey]: Math.max(prevWords, wordsSolved),
-        // Keep legacy fields as overall best for share card / older UI
-        speedRoundHighScore: Math.max(progress.speedRoundHighScore, finalScore),
-        speedRoundHighestWordsSolved: Math.max(progress.speedRoundHighestWordsSolved, wordsSolved),
-      };
-
-      // Perfect solves (+25 each) then round score XP
-      next = awardPerfectWordsXp(next, perfectCount).progress;
-      next = awardSpeedXp(next, finalScore).progress;
-
-      if (wordsSolved > 0) {
-        next = applyDailyStreakComplete(next, todayKey);
-      }
+      const { finalScore, wordsSolved, mode } = result;
+      const next = applySpeedRoundToProgress(progress, result, todayKey);
       saveProgress(next);
 
       if (supabase && isSupabaseConfigured && isValidSpeedScore(finalScore, wordsSolved)) {
         const { data: userData } = await supabase.auth.getUser();
         if (userData.user) {
-          const week = getIsoWeekKey();
+          const week = getLeaderboardWeekKey();
+          const userId = userData.user.id;
+
+          const { data: existing } = await supabase
+            .from("speed_scores")
+            .select("score, words_solved")
+            .eq("user_id", userId)
+            .eq("week_key", week)
+            .eq("mode", mode)
+            .maybeSingle();
+
+          const upserted = buildSpeedScoreUpsert(
+            existing
+              ? {
+                  score: existing.score as number,
+                  words_solved: existing.words_solved as number,
+                }
+              : null,
+            { score: finalScore, words_solved: wordsSolved }
+          );
+
           const { error } = await supabase.from("speed_scores").upsert(
             {
-              user_id: userData.user.id,
+              user_id: userId,
               week_key: week,
               mode,
-              score: finalScore,
-              words_solved: wordsSolved,
+              score: upserted.score,
+              words_solved: upserted.words_solved,
               updated_at: new Date().toISOString(),
             },
             { onConflict: "user_id,week_key,mode" }
@@ -85,6 +82,27 @@ export function useGameSession(
             onRemoteError?.(
               mapUserFacingError(error, "Speed score could not be saved to the leaderboard")
             );
+            return;
+          }
+
+          const { data: boardRows, error: boardErr } = await supabase
+            .from("speed_scores")
+            .select("user_id, score")
+            .eq("week_key", week)
+            .eq("mode", mode)
+            .order("score", { ascending: false });
+          if (boardErr) {
+            logError("speedScore.rank", boardErr);
+            return;
+          }
+
+          const rank = rankForUser(userId, boardRows ?? []);
+          const withBadges = syncLeaderboardPlacementForMode(next, week, mode, rank);
+          if (
+            JSON.stringify(withBadges.earnedBadgeIds) !== JSON.stringify(next.earnedBadgeIds) ||
+            JSON.stringify(withBadges.leaderboardRanks) !== JSON.stringify(next.leaderboardRanks)
+          ) {
+            saveProgress(withBadges);
           }
         }
       }
