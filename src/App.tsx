@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Volume2, VolumeX, Flame, BookOpen, LogIn, UserRound } from "lucide-react";
 import { DEFAULT_CANDLE_ID } from "./data/cosmetics";
 import { GameMode, UserProgress } from "./types";
@@ -17,6 +17,7 @@ import { useStreakReminder } from "./hooks/useStreakReminder";
 import { useGameSession } from "./hooks/useGameSession";
 import { useAuth } from "./hooks/useAuth";
 import { useNoticeQueue } from "./hooks/useNoticeQueue";
+import { setGameSoundsEnabled } from "./utils/sounds";
 
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const ChapterSelect = lazy(() => import("./components/ChapterSelect"));
@@ -76,6 +77,10 @@ export default function App() {
     notices.pushError(message, true);
   });
   const candleStyle = progress.selectedCandle ?? DEFAULT_CANDLE_ID;
+
+  useEffect(() => {
+    setGameSoundsEnabled(progress.soundEnabled !== false);
+  }, [progress.soundEnabled]);
 
   const handleToggleSound = () => {
     saveProgress({ ...progress, soundEnabled: !progress.soundEnabled });
