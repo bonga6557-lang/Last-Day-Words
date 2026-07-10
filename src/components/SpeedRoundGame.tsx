@@ -23,6 +23,7 @@ import {
 import { rollSpeedEvent, SpeedEvent, DOUBLE_TIME_BONUS, GOLDEN_WORD_SCORE_MULT } from "../utils/rewards";
 import type { SpeedRoundResult } from "../hooks/useGameSession";
 import type { SpeedBoardMode } from "../utils/speedPools";
+import { pickIntroWord, SPEED_INTRO_TIME_SEC } from "../utils/speedIntro";
 import PropheticCandles from "./PropheticCandles";
 import KeyboardGrid from "./KeyboardGrid";
 import WordSlots from "./WordSlots";
@@ -40,6 +41,8 @@ interface SpeedRoundGameProps {
   mode: SpeedBoardMode;
   /** UI label e.g. Mixed Pool or chapter title */
   poolLabel: string;
+  /** First Mixed/Chapter run: more time, shorter terms, no chaos events. */
+  introMode?: boolean;
   candleStyle?: string;
   onGameFinished: (result: SpeedRoundResult) => void;
   onBack: () => void;
@@ -51,17 +54,19 @@ export default function SpeedRoundGame({
   words,
   mode,
   poolLabel,
+  introMode = false,
   candleStyle = "classic",
   onGameFinished,
   onBack,
 }: SpeedRoundGameProps) {
   const rm = useReducedMotion();
+  const roundTime = introMode ? SPEED_INTRO_TIME_SEC : SPEED_ROUND_TIME;
   const [reaction, setReaction] = useState<AvatarReaction>("idle");
   const reactionTimer = useRef<NodeJS.Timeout | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [startCountdown, setStartCountdown] = useState(3);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(SPEED_ROUND_TIME);
+  const [timeLeft, setTimeLeft] = useState(roundTime);
   const [wordsSolved, setWordsSolved] = useState(0);
   const [perfectCount, setPerfectCount] = useState(0);
   const [wordStreak, setWordStreak] = useState(0);
@@ -111,8 +116,11 @@ export default function SpeedRoundGame({
         available = shuffleArray(allWordsList);
         nextUsed = [];
       }
-      const selected = pickWeightedWord(available, allWordsList);
-      const evt = rollSpeedEvent();
+      const selected = introMode
+        ? pickIntroWord(available, allWordsList)
+        : pickWeightedWord(available, allWordsList);
+      // Intro: no golden/double-time chaos — let new players learn the loop first.
+      const evt: SpeedEvent = introMode ? "none" : rollSpeedEvent();
       setSpeedEvent(evt);
       eventMultRef.current = evt === "golden-word" ? GOLDEN_WORD_SCORE_MULT : 1;
       if (evt === "double-time") {
@@ -130,7 +138,7 @@ export default function SpeedRoundGame({
       solvedRef.current = false;
       return [...nextUsed, selected.id];
     });
-  }, [allWordsList]);
+  }, [allWordsList, introMode]);
 
   const loadNextWordRef = useRef(loadNextWord);
   loadNextWordRef.current = loadNextWord;
@@ -293,8 +301,9 @@ export default function SpeedRoundGame({
       wordsSolved,
       perfectCount,
       mode,
+      wasIntro: introMode,
     });
-  }, [score, wordsSolved, perfectCount, mode, onGameFinished]);
+  }, [score, wordsSolved, perfectCount, mode, introMode, onGameFinished]);
 
   const handleContinue = useCallback(() => {
     commitRoundResult();
@@ -306,7 +315,7 @@ export default function SpeedRoundGame({
     finishedRef.current = false;
     gameStartedRef.current = false;
     setScore(0);
-    setTimeLeft(SPEED_ROUND_TIME);
+    setTimeLeft(roundTime);
     setWordsSolved(0);
     setPerfectCount(0);
     setWordStreak(0);
@@ -325,10 +334,12 @@ export default function SpeedRoundGame({
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-6">
         <span className="text-sm font-bold tracking-[0.2em] text-[#6b5537] uppercase">
-          {mode === "mixed" ? "Mixed Speed" : "Chapter Speed"} · {poolLabel}
+          {introMode ? "Practice round" : mode === "mixed" ? "Mixed Speed" : "Chapter Speed"} ·{" "}
+          {poolLabel}
         </span>
         <h2 className="text-xl font-display font-bold text-[#2a2018] max-w-sm tracking-wide leading-relaxed">
-          {SPEED_ROUND_TIME}s · +time on solves · perfect word = +25 XP · pool: {allWordsList.length} terms
+          {roundTime}s · +time on solves · perfect word = +25 XP · pool: {allWordsList.length} terms
+          {introMode ? " · shorter words" : ""}
         </h2>
         <motion.div key={startCountdown} initial={rm ? false : { scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
           className="w-28 h-28 rounded-full psunken flex items-center justify-center text-4xl font-extrabold font-mono text-[#2a2018]">
@@ -392,6 +403,12 @@ export default function SpeedRoundGame({
             }`}>{timeBonusFeedback}</motion.div>
         )}
       </AnimatePresence>
+
+      {introMode && (
+        <div className="text-center text-[11px] font-semibold text-[#92400e] bg-[#fbeccb] border border-[#e6c98a] rounded-xl px-3 py-2">
+          Practice round — {roundTime}s, shorter terms, no golden events. Next run is full speed.
+        </div>
+      )}
 
       <div className="flex justify-between items-center text-[10px] uppercase font-bold text-[#6b5537] psunken py-1.5 px-3 rounded-lg">
         <span>Solved: <strong className="font-mono text-[#2a2018]">{wordsSolved}</strong></span>
@@ -461,7 +478,7 @@ export default function SpeedRoundGame({
         <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-end justify-center max-w-3xl mx-auto">
           {isPlaying && !isGameOver && (
             <div className="shrink-0 pointer-events-none order-2 sm:order-1">
-              <SoulLamp fuel={timeLeft / SPEED_ROUND_TIME} seconds={timeLeft} size={96} />
+              <SoulLamp fuel={timeLeft / roundTime} seconds={timeLeft} size={96} />
             </div>
           )}
           <div className="w-full sm:flex-1 min-w-0 order-1 sm:order-2">

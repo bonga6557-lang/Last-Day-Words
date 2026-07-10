@@ -159,7 +159,9 @@ export default function Dashboard({
             <Play className="w-5 h-5 fill-[#fbbf24] text-[#fbbf24]" aria-hidden="true" />
             Mixed Speed
             <span className="text-[10px] font-medium normal-case tracking-normal text-[#cbb487]">
-              Expansion pool · own board
+              {progress.speedIntroMixedDone
+                ? "Expansion pool · own board"
+                : "First run is practice (easier)"}
             </span>
           </button>
           <button
@@ -170,7 +172,9 @@ export default function Dashboard({
             <BookOpen className="w-5 h-5 text-[#fbbf24]" aria-hidden="true" />
             Chapter Speed
             <span className="text-[10px] font-medium normal-case tracking-normal text-[#cbb487]">
-              Pick a core chapter · +25 XP perfect
+              {progress.speedIntroChapterDone
+                ? "Pick a core chapter · +25 XP perfect"
+                : "First run is practice (easier)"}
             </span>
           </button>
         </div>

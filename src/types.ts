@@ -83,6 +83,12 @@ export interface UserProgress {
   selectedBanner?: string;
   /** Date key when study-guide open XP was already awarded. */
   studyGuideXpDate?: string;
+  /** First-run onboarding tutorial dismissed. */
+  onboardingComplete?: boolean;
+  /** First Mixed Speed practice round finished (banked). */
+  speedIntroMixedDone?: boolean;
+  /** First Chapter Speed practice round finished (banked). */
+  speedIntroChapterDone?: boolean;
 }
 
 export interface Season {

@@ -40,6 +40,9 @@ export function extractGameState(progress: UserProgress): GameStateSnapshot {
     notificationsEnabled: progress.notificationsEnabled,
     displayName: progress.displayName,
     studyGuideXpDate: progress.studyGuideXpDate,
+    onboardingComplete: progress.onboardingComplete,
+    speedIntroMixedDone: progress.speedIntroMixedDone,
+    speedIntroChapterDone: progress.speedIntroChapterDone,
   };
 }
 
@@ -198,6 +201,9 @@ export function mergeGameState(
     notificationsEnabled: remote.notificationsEnabled ?? local.notificationsEnabled,
     displayName: remote.displayName ?? local.displayName,
     studyGuideXpDate: latestDate(local.studyGuideXpDate, remote.studyGuideXpDate),
+    onboardingComplete: preferTrue(local.onboardingComplete, remote.onboardingComplete),
+    speedIntroMixedDone: preferTrue(local.speedIntroMixedDone, remote.speedIntroMixedDone),
+    speedIntroChapterDone: preferTrue(local.speedIntroChapterDone, remote.speedIntroChapterDone),
   };
 }
 

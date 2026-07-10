@@ -79,4 +79,20 @@ describe("applySpeedRoundToProgress", () => {
     expect(p.dailyChallengeStreak).toBe(1);
     expect(p.dailyChallengeCompletedDate).toBe("2026-07-10");
   });
+
+  it("marks mode intro complete when wasIntro is set", () => {
+    const mixed = applySpeedRoundToProgress(
+      base,
+      { finalScore: 1000, wordsSolved: 1, perfectCount: 0, mode: "mixed", wasIntro: true },
+      "2026-07-10"
+    );
+    expect(mixed.speedIntroMixedDone).toBe(true);
+    expect(mixed.speedIntroChapterDone).toBeUndefined();
+    const chapter = applySpeedRoundToProgress(
+      mixed,
+      { finalScore: 1000, wordsSolved: 1, perfectCount: 0, mode: "chapter", wasIntro: true },
+      "2026-07-10"
+    );
+    expect(chapter.speedIntroChapterDone).toBe(true);
+  });
 });

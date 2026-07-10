@@ -23,6 +23,7 @@ import {
   getMixedSpeedWords,
   type SpeedBoardMode,
 } from "./utils/speedPools";
+import { buildIntroWordPool, needsSpeedIntro } from "./utils/speedIntro";
 
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const SpeedRoundGame = lazy(() => import("./components/SpeedRoundGame"));
@@ -33,6 +34,7 @@ const AuthScreen = lazy(() => import("./components/AuthScreen"));
 const LeaderboardScreen = lazy(() => import("./components/LeaderboardScreen"));
 const ShareCardScreen = lazy(() => import("./components/ShareCardScreen"));
 const OnlineTeamsScreen = lazy(() => import("./components/OnlineTeamsScreen"));
+const OnboardingTutorial = lazy(() => import("./components/OnboardingTutorial"));
 
 function ScreenFallback() {
   return <LoadingBlock label="Loading screen…" />;
@@ -87,11 +89,18 @@ export default function App() {
     [chaptersData]
   );
 
+  const speedIntroActive = needsSpeedIntro(progress, speedBoardMode);
+
   const speedWords = useMemo(() => {
-    if (speedBoardMode === "mixed") return getMixedSpeedWords(chaptersData);
-    if (!speedChapterId) return [];
-    return getChapterSpeedWords(chaptersData, speedChapterId);
-  }, [chaptersData, speedBoardMode, speedChapterId]);
+    const base =
+      speedBoardMode === "mixed"
+        ? getMixedSpeedWords(chaptersData)
+        : speedChapterId
+          ? getChapterSpeedWords(chaptersData, speedChapterId)
+          : [];
+    if (base.length === 0) return base;
+    return speedIntroActive ? buildIntroWordPool(base) : base;
+  }, [chaptersData, speedBoardMode, speedChapterId, speedIntroActive]);
 
   const speedPoolLabel = useMemo(() => {
     if (speedBoardMode === "mixed") return "Mixed expansion pool";
@@ -274,6 +283,13 @@ export default function App() {
               <AnimatePresence mode="wait">
                 {currentMode === "menu" && (
                   <motion.div key="menu" {...routeProps("y")}>
+                    {!progress.onboardingComplete && (
+                      <OnboardingTutorial
+                        onComplete={() =>
+                          saveProgress({ ...progress, onboardingComplete: true })
+                        }
+                      />
+                    )}
                     <Dashboard
                       progress={progress}
                       chapters={chaptersData}
@@ -349,13 +365,19 @@ export default function App() {
                 )}
 
                 {currentMode === "speed-round" && speedWords.length > 0 && (
-                  <motion.div key={`speed-round-${speedBoardMode}-${speedChapterId ?? "mixed"}`} {...routeProps("scale")}>
+                  <motion.div
+                    key={`speed-round-${speedBoardMode}-${speedChapterId ?? "mixed"}-${speedIntroActive ? "intro" : "full"}`}
+                    {...routeProps("scale")}
+                  >
                     <SpeedRoundGame
                       highScore={speedHighScore}
                       highestWordsSolved={speedHighestWords}
                       words={speedWords}
                       mode={speedBoardMode}
-                      poolLabel={speedPoolLabel}
+                      poolLabel={
+                        speedIntroActive ? `${speedPoolLabel} · practice` : speedPoolLabel
+                      }
+                      introMode={speedIntroActive}
                       candleStyle={candleStyle}
                       onGameFinished={session.handleSpeedRoundFinished}
                       onBack={() => setCurrentMode("menu")}
