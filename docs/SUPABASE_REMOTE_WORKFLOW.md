@@ -20,14 +20,14 @@ On this machine (verified):
 | Channel | Project | Access |
 |---------|---------|--------|
 | **App `.env.local` + Cursor MCP** | `haoghddjcstxanrtggvb` | Works — migrations + edge function already applied here |
-| **`npx supabase` CLI** (`fanelesibonge50@gmail.com`) | `ouaqkrvsswxjogivrxbm` only | Can link; **cannot** link `haoghddjcstxanrtggvb` |
+| **`npx supabase` CLI** (local dev account) | `ouaqkrvsswxjogivrxbm` only | Can link; **cannot** link `haoghddjcstxanrtggvb` |
 
 **You do not need CLI** for the anti-cheat deploy if Cursor Supabase MCP stays linked to `haoghddjcstxanrtggvb` — that path already applied all five speed-score migrations and deployed `submit-speed-score` v2.
 
 ### To unblock CLI on this machine (pick one)
 
 1. **Invite this account to the owning org**  
-   Dashboard (account that created `haoghddjcstxanrtggvb`) → **Organization settings → Members** → invite `fanelesibonge50@gmail.com` as **Owner** or **Developer**, then:
+   Dashboard (account that created `haoghddjcstxanrtggvb`) → **Organization settings → Members** → invite your CLI account's email as **Owner** or **Developer**, then:
    ```bash
    npx supabase login
    npx supabase link --project-ref haoghddjcstxanrtggvb
