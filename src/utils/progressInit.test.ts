@@ -29,7 +29,7 @@ describe("progressInit", () => {
       defaults,
       isRemoteEnabled: false,
       getUserId: async () => "user-1",
-      fetchRemote: async () => null,
+      fetchRemote: async () => ({ status: "empty" as const }),
       pushRemote: async () => {},
       storage,
     });
@@ -65,7 +65,7 @@ describe("progressInit", () => {
       defaults,
       isRemoteEnabled: true,
       getUserId: async () => "user-1",
-      fetchRemote: async () => remote,
+      fetchRemote: async () => ({ status: "ok" as const, data: remote }),
       pushRemote,
       storage,
     });
@@ -74,6 +74,30 @@ describe("progressInit", () => {
     expect(result.speedRoundHighScore).toBe(500);
     expect(storage.setItem).toHaveBeenCalledOnce();
     expect(pushRemote).toHaveBeenCalledOnce();
+  });
+
+  it("does not push local as new user when remote fetch fails", async () => {
+    const storage = {
+      getItem: vi.fn(() => JSON.stringify({ ...defaults, xp: 42, solvedWordIds: ["keep-me"] })),
+      setItem: vi.fn(),
+    };
+    const pushRemote = vi.fn(async () => {});
+    const onRemoteError = vi.fn();
+    const result = await initializeProgress({
+      storageKey: LOCAL_STORAGE_KEY,
+      todayKey: "2026-07-09",
+      defaults,
+      isRemoteEnabled: true,
+      getUserId: async () => "user-1",
+      fetchRemote: async () => ({ status: "error" as const, message: "network down" }),
+      pushRemote,
+      onRemoteError,
+      storage,
+    });
+    expect(result.xp).toBe(42);
+    expect(result.solvedWordIds).toEqual(["keep-me"]);
+    expect(pushRemote).not.toHaveBeenCalled();
+    expect(onRemoteError).toHaveBeenCalledWith("network down");
   });
 
   it("loadProgressFromStorage returns defaults when empty", () => {

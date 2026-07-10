@@ -256,10 +256,9 @@ export function useGameSession(
         void (async () => {
           const { data } = await supabase.auth.getUser();
           if (data.user) {
-            try {
-              await upsertDailyScore(data.user.id, todayKey, dailyScore);
-            } catch (e) {
-              console.error("Failed to upsert daily score:", e);
+            const result = await upsertDailyScore(data.user.id, todayKey, dailyScore);
+            if (!result.ok) {
+              console.error("Failed to upsert daily score:", result.message);
             }
           }
         })();

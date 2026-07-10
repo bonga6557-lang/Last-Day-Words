@@ -1,20 +1,71 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Last Day Words
 
-# Run and deploy your AI Studio app
+Prophetic word study game (PWA): chapter runs, daily challenge, speed round, teams, streaks, and optional Supabase auth / leaderboards / online teams.
 
-This contains everything you need to run your app locally.
+## Stack
 
-View your app in AI Studio: https://ai.studio/apps/36aef1cb-3846-4780-8a33-cf87968ee169
+- React 19 + Vite 6 + TypeScript + Tailwind 4
+- Supabase (optional): Auth, Postgres, RLS, Realtime rooms
+- Vite PWA (`injectManifest`)
 
-## Run Locally
+## Prerequisites
 
-**Prerequisites:**  Node.js
+- Node.js 20+ (22 recommended)
+- A Supabase project **only if** you want cloud auth, progress sync, and leaderboards (the game runs offline with bundled content)
 
+## Setup
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm install
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+
+```env
+VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+VITE_SUPABASE_ANON_KEY=your_anon_key_here
+```
+
+Use the **anon / publishable** key only. Never put the service-role key in this app.
+
+Without env vars, `isSupabaseConfigured` is false and the client uses local storage + bundled chapters/words.
+
+## Run
+
+```bash
+npm run dev      # http://localhost:3000
+npm run lint     # tsc --noEmit
+npm test         # vitest
+npm run build    # production bundle + PWA SW
+npm run preview  # serve dist/
+```
+
+## Supabase (remote)
+
+Local Supabase CLI is **not** required. Content and schema live on the remote project.
+
+1. Apply migrations under `supabase/migrations/` in order (or use the Supabase dashboard / CLI linked to remote).
+2. For a full content snapshot matching the client catalog, run `supabase/seed_content.sql` (upserts chapters/words/seasons).
+3. See `docs/SUPABASE_REMOTE_WORKFLOW.md` for remote-only notes.
+
+Key tables: `profiles`, `user_progress`, `words`, `chapters`, `seasons`, `daily_scores`, `speed_scores`, `game_rooms`, `room_members` — all behind RLS.
+
+## Project layout (short)
+
+| Path | Role |
+|------|------|
+| `src/components/` | UI screens (lazy-loaded from `App.tsx`) |
+| `src/data/` | Bundled words, clues, study passages, cosmetics |
+| `src/hooks/` | Progress, catalog, session, streaks |
+| `src/lib/supabase.ts` | Client + progress/score helpers |
+| `supabase/migrations/` | Schema + seed migrations |
+| `supabase/seed_content.sql` | Full content upsert snapshot |
+
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs typecheck, tests, and build on push/PR.
+
+## License / content
+
+KJV scripture is public domain. Ellen G. White study excerpts are cited in-app from supplied PDF sources; respect EGW Estate usage guidance for redistribution.

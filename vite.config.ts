@@ -42,6 +42,29 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('@supabase')) return 'vendor-supabase';
+              if (id.includes('motion')) return 'vendor-motion';
+              if (id.includes('lucide-react')) return 'vendor-icons';
+              if (id.includes('canvas-confetti')) return 'vendor-confetti';
+              return 'vendor';
+            }
+            // Split large bundled catalogs for parallel download / better caching
+            if (id.includes('wordsExpansion2')) return 'content-words-2';
+            if (id.includes('wordsExpansion')) return 'content-words-1';
+            if (id.includes('expertCluesExpansion2')) return 'content-clues-2';
+            if (id.includes('expertCluesExpansion')) return 'content-clues-1';
+            if (id.includes('studyContent')) return 'content-study';
+          },
+        },
+      },
+      // Catalog + vendors: keep warning threshold honest without hiding regressions forever
+      chunkSizeWarningLimit: 600,
+    },
     server: {
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: process.env.DISABLE_HMR === 'true' ? null : {},

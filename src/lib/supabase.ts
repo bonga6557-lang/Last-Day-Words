@@ -2,6 +2,8 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { DEFAULT_CANDLE_ID } from "../data/cosmetics";
 import type { UserProgress } from "../types";
 import { extractGameState, type GameStateSnapshot } from "../utils/progressSync";
+import type { RemoteFetchResult, RemoteWriteResult } from "./syncResult";
+import { writeErr, writeOk } from "./syncResult";
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const anon = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
@@ -121,8 +123,10 @@ export function buildUserProgressRow(userId: string, progress: UserProgress): {
   };
 }
 
-export async function fetchUserProgress(userId: string): Promise<UserProgressRow | null> {
-  if (!supabase || !isSupabaseConfigured) return null;
+export async function fetchUserProgress(
+  userId: string
+): Promise<RemoteFetchResult<UserProgressRow>> {
+  if (!supabase || !isSupabaseConfigured) return { status: "empty" };
   const { data, error } = await supabase
     .from("user_progress")
     .select(
@@ -130,13 +134,21 @@ export async function fetchUserProgress(userId: string): Promise<UserProgressRow
     )
     .eq("user_id", userId)
     .maybeSingle();
-  if (error || !data) return null;
-  return data as UserProgressRow;
+  if (error) {
+    console.error("fetchUserProgress failed:", error.message);
+    return { status: "error", message: error.message };
+  }
+  if (!data) return { status: "empty" };
+  return { status: "ok", data: data as UserProgressRow };
 }
 
-export async function upsertDailyScore(userId: string, dayKey: string, score: number): Promise<void> {
-  if (!supabase || !isSupabaseConfigured) return;
-  await supabase.from("daily_scores").upsert(
+export async function upsertDailyScore(
+  userId: string,
+  dayKey: string,
+  score: number
+): Promise<RemoteWriteResult> {
+  if (!supabase || !isSupabaseConfigured) return writeOk();
+  const { error } = await supabase.from("daily_scores").upsert(
     {
       user_id: userId,
       day_key: dayKey,
@@ -145,6 +157,11 @@ export async function upsertDailyScore(userId: string, dayKey: string, score: nu
     },
     { onConflict: "user_id,day_key" }
   );
+  if (error) {
+    console.error("upsertDailyScore failed:", error.message);
+    return writeErr(error.message);
+  }
+  return writeOk();
 }
 
 export async function upsertUserProgress(row: {
@@ -155,13 +172,18 @@ export async function upsertUserProgress(row: {
   selected_candle: string;
   selected_banner: string;
   game_state: GameStateSnapshot;
-}): Promise<void> {
-  if (!supabase || !isSupabaseConfigured) return;
-  await supabase.from("user_progress").upsert(
+}): Promise<RemoteWriteResult> {
+  if (!supabase || !isSupabaseConfigured) return writeOk();
+  const { error } = await supabase.from("user_progress").upsert(
     {
       ...row,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" }
   );
+  if (error) {
+    console.error("upsertUserProgress failed:", error.message);
+    return writeErr(error.message);
+  }
+  return writeOk();
 }

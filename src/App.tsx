@@ -54,7 +54,10 @@ const DEFAULT_PROGRESS: UserProgress = {
 
 export default function App() {
   const todayKey = useTodayKey();
-  const { progress, saveProgress } = useUserProgress(DEFAULT_PROGRESS, todayKey);
+  const { progress, saveProgress, syncWarning, clearSyncWarning } = useUserProgress(
+    DEFAULT_PROGRESS,
+    todayKey
+  );
   const { chaptersData, seasons, wordOfTheWeek, featuredAnnouncement } = useContentCatalog();
   useStreakReminder(progress, todayKey);
 
@@ -141,6 +144,22 @@ export default function App() {
   return (
     <div className="min-h-screen candlelit-page text-[#2a2018] font-sans flex flex-col justify-between">
       <ScreenFlash />
+      {syncWarning && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="sticky top-0 z-40 border-b border-amber-300 bg-[#fbeccb] text-[#92400e] text-xs md:text-sm px-4 py-2.5 flex items-start gap-3 justify-between"
+        >
+          <span className="leading-relaxed">{syncWarning}</span>
+          <button
+            type="button"
+            onClick={clearSyncWarning}
+            className="shrink-0 font-bold uppercase tracking-wide text-[10px] px-2 py-1 rounded border border-amber-400/60 hover:bg-amber-100 cursor-pointer"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
       <div className="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
         <header className="flex items-center justify-between gap-3 py-4 mb-6 pcard px-4 md:px-6 rounded-2xl parchment-glow">
           <div

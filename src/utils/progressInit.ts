@@ -9,6 +9,7 @@ import {
   type GameStateSnapshot,
 } from "./progressSync";
 import type { UserProgressRow } from "../lib/supabase";
+import type { RemoteFetchResult } from "../lib/syncResult";
 
 export const LOCAL_STORAGE_KEY = "last_day_words_progress_v1";
 
@@ -43,9 +44,11 @@ export interface InitializeProgressOptions {
   defaults: UserProgress;
   isRemoteEnabled: boolean;
   getUserId: () => Promise<string | null>;
-  fetchRemote: (userId: string) => Promise<UserProgressRow | null>;
+  fetchRemote: (userId: string) => Promise<RemoteFetchResult<UserProgressRow>>;
   pushRemote: (userId: string, progress: UserProgress) => Promise<void>;
   storage?: Pick<Storage, "getItem" | "setItem">;
+  /** Called when remote fetch fails so UI can warn without wiping local progress. */
+  onRemoteError?: (message: string) => void;
 }
 
 /** Single init path: localStorage → optional remote merge → one result. */
@@ -59,13 +62,19 @@ export async function initializeProgress(opts: InitializeProgressOptions): Promi
   if (!userId) return progress;
 
   const remote = await opts.fetchRemote(userId);
-  if (!remote) {
+  if (remote.status === "error") {
+    // Keep local progress; do NOT push as if this were a new user (would risk overwriting cloud).
+    opts.onRemoteError?.(remote.message);
+    return progress;
+  }
+
+  if (remote.status === "empty") {
     progress = unlockCosmeticsForXp(progress).progress;
     await opts.pushRemote(userId, progress);
     return progress;
   }
 
-  progress = mergeWithRemoteRow(progress, remote);
+  progress = mergeWithRemoteRow(progress, remote.data);
   try {
     storage.setItem(opts.storageKey, JSON.stringify(progress));
   } catch {
