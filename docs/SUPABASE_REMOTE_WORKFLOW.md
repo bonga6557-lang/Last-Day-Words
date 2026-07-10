@@ -17,3 +17,21 @@ Production content and schema live on the linked remote project.
 - Chunked MCP applies can leave **duplicate names** in Dashboard migration history
   (e.g. `seed_batch2_words_part3` ×3). Data is fine (`ON CONFLICT` upserts).
   Optional cleanup SQL: `supabase/snippets/cleanup_duplicate_mcp_migrations.sql`.
+
+## Local client wiring
+
+1. Copy `.env.example` → `.env.local` (gitignored).
+2. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from **Project Settings → API** (anon / publishable key only).
+3. Restart `npm run dev`.
+
+Remote readiness checks (via SQL or Dashboard):
+
+| Check | Expected |
+|-------|----------|
+| `chapters` | 76 |
+| `words` | 380 |
+| `seasons` | 2 |
+| `profiles` / `user_progress` | tables exist, RLS enabled |
+| `handle_new_user` trigger | on `auth.users` insert |
+
+First owner account can be bootstrapped in SQL (email confirmed, `is_super_admin`) or via the in-app **Create Account** flow.

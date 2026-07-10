@@ -31,16 +31,20 @@ Use the **anon / publishable** key only. Never put the service-role key in this 
 
 Without env vars, `isSupabaseConfigured` is false and the client uses local storage + bundled chapters/words.
 
+Restart `npm run dev` after creating or changing `.env.local` (Vite only reads env at startup).
+
 ### Accounts (sign in / create account)
 
 With Supabase configured:
 
-1. Open **Sign In** in the app header or **Sign in or create an account** on the home dashboard.
+1. Open **Sign In** from the header, the home **Sign in or create an account** card, or the grid **Sign In / Account** button.
 2. **Create Account** — email, password (min 6), display name (2–24 chars for leaderboards).
 3. **Sign In** — same email/password after registration (and after email confirm if your Supabase project requires it).
 4. Profile row is created by the `handle_new_user` trigger; the app also upserts `profiles` when needed.
 
 Local play works without an account; cloud sync, leaderboards, and online teams need a signed-in user.
+
+**Supabase Dashboard:** enable **Authentication → Providers → Email**. If **Confirm email** is on, new signups must confirm before first sign-in (the form explains this).
 
 ## Run
 
