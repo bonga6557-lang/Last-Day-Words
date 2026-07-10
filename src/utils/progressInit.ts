@@ -49,6 +49,12 @@ export interface InitializeProgressOptions {
   fetchRemote: (userId: string) => Promise<RemoteFetchResult<UserProgressRow>>;
   pushRemote: (userId: string, progress: UserProgress) => Promise<void>;
   storage?: Pick<Storage, "getItem" | "setItem">;
+  /**
+   * Returns true once this init has been superseded (unmount, newer save, re-init).
+   * A stale init must not write back to storage/remote — it would revert
+   * anything saved while its remote fetch was in flight.
+   */
+  isCancelled?: () => boolean;
   /** Called when remote fetch fails so UI can warn without wiping local progress. */
   onRemoteError?: (message: string) => void;
   /** Refresh weekly leaderboard placements from cloud (revokes badges if rank dropped). */
@@ -72,9 +78,11 @@ export async function initializeProgress(opts: InitializeProgressOptions): Promi
     return progress;
   }
 
+  const cancelled = () => opts.isCancelled?.() ?? false;
+
   if (remote.status === "empty") {
     progress = unlockCosmeticsForXp(progress).progress;
-    await opts.pushRemote(userId, progress);
+    if (!cancelled()) await opts.pushRemote(userId, progress);
     return progress;
   }
 
@@ -83,11 +91,13 @@ export async function initializeProgress(opts: InitializeProgressOptions): Promi
   if (opts.reconcileLeaderboard) {
     progress = await opts.reconcileLeaderboard(userId, progress);
   }
-  try {
-    storage.setItem(opts.storageKey, JSON.stringify(progress));
-  } catch {
-    /* ignore quota errors */
+  if (!cancelled()) {
+    try {
+      storage.setItem(opts.storageKey, JSON.stringify(progress));
+    } catch {
+      /* ignore quota errors */
+    }
+    await opts.pushRemote(userId, progress);
   }
-  await opts.pushRemote(userId, progress);
   return progress;
 }

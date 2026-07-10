@@ -66,7 +66,11 @@ export function useAuth() {
     });
 
     const { data: sub } = client.auth.onAuthStateChange((_event, s) => {
-      void applySession(s);
+      // Defer out of the auth callback: supabase queries inside
+      // onAuthStateChange can deadlock on the client's auth lock.
+      window.setTimeout(() => {
+        if (!cancelled) void applySession(s);
+      }, 0);
     });
 
     return () => {

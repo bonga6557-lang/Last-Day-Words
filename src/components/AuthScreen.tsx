@@ -37,7 +37,10 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
     const { data: sub } = client.auth.onAuthStateChange((_e, s) => {
       setSession(s);
       if (s?.user) {
-        void loadProfile(s.user.id, s.user.email ?? "");
+        // Defer the query out of the auth callback (auth-lock deadlock hazard).
+        const { id } = s.user;
+        const emailFallback = s.user.email ?? "";
+        window.setTimeout(() => void loadProfile(id, emailFallback), 0);
       } else {
         setProfileName("");
       }

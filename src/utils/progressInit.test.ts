@@ -100,6 +100,50 @@ describe("progressInit", () => {
     expect(onRemoteError).toHaveBeenCalledWith("network down");
   });
 
+  it("does not write back to storage or remote once cancelled", async () => {
+    const storage = {
+      getItem: vi.fn(() => JSON.stringify({ ...defaults, xp: 10 })),
+      setItem: vi.fn(),
+    };
+    const remote: UserProgressRow = {
+      user_id: "user-1",
+      xp: 100,
+      rank: "student",
+      unlocked_cosmetics: ["candle-classic"],
+      selected_candle: "candle-classic",
+      selected_banner: "",
+      game_state: {
+        solvedWordIds: [],
+        chapterStars: {},
+        speedRoundHighScore: 0,
+        speedRoundHighestWordsSolved: 0,
+        totalTimePlayedSec: 0,
+        soundEnabled: true,
+      },
+    };
+    const pushRemote = vi.fn(async () => {});
+    let cancelled = false;
+    const result = await initializeProgress({
+      storageKey: LOCAL_STORAGE_KEY,
+      todayKey: "2026-07-09",
+      defaults,
+      isRemoteEnabled: true,
+      isCancelled: () => cancelled,
+      getUserId: async () => "user-1",
+      fetchRemote: async () => {
+        // Simulate a save (e.g. onboardingComplete) landing while the
+        // remote fetch is in flight — the init is now stale.
+        cancelled = true;
+        return { status: "ok" as const, data: remote };
+      },
+      pushRemote,
+      storage,
+    });
+    expect(result.xp).toBe(100);
+    expect(storage.setItem).not.toHaveBeenCalled();
+    expect(pushRemote).not.toHaveBeenCalled();
+  });
+
   it("loadProgressFromStorage returns defaults when empty", () => {
     const storage = { getItem: vi.fn(() => null) };
     expect(loadProgressFromStorage("key", "2026-07-09", defaults, storage)).toEqual(defaults);
