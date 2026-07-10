@@ -330,6 +330,21 @@ export default function SpeedRoundGame({
     solvedRef.current = false;
   };
 
+  if (allWordsList.length === 0) {
+    return (
+      <div className="max-w-md mx-auto py-8 px-4 text-center space-y-4">
+        <p className="text-sm text-[#5c4a33]">No words in this speed pool.</p>
+        <button
+          type="button"
+          onClick={onBack}
+          className="py-2.5 px-5 bg-[#2a2018] text-[#f8f1e3] rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer"
+        >
+          Back to menu
+        </button>
+      </div>
+    );
+  }
+
   if (startCountdown > 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-6">

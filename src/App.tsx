@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { Volume2, VolumeX, Flame, BookOpen, LogIn, UserRound, ArrowLeft } from "lucide-react";
 import { DEFAULT_CANDLE_ID } from "./data/cosmetics";
 import { GameMode, UserProgress } from "./types";
 import ScreenFlash from "./components/ScreenFlash";
 import AppNoticeStack from "./components/AppNoticeStack";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { LoadingBlock } from "./components/ErrorState";
+import { EmptyState, LoadingBlock } from "./components/ErrorState";
 import { requestNotificationPermission } from "./utils/notifications";
 import { selectCosmetic } from "./utils/progression";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
@@ -24,17 +24,18 @@ import {
   type SpeedBoardMode,
 } from "./utils/speedPools";
 import { buildIntroWordPool, needsSpeedIntro } from "./utils/speedIntro";
+import { lazyRetry } from "./utils/lazyRetry";
 
-const Dashboard = lazy(() => import("./components/Dashboard"));
-const SpeedRoundGame = lazy(() => import("./components/SpeedRoundGame"));
-const TeamsModeGame = lazy(() => import("./components/TeamsModeGame"));
-const AboutStudyGuide = lazy(() => import("./components/AboutStudyGuide"));
-const BadgesScreen = lazy(() => import("./components/BadgesScreen"));
-const AuthScreen = lazy(() => import("./components/AuthScreen"));
-const LeaderboardScreen = lazy(() => import("./components/LeaderboardScreen"));
-const ShareCardScreen = lazy(() => import("./components/ShareCardScreen"));
-const OnlineTeamsScreen = lazy(() => import("./components/OnlineTeamsScreen"));
-const OnboardingTutorial = lazy(() => import("./components/OnboardingTutorial"));
+const Dashboard = lazyRetry(() => import("./components/Dashboard"));
+const SpeedRoundGame = lazyRetry(() => import("./components/SpeedRoundGame"));
+const TeamsModeGame = lazyRetry(() => import("./components/TeamsModeGame"));
+const AboutStudyGuide = lazyRetry(() => import("./components/AboutStudyGuide"));
+const BadgesScreen = lazyRetry(() => import("./components/BadgesScreen"));
+const AuthScreen = lazyRetry(() => import("./components/AuthScreen"));
+const LeaderboardScreen = lazyRetry(() => import("./components/LeaderboardScreen"));
+const ShareCardScreen = lazyRetry(() => import("./components/ShareCardScreen"));
+const OnlineTeamsScreen = lazyRetry(() => import("./components/OnlineTeamsScreen"));
+const OnboardingTutorial = lazyRetry(() => import("./components/OnboardingTutorial"));
 
 function ScreenFallback() {
   return <LoadingBlock label="Loading screen…" />;
@@ -361,6 +362,18 @@ export default function App() {
                 {currentMode === "online-teams" && (
                   <motion.div key="online-teams" {...routeProps("y")}>
                     <OnlineTeamsScreen chapters={chaptersData} onBack={() => setCurrentMode("menu")} />
+                  </motion.div>
+                )}
+
+                {currentMode === "speed-round" && speedWords.length === 0 && (
+                  <motion.div key="speed-round-empty" {...routeProps("y")}>
+                    <EmptyState
+                      title="Speed pool unavailable"
+                      message="This board has no words loaded yet. Try again from the menu, or reload if you just updated the app."
+                      icon="alert"
+                      actionLabel="Back to menu"
+                      onAction={() => setCurrentMode("menu")}
+                    />
                   </motion.div>
                 )}
 

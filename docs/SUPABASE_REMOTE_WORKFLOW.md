@@ -5,37 +5,71 @@ Local Supabase CLI stack (`supabase start` / full local Postgres) is **not** req
 
 | Item | Value |
 |------|--------|
-| Project ref (from env example) | `haoghddjcstxanrtggvb` |
+| Project ref (app + MCP) | `haoghddjcstxanrtggvb` |
+| CLI owner project (this machine) | `ouaqkrvsswxjogivrxbm` — *different project* |
 | Client env | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` only (never service role in the app) |
 
 ---
 
+## 0 · Access control (CLI “no privileges”)
+
+If `npx supabase link --project-ref haoghddjcstxanrtggvb` fails with **“Your account does not have the necessary privileges”**, the Supabase user in your CLI session is **not** an Owner/Developer on that project.
+
+On this machine (verified):
+
+| Channel | Project | Access |
+|---------|---------|--------|
+| **App `.env.local` + Cursor MCP** | `haoghddjcstxanrtggvb` | Works — migrations + edge function already applied here |
+| **`npx supabase` CLI** (`fanelesibonge50@gmail.com`) | `ouaqkrvsswxjogivrxbm` only | Can link; **cannot** link `haoghddjcstxanrtggvb` |
+
+**You do not need CLI** for the anti-cheat deploy if Cursor Supabase MCP stays linked to `haoghddjcstxanrtggvb` — that path already applied all five speed-score migrations and deployed `submit-speed-score` v2.
+
+### To unblock CLI on this machine (pick one)
+
+1. **Invite this account to the owning org**  
+   Dashboard (account that created `haoghddjcstxanrtggvb`) → **Organization settings → Members** → invite `fanelesibonge50@gmail.com` as **Owner** or **Developer**, then:
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref haoghddjcstxanrtggvb
+   ```
+
+2. **Log in as the project owner**  
+   `npx supabase logout` → `npx supabase login` with the email/org that owns `haoghddjcstxanrtggvb`.
+
+3. **Keep MCP-only ops**  
+   Ask the agent to `apply_migration` / `deploy_edge_function` via `.cursor/mcp.json` (no local CLI).
+
+4. **Re-home the app** (only if you intend to abandon `haoghddjcstxanrtggvb`)  
+   Point `.env.local`, `.cursor/mcp.json`, and `.env.example` at `ouaqkrvsswxjogivrxbm`, then `db push` + function deploy on the owned project. That project has a **different** migration history (May 2026 seeds) — not a drop-in swap.
+
+### Dashboard fallback (owner account)
+
+If you have Dashboard access to `haoghddjcstxanrtggvb` but not CLI: **SQL Editor** → paste migration files in order; **Edge Functions** → deploy `supabase/functions/submit-speed-score/index.ts`.  
+*As of 2026-07-10, MCP reports these are already applied — use Dashboard only for new changes.*
+
 ## 1 · Apply migrations (remote)
 
-Migrations live in `supabase/migrations/` and should be applied **in filename order** to the remote DB (Dashboard SQL, linked CLI `db push`, or your MCP apply path).
+Migrations live in `supabase/migrations/` and should be applied **in filename order** to the remote DB.
 
-| Migration | Purpose |
-|-----------|---------|
-| `…core_schema` → `…rls…` | Base tables, RLS, indexes |
-| `…content…` / seed migrations | Catalog tables + content |
-| `20260710193000_speed_scores_mode.sql` | Dual boards: `mode` (`mixed` \| `chapter`) |
-| `20260710200000_drop_daily_scores.sql` | Drop unused hangman `daily_scores` |
-| `20260710210000_speed_scores_validate_real_caps.sql` | Cap: `score ≤ words_solved × 18400` |
-| `20260710220000_speed_scores_anticheat.sql` | Min score/word, monotonic weekly best, 8s increase limit |
-| `20260710230000_speed_scores_service_writes_only.sql` | **Clients cannot write** `speed_scores` (edge/service only) |
+**Preferred (this repo):** Supabase MCP in Cursor — `apply_migration` per file, or ask the agent to sync pending migrations. No local CLI login required when MCP is linked to `haoghddjcstxanrtggvb`.
 
-**Content snapshot (optional full refresh):** `supabase/seed_content.sql`  
-Expected counts: **76 chapters · 380 words · 2 seasons**.
-
-Optional history cleanup: `supabase/snippets/cleanup_duplicate_mcp_migrations.sql`.
-
-### CLI (when logged in as project owner)
+**Fallback (project owner CLI or Dashboard SQL):**
 
 ```bash
 npx supabase login
 npx supabase link --project-ref haoghddjcstxanrtggvb
 npx supabase db push
 ```
+
+### Remote status (verified 2026-07-10)
+
+| Migration | Remote version | Status |
+|-----------|----------------|--------|
+| `speed_scores_mode` | `20260710193650` | Applied |
+| `drop_daily_scores` | `20260710200206` | Applied — `daily_scores` gone |
+| `speed_scores_validate_real_caps` | `20260710201021` | Applied |
+| `speed_scores_anticheat` | `20260710201439` | Applied — trigger `speed_scores_validate` |
+| `speed_scores_service_writes_only` | `20260710201634` | Applied — client INSERT denied |
 
 ---
 
@@ -57,9 +91,15 @@ Browser **must not** INSERT/UPDATE `speed_scores` with the anon key.
 
 ### Deploy edge function
 
+**Preferred:** Supabase MCP `deploy_edge_function` (no CLI).
+
+**Fallback CLI:**
+
 ```bash
 npx supabase functions deploy submit-speed-score --project-ref haoghddjcstxanrtggvb
 ```
+
+**Remote status:** `submit-speed-score` **ACTIVE**, `verify_jwt: true`, version **2** (redeployed 2026-07-10).
 
 Source: `supabase/functions/submit-speed-score/index.ts`  
 Runtime secrets (set automatically on Supabase-hosted functions): `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
