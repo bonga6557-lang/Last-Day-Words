@@ -57,6 +57,39 @@ DATE STARTED: 2026-07-09
 | 23 | Revelation 13:1, 13:11, 13:15, 13:18 KJV (beast system) | Public-domain KJV; in-app `rev-beast-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
 | 24 | Revelation 20:2, 20:6, 20:14, 20:15 KJV (millennium) | Public-domain KJV; in-app `rev-millennium-*` | primary | KJV | Matches standard KJV wording 2026-07-09 | VERIFIED |
 | 25 | GC sanctuary key + image of hierarchy reused for new mastery tiers | en_GC (1).pdf p365, p383 (ledger 9, 11) | primary | GC text | Prior session extract | VERIFIED |
+| 26 | 150 new puzzle terms (30 chapters) — each verify_substring found in kjv.pdf | kjv.pdf; full ledger `docs/expansion-research-ledger.json` | primary | KJV | pypdf scan + normalize apostrophes/hyphenation 2026-07-09 | VERIFIED |
+
+### Expansion word research (150 terms, 2026-07-09)
+
+Protocol: rhema-main `deep-research.mdc` — HS-1 (KJV primary), HS-3 (verify before ship).
+
+| Metric | Value |
+|--------|-------|
+| New chapters | 30 |
+| New words | 150 |
+| Total catalog | 230 words / 50 chapters |
+| Verification source | `c:\Users\fanel\Downloads\kjv.pdf` |
+| Ledger | `docs/expansion-research-ledger.json` (150 entries, grade VERIFIED) |
+| Generator | `scripts/build-word-expansion.py` |
+
+Themes added: Daniel 3/5/6/9/10, Exodus/Leviticus/Hebrews sanctuary, Isaiah, Joel, Zechariah, Malachi, Matthew/Luke parables, Acts, Romans, 1 Corinthians, Ephesians, Thessalonians, 2 Peter, Revelation 4–22 expansion tracks.
+
+No duplicate `word` strings vs original 80-term catalog (checked at build time).
+
+### Expansion batch-2 (150 terms, 2026-07-10)
+
+| Metric | Value |
+|--------|-------|
+| Top-ups into original chapters | 20 (each core track +1 word) |
+| New chapters | 26 × 5 words = 130 |
+| New words total | 150 |
+| Catalog after batch-2 | **380 words / 76 chapters** |
+| Verification source | `kjv.pdf` (answers contiguous KJV); themes aligned with GC |
+| Ledger | `docs/expansion-batch2-ledger.json` |
+| Generator | `scripts/build-expansion-batch2.py` |
+| Migration | `supabase/migrations/20260710120000_seed_batch2_content.sql` |
+
+Study/fun-facts audit: `docs/STUDY_FUNFACTS_AUDIT_REPORT.md` (EGW GC + Education PDFs + fun facts fixes).
 
 ### Search trail (including dead ends)
 

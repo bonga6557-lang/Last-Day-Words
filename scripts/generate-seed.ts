@@ -7,7 +7,7 @@ function esc(s: string): string {
 }
 
 const lines: string[] = [];
-lines.push("-- Seed content for Last Day Words (80 terms / 20 chapters)");
+lines.push(`-- Seed content for Last Day Words (${chaptersData.reduce((n, c) => n + c.words.length, 0)} terms / ${chaptersData.length} chapters)`);
 lines.push("-- Generated from src/data/words.ts + seasons.ts");
 lines.push("");
 

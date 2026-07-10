@@ -1,0 +1,1291 @@
+{
+  "expansion_changes": [
+    {
+      "id": "daniel-three-1",
+      "old": "IMAGE OF GOLD",
+      "new": "IMAGE OF GOLD",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 3:1"
+    },
+    {
+      "id": "daniel-three-2",
+      "old": "FALL DOWN AND WORSHIP",
+      "new": "FALL DOWN AND WORSHIP",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 3:5"
+    },
+    {
+      "id": "daniel-three-3",
+      "old": "FURNACE HEATED SEVENFOLD",
+      "new": "SEVEN TIMES MORE THAN IT WAS WONT",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 3:19"
+    },
+    {
+      "id": "daniel-three-4",
+      "old": "FOURTH MAN LOOSE",
+      "new": "LIKE THE SON OF GOD",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 3:25"
+    },
+    {
+      "id": "daniel-three-5",
+      "old": "NO HURT UPON BODIES",
+      "new": "NOR WAS AN HAIR OF THEIR HEAD SINGED",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 3:27"
+    },
+    {
+      "id": "daniel-five-1",
+      "old": "GOLDEN VESSELS",
+      "new": "GOLDEN VESSELS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 5:2"
+    },
+    {
+      "id": "daniel-five-2",
+      "old": "FINGERS OF A MANS HAND",
+      "new": "FINGERS OF A MANS HAND",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 5:5"
+    },
+    {
+      "id": "daniel-five-3",
+      "old": "MENE MENE TEKEL UPHARSIN",
+      "new": "MENE MENE TEKEL UPHARSIN",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 5:25"
+    },
+    {
+      "id": "daniel-five-4",
+      "old": "TEKEL THOU ART WEIGHED",
+      "new": "TEKEL THOU ART WEIGHED IN THE BALANCES",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 5:27"
+    },
+    {
+      "id": "daniel-five-5",
+      "old": "THAT NIGHT BELSHAZZAR",
+      "new": "IN THAT NIGHT WAS BELSHAZZAR",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 5:30"
+    },
+    {
+      "id": "daniel-six-1",
+      "old": "LAW OF MEDES AND PERSIANS",
+      "new": "LAW OF THE MEDES AND PERSIANS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 6:8"
+    },
+    {
+      "id": "daniel-six-2",
+      "old": "THRICE DAILY UPON KNEES",
+      "new": "THREE TIMES A DAY",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 6:10"
+    },
+    {
+      "id": "daniel-six-3",
+      "old": "DEN OF LIONS",
+      "new": "CAST HIM INTO THE DEN OF LIONS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 6:16"
+    },
+    {
+      "id": "daniel-six-4",
+      "old": "GOD HATH SENT HIS ANGEL",
+      "new": "GOD HATH SENT HIS ANGEL",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 6:22"
+    },
+    {
+      "id": "daniel-six-5",
+      "old": "LIVING GOD FOREVER",
+      "new": "HE IS THE LIVING GOD",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 6:26"
+    },
+    {
+      "id": "daniel-nine-1",
+      "old": "SEVENTY WEEKS DETERMINED",
+      "new": "SEVENTY WEEKS ARE DETERMINED",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 9:24"
+    },
+    {
+      "id": "daniel-nine-2",
+      "old": "MESSIAH THE PRINCE",
+      "new": "MESSIAH THE PRINCE",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 9:25"
+    },
+    {
+      "id": "daniel-nine-3",
+      "old": "CUT OFF NOT FOR HIMSELF",
+      "new": "MESSIAH BE CUT OFF",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 9:26"
+    },
+    {
+      "id": "daniel-nine-4",
+      "old": "CONFIRM COVENANT ONE WEEK",
+      "new": "CONFIRM THE COVENANT WITH MANY",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 9:27"
+    },
+    {
+      "id": "daniel-nine-5",
+      "old": "ABOMINATION OF DESOLATION",
+      "new": "ABOMINATION THAT MAKETH DESOLATE",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 9:27"
+    },
+    {
+      "id": "daniel-ten-1",
+      "old": "MAN CLOTHED IN LINEN",
+      "new": "CLOTHED IN LINEN",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 10:5"
+    },
+    {
+      "id": "daniel-ten-2",
+      "old": "BODY LIKE BERYL",
+      "new": "HIS BODY ALSO WAS LIKE THE BERYL",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 10:6"
+    },
+    {
+      "id": "daniel-ten-3",
+      "old": "PRINCE OF PERSIA",
+      "new": "PRINCE OF THE KINGDOM OF PERSIA",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 10:13"
+    },
+    {
+      "id": "daniel-ten-4",
+      "old": "MICHAEL YOUR PRINCE",
+      "new": "MICHAEL YOUR PRINCE",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Daniel 10:21"
+    },
+    {
+      "id": "daniel-ten-5",
+      "old": "STRENGTHENED FOR THE VISION",
+      "new": "O MAN GREATLY BELOVED",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Daniel 10:19"
+    },
+    {
+      "id": "exodus-sanctuary-1",
+      "old": "PATTERN SHEWED THEE",
+      "new": "AFTER THE PATTERN",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Exodus 25:9"
+    },
+    {
+      "id": "exodus-sanctuary-2",
+      "old": "ARK OF THE TESTIMONY",
+      "new": "ARK OF THE TESTIMONY",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Exodus 25:16"
+    },
+    {
+      "id": "exodus-sanctuary-3",
+      "old": "MERCY SEAT OF GOLD",
+      "new": "MERCY SEAT OF PURE GOLD",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Exodus 25:17"
+    },
+    {
+      "id": "exodus-sanctuary-4",
+      "old": "CANDLESTICK OF PURE GOLD",
+      "new": "CANDLESTICK OF PURE GOLD",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Exodus 25:31"
+    },
+    {
+      "id": "exodus-sanctuary-5",
+      "old": "VEIL OF BLUE PURPLE",
+      "new": "VAIL OF BLUE AND PURPLE",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Exodus 26:31"
+    },
+    {
+      "id": "leviticus-atonement-1",
+      "old": "DAY OF ATONEMENTS",
+      "new": "DAY OF ATONEMENT",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Leviticus 16:29"
+    },
+    {
+      "id": "leviticus-atonement-2",
+      "old": "TWO GOATS FOR SIN",
+      "new": "ONE LOT FOR THE LORD",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Leviticus 16:8"
+    },
+    {
+      "id": "leviticus-atonement-3",
+      "old": "WITHIN THE VAIL",
+      "new": "WITHIN THE VAIL",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Leviticus 16:15"
+    },
+    {
+      "id": "leviticus-atonement-4",
+      "old": "SCAPEGOAT BEAR SINS",
+      "new": "BEAR UPON HIM ALL THEIR INIQUITIES",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Leviticus 16:22"
+    },
+    {
+      "id": "leviticus-atonement-5",
+      "old": "AFFLICT YOUR SOULS",
+      "new": "AFFLICT YOUR SOULS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Leviticus 16:31"
+    },
+    {
+      "id": "hebrews-sanctuary-1",
+      "old": "HIGH PRIEST FOREVER",
+      "new": "HIGH PRIEST FOR EVER",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Hebrews 6:20"
+    },
+    {
+      "id": "hebrews-sanctuary-2",
+      "old": "MINISTER OF SANCTUARY",
+      "new": "MINISTER OF THE SANCTUARY",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Hebrews 8:2"
+    },
+    {
+      "id": "hebrews-sanctuary-3",
+      "old": "BETTER COVENANT ESTABLISHED",
+      "new": "MEDIATOR OF A BETTER COVENANT",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Hebrews 8:6"
+    },
+    {
+      "id": "hebrews-sanctuary-4",
+      "old": "ONCE IN THE END",
+      "new": "ONCE IN THE END OF THE WORLD HATH HE APPEARED",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Hebrews 9:26"
+    },
+    {
+      "id": "hebrews-sanctuary-5",
+      "old": "WITHOUT SIN UNTO SALVATION",
+      "new": "WITHOUT SIN UNTO SALVATION",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Hebrews 9:28"
+    },
+    {
+      "id": "isaiah-comfort-1",
+      "old": "COMFORT YE MY PEOPLE",
+      "new": "COMFORT YE COMFORT YE MY PEOPLE",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Isaiah 40:1"
+    },
+    {
+      "id": "isaiah-comfort-2",
+      "old": "VOICE CRYING WILDERNESS",
+      "new": "VOICE OF HIM THAT CRIETH IN THE WILDERNESS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Isaiah 40:3"
+    },
+    {
+      "id": "isaiah-comfort-3",
+      "old": "ALL FLESH IS GRASS",
+      "new": "ALL FLESH IS GRASS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Isaiah 40:6"
+    },
+    {
+      "id": "isaiah-comfort-4",
+      "old": "WORD OF GOD STAND FOREVER",
+      "new": "WORD OF OUR GOD SHALL STAND FOR EVER",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Isaiah 40:8"
+    },
+    {
+      "id": "isaiah-comfort-5",
+      "old": "GIVE STRENGTH TO THE WEARY",
+      "new": "HE GIVETH POWER TO THE FAINT",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Isaiah 40:29"
+    },
+    {
+      "id": "isaiah-servant-1",
+      "old": "DESPISED AND REJECTED",
+      "new": "HE IS DESPISED AND REJECTED OF MEN",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Isaiah 53:3"
+    },
+    {
+      "id": "isaiah-servant-2",
+      "old": "WOUNDED FOR TRANSGRESSIONS",
+      "new": "WOUNDED FOR OUR TRANSGRESSIONS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Isaiah 53:5"
+    },
+    {
+      "id": "isaiah-servant-3",
+      "old": "LAID ON HIM INIQUITY",
+      "new": "LAID ON HIM THE INIQUITY OF US ALL",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Isaiah 53:6"
+    },
+    {
+      "id": "isaiah-servant-4",
+      "old": "OPENED NOT HIS MOUTH",
+      "new": "OPENED NOT HIS MOUTH",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Isaiah 53:7"
+    },
+    {
+      "id": "isaiah-servant-5",
+      "old": "MAKE INTERCESSION FOR TRANSGRESSORS",
+      "new": "MADE INTERCESSION FOR THE TRANSGRESSORS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Isaiah 53:12"
+    },
+    {
+      "id": "joel-prophecy-1",
+      "old": "BLOW THE TRUMPET ZION",
+      "new": "BLOW YE THE TRUMPET IN ZION",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Joel 2:1"
+    },
+    {
+      "id": "joel-prophecy-2",
+      "old": "DAY OF DARKNESS GLOOMINESS",
+      "new": "DAY OF DARKNESS AND OF GLOOMINESS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Joel 2:2"
+    },
+    {
+      "id": "joel-prophecy-3",
+      "old": "POUR OUT MY SPIRIT",
+      "new": "I WILL POUR OUT MY SPIRIT UPON ALL FLESH",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Joel 2:28"
+    },
+    {
+      "id": "joel-prophecy-4",
+      "old": "SUN TURNED DARKNESS",
+      "new": "SUN SHALL BE TURNED INTO DARKNESS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Joel 2:31"
+    },
+    {
+      "id": "joel-prophecy-5",
+      "old": "VALLEY OF DECISION",
+      "new": "VALLEY OF DECISION",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Joel 3:14"
+    },
+    {
+      "id": "zechariah-temple-1",
+      "old": "BRAND PLUCKED FROM FIRE",
+      "new": "BRAND PLUCKED OUT OF THE FIRE",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Zechariah 3:2"
+    },
+    {
+      "id": "zechariah-temple-2",
+      "old": "CHANGE OF RAIMENT",
+      "new": "CHANGE OF RAIMENT",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Zechariah 3:4"
+    },
+    {
+      "id": "zechariah-temple-3",
+      "old": "BEHOLD THE MAN BRANCH",
+      "new": "BEHOLD THE MAN WHOSE NAME IS THE BRANCH",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Zechariah 6:12"
+    },
+    {
+      "id": "zechariah-temple-4",
+      "old": "NOT BY MIGHT NOR POWER",
+      "new": "NOT BY MIGHT NOR BY POWER BUT BY MY SPIRIT",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Zechariah 4:6"
+    },
+    {
+      "id": "zechariah-temple-5",
+      "old": "FLYING ROLL CURSE",
+      "new": "FLYING ROLL",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Zechariah 5:3"
+    },
+    {
+      "id": "malachi-remnant-1",
+      "old": "MESSENGER OF THE COVENANT",
+      "new": "MESSENGER OF THE COVENANT",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Malachi 3:1"
+    },
+    {
+      "id": "malachi-remnant-2",
+      "old": "REFINERS FIRE FULLERS SOAP",
+      "new": "LIKE A REFINERS FIRE",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Malachi 3:2"
+    },
+    {
+      "id": "malachi-remnant-3",
+      "old": "ROB GOD IN TITHES",
+      "new": "WILL A MAN ROB GOD",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Malachi 3:8"
+    },
+    {
+      "id": "malachi-remnant-4",
+      "old": "BOOK OF REMEMBRANCE",
+      "new": "BOOK OF REMEMBRANCE WAS WRITTEN BEFORE HIM",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Malachi 3:16"
+    },
+    {
+      "id": "malachi-remnant-5",
+      "old": "SUN OF RIGHTEOUSNESS ARISE",
+      "new": "SUN OF RIGHTEOUSNESS ARISE WITH HEALING IN HIS WINGS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Malachi 4:2"
+    },
+    {
+      "id": "matthew-parables-1",
+      "old": "TEN VIRGINS WENT FORTH",
+      "new": "TEN VIRGINS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Matthew 25:1"
+    },
+    {
+      "id": "matthew-parables-2",
+      "old": "MIDNIGHT CRY BEHOLD BRIDEGROOM",
+      "new": "BEHOLD THE BRIDEGROOM COMETH",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Matthew 25:6"
+    },
+    {
+      "id": "matthew-parables-3",
+      "old": "I WAS AN HUNGERED",
+      "new": "I WAS AN HUNGRED",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Matthew 25:35"
+    },
+    {
+      "id": "matthew-parables-4",
+      "old": "DEPART FROM ME YE CURSED",
+      "new": "DEPART FROM ME YE CURSED",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Matthew 25:41"
+    },
+    {
+      "id": "matthew-parables-5",
+      "old": "ENTER THOU GOOD SERVANT",
+      "new": "ENTER THOU INTO THE JOY",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Matthew 25:21"
+    },
+    {
+      "id": "luke-watchfulness-1",
+      "old": "FIG TREE PUTTETH FORTH",
+      "new": "BEHOLD THE FIG TREE AND ALL THE TREES",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Luke 21:29"
+    },
+    {
+      "id": "luke-watchfulness-2",
+      "old": "THIS GENERATION NOT PASS",
+      "new": "THIS GENERATION SHALL NOT PASS AWAY",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Luke 21:32"
+    },
+    {
+      "id": "luke-watchfulness-3",
+      "old": "TAKE HEED TO YOURSELVES",
+      "new": "TAKE HEED TO YOURSELVES LEST AT ANY TIME YOUR HEARTS BE OVERCHARGED",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Luke 21:34"
+    },
+    {
+      "id": "luke-watchfulness-4",
+      "old": "WATCH THEREFORE AND PRAY",
+      "new": "WATCH YE THEREFORE AND PRAY ALWAYS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Luke 21:36"
+    },
+    {
+      "id": "luke-watchfulness-5",
+      "old": "REDEMPTION DRAWETH NIGH",
+      "new": "YOUR REDEMPTION DRAWETH NIGH",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Luke 21:28"
+    },
+    {
+      "id": "acts-restoration-1",
+      "old": "SOUND FROM HEAVEN",
+      "new": "SUDDENLY THERE CAME A SOUND FROM HEAVEN",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Acts 2:2"
+    },
+    {
+      "id": "acts-restoration-2",
+      "old": "CLOVEN TONGUES LIKE FIRE",
+      "new": "CLOVEN TONGUES LIKE AS OF FIRE",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Acts 2:3"
+    },
+    {
+      "id": "acts-restoration-3",
+      "old": "TIMES OF RESTITUTION",
+      "new": "TIMES OF RESTITUTION OF ALL THINGS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Acts 3:21"
+    },
+    {
+      "id": "acts-restoration-4",
+      "old": "PROPHET LIKE UNTO ME",
+      "new": "A PROPHET SHALL THE LORD YOUR GOD RAISE UP",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Acts 3:22"
+    },
+    {
+      "id": "acts-restoration-5",
+      "old": "REPENT AND BE CONVERTED",
+      "new": "REPENT YE THEREFORE AND BE CONVERTED",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Acts 3:19"
+    },
+    {
+      "id": "romans-gospel-1",
+      "old": "NOT ASHAMED OF GOSPEL",
+      "new": "NOT ASHAMED OF THE GOSPEL OF CHRIST",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Romans 1:16"
+    },
+    {
+      "id": "romans-gospel-2",
+      "old": "REVEALED FROM FAITH",
+      "new": "THE JUST SHALL LIVE BY FAITH",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Romans 1:17"
+    },
+    {
+      "id": "romans-gospel-3",
+      "old": "ALL HAVE SINNED",
+      "new": "ALL HAVE SINNED AND COME SHORT OF THE GLORY OF GOD",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Romans 3:23"
+    },
+    {
+      "id": "romans-gospel-4",
+      "old": "WAGES OF SIN DEATH",
+      "new": "THE WAGES OF SIN IS DEATH",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Romans 6:23"
+    },
+    {
+      "id": "romans-gospel-5",
+      "old": "CREATION GROANING TRAVAILETH",
+      "new": "THE WHOLE CREATION GROANETH AND TRAVAILETH IN PAIN TOGETHER",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Romans 8:22"
+    },
+    {
+      "id": "first-corinthians-resurrection-1",
+      "old": "LAST TRUMP SHALL SOUND",
+      "new": "AT THE LAST TRUMP",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "1 Corinthians 15:52"
+    },
+    {
+      "id": "first-corinthians-resurrection-2",
+      "old": "VICTORY THROUGH LORD",
+      "new": "VICTORY THROUGH OUR LORD JESUS CHRIST",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "1 Corinthians 15:57"
+    },
+    {
+      "id": "first-corinthians-resurrection-3",
+      "old": "STUMBLING BLOCK TO JEWS",
+      "new": "UNTO THE JEWS A STUMBLINGBLOCK",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "1 Corinthians 1:23"
+    },
+    {
+      "id": "first-corinthians-resurrection-4",
+      "old": "SHEW YOU MYSTERY",
+      "new": "I SHEW YOU A MYSTERY",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "1 Corinthians 15:51"
+    },
+    {
+      "id": "first-corinthians-resurrection-5",
+      "old": "CORRUPTIBLE PUT ON INCORRUPTION",
+      "new": "THIS CORRUPTIBLE MUST PUT ON INCORRUPTION",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "1 Corinthians 15:53"
+    },
+    {
+      "id": "ephesians-armour-1",
+      "old": "WRESTLE NOT AGAINST FLESH",
+      "new": "WE WRESTLE NOT AGAINST FLESH AND BLOOD",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Ephesians 6:12"
+    },
+    {
+      "id": "ephesians-armour-2",
+      "old": "GIRDLE OF TRUTH",
+      "new": "HAVING YOUR LOINS GIRT ABOUT WITH TRUTH",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Ephesians 6:14"
+    },
+    {
+      "id": "ephesians-armour-3",
+      "old": "SHIELD OF FAITH",
+      "new": "SHIELD OF FAITH",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Ephesians 6:16"
+    },
+    {
+      "id": "ephesians-armour-4",
+      "old": "HELMET OF SALVATION",
+      "new": "TAKE THE HELMET OF SALVATION AND THE SWORD OF THE SPIRIT",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Ephesians 6:17"
+    },
+    {
+      "id": "ephesians-armour-5",
+      "old": "SWORD OF THE SPIRIT",
+      "new": "SWORD OF THE SPIRIT WHICH IS THE WORD OF GOD",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Ephesians 6:17"
+    },
+    {
+      "id": "thessalonians-coming-1",
+      "old": "COMFORT ONE ANOTHER",
+      "new": "COMFORT ONE ANOTHER WITH THESE WORDS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "1 Thessalonians 4:18"
+    },
+    {
+      "id": "thessalonians-coming-2",
+      "old": "THIEF IN THE NIGHT",
+      "new": "THE DAY OF THE LORD SO COMETH AS A THIEF IN THE NIGHT",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "1 Thessalonians 5:2"
+    },
+    {
+      "id": "thessalonians-coming-3",
+      "old": "MAN OF SIN REVEALED",
+      "new": "THAT MAN OF SIN BE REVEALED",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Thessalonians 2:3"
+    },
+    {
+      "id": "thessalonians-coming-4",
+      "old": "WHAT WITHHOLDETH NOW",
+      "new": "HE WHO NOW LETTETH WILL LET",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Thessalonians 2:7"
+    },
+    {
+      "id": "thessalonians-coming-5",
+      "old": "STAND FAST HOLD TRADITIONS",
+      "new": "STAND FAST AND HOLD THE TRADITIONS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Thessalonians 2:15"
+    },
+    {
+      "id": "second-peter-day-1",
+      "old": "SCOFFERS WALKING AFTER LUST",
+      "new": "THERE SHALL COME IN THE LAST DAYS SCOFFERS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Peter 3:3"
+    },
+    {
+      "id": "second-peter-day-2",
+      "old": "ONE DAY IS AS THOUSAND",
+      "new": "ONE DAY IS WITH THE LORD AS A THOUSAND YEARS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Peter 3:8"
+    },
+    {
+      "id": "second-peter-day-3",
+      "old": "ELEMENTS MELT FERVENT HEAT",
+      "new": "ELEMENTS SHALL MELT WITH FERVENT HEAT",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Peter 3:10"
+    },
+    {
+      "id": "second-peter-day-4",
+      "old": "NEW HEAVENS NEW EARTH",
+      "new": "NEW HEAVENS AND A NEW EARTH WHEREIN DWELLETH RIGHTEOUSNESS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Peter 3:13"
+    },
+    {
+      "id": "second-peter-day-5",
+      "old": "GROW IN GRACE KNOWLEDGE",
+      "new": "GROW IN GRACE AND IN THE KNOWLEDGE OF OUR LORD",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "2 Peter 3:18"
+    },
+    {
+      "id": "rev-throne-1",
+      "old": "THRONE SET IN HEAVEN",
+      "new": "A THRONE WAS SET IN HEAVEN",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 4:2"
+    },
+    {
+      "id": "rev-throne-2",
+      "old": "FOUR AND TWENTY ELDERS",
+      "new": "FOUR AND TWENTY ELDERS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 4:10"
+    },
+    {
+      "id": "rev-throne-3",
+      "old": "FOUR BEASTS FULL OF EYES",
+      "new": "FOUR BEASTS FULL OF EYES BEFORE AND BEHIND",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 4:6"
+    },
+    {
+      "id": "rev-throne-4",
+      "old": "HOLY HOLY HOLY LORD",
+      "new": "HOLY HOLY HOLY LORD GOD ALMIGHTY",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 4:8"
+    },
+    {
+      "id": "rev-throne-5",
+      "old": "THOU ART WORTHY CREATOR",
+      "new": "THOU ART WORTHY O LORD",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 4:11"
+    },
+    {
+      "id": "rev-144000-1",
+      "old": "SEALED IN FOREHEADS",
+      "new": "SEALED THE SERVANTS OF OUR GOD IN THEIR FOREHEADS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 7:3"
+    },
+    {
+      "id": "rev-144000-2",
+      "old": "HURT NOT EARTH SEA",
+      "new": "HURT NOT THE EARTH NEITHER THE SEA",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 7:3"
+    },
+    {
+      "id": "rev-144000-3",
+      "old": "NUMBERED ONE HUNDRED FORTY FOUR",
+      "new": "AN HUNDRED AND FORTY AND FOUR THOUSAND",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 7:4"
+    },
+    {
+      "id": "rev-144000-4",
+      "old": "GREAT MULTITUDE NO MAN NUMBER",
+      "new": "A GREAT MULTITUDE WHICH NO MAN COULD NUMBER",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 7:9"
+    },
+    {
+      "id": "rev-144000-5",
+      "old": "WASHED ROBES IN BLOOD",
+      "new": "WASHED THEIR ROBES AND MADE THEM WHITE",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 7:14"
+    },
+    {
+      "id": "rev-witnesses-1",
+      "old": "TWO WITNESSES PROPHESY",
+      "new": "MY TWO WITNESSES",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 11:3"
+    },
+    {
+      "id": "rev-witnesses-2",
+      "old": "TWO OLIVE TREES",
+      "new": "TWO OLIVE TREES AND THE TWO CANDLESTICKS",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 11:4"
+    },
+    {
+      "id": "rev-witnesses-3",
+      "old": "FIRE PROCEED OUT MOUTH",
+      "new": "FIRE PROCEEDETH OUT OF THEIR MOUTH",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 11:5"
+    },
+    {
+      "id": "rev-witnesses-4",
+      "old": "DEAD BODIES THREE DAYS",
+      "new": "DEAD BODIES SHALL LIE IN THE STREET",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 11:8"
+    },
+    {
+      "id": "rev-witnesses-5",
+      "old": "SPIRIT OF LIFE FROM GOD",
+      "new": "SPIRIT OF LIFE FROM GOD ENTERED INTO THEM",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 11:11"
+    },
+    {
+      "id": "rev-woman-dragon-1",
+      "old": "GREAT RED DRAGON",
+      "new": "A GREAT RED DRAGON",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 12:3"
+    },
+    {
+      "id": "rev-woman-dragon-2",
+      "old": "MICHAEL FOUGHT DRAGON",
+      "new": "MICHAEL AND HIS ANGELS FOUGHT",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 12:7"
+    },
+    {
+      "id": "rev-woman-dragon-3",
+      "old": "ACCUSER OF BRETHREN",
+      "new": "ACCUSED THEM BEFORE OUR GOD DAY AND NIGHT",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 12:10"
+    },
+    {
+      "id": "rev-woman-dragon-4",
+      "old": "WILDERNESS PREPARED WOMAN",
+      "new": "WILDERNESS WHERE SHE HATH A PLACE PREPARED",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 12:6"
+    },
+    {
+      "id": "rev-woman-dragon-5",
+      "old": "EARTH OPENED MOUTH",
+      "new": "THE EARTH OPENED HER MOUTH",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 12:16"
+    },
+    {
+      "id": "rev-harvest-1",
+      "old": "EVERLASTING GOSPEL PREACH",
+      "new": "EVERLASTING GOSPEL TO PREACH",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 14:6"
+    },
+    {
+      "id": "rev-harvest-2",
+      "old": "FALL DOWN WORSHIP HIM",
+      "new": "FEAR GOD AND GIVE GLORY TO HIM",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 14:7"
+    },
+    {
+      "id": "rev-harvest-3",
+      "old": "PATIENCE OF SAINTS",
+      "new": "PATIENCE OF THE SAINTS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 14:12"
+    },
+    {
+      "id": "rev-harvest-4",
+      "old": "ONE LIKE SON OF MAN",
+      "new": "ONE SAT LIKE UNTO THE SON OF MAN",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 14:14"
+    },
+    {
+      "id": "rev-harvest-5",
+      "old": "WINEPRESS TRODDEN WITHOUT",
+      "new": "WINEPRESS WAS TRODDEN WITHOUT THE CITY",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 14:20"
+    },
+    {
+      "id": "rev-plagues-1",
+      "old": "SEVEN GOLDEN VIALS",
+      "new": "SEVEN GOLDEN VIALS FULL OF THE WRATH OF GOD",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 15:7"
+    },
+    {
+      "id": "rev-plagues-2",
+      "old": "NOISOME GRIEVOUS SORE",
+      "new": "NOISOME AND GRIEVOUS SORE",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 16:2"
+    },
+    {
+      "id": "rev-plagues-3",
+      "old": "POURED OUT HIS VIAL UPON SEA",
+      "new": "POURED OUT HIS VIAL UPON THE SEA",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 16:3"
+    },
+    {
+      "id": "rev-plagues-4",
+      "old": "EUPHRATES DRIED UP",
+      "new": "THE WATER THEREOF WAS DRIED UP",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 16:12"
+    },
+    {
+      "id": "rev-plagues-5",
+      "old": "IT IS DONE",
+      "new": "AND THE SEVENTH ANGEL POURED OUT HIS VIAL INTO THE AIR",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 16:17"
+    },
+    {
+      "id": "rev-harlot-1",
+      "old": "MYSTERY BABYLON GREAT",
+      "new": "MYSTERY BABYLON THE GREAT",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 17:5"
+    },
+    {
+      "id": "rev-harlot-2",
+      "old": "DRUNK WITH BLOOD SAINTS",
+      "new": "DRUNKEN WITH THE BLOOD OF THE SAINTS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 17:6"
+    },
+    {
+      "id": "rev-harlot-3",
+      "old": "TEN HORNS UPON BEAST",
+      "new": "THE TEN HORNS WHICH THOU SAWEST UPON THE BEAST",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 17:16"
+    },
+    {
+      "id": "rev-harlot-4",
+      "old": "MIGHTY ANGEL CRIED",
+      "new": "BABYLON THE GREAT IS FALLEN IS FALLEN",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 18:2"
+    },
+    {
+      "id": "rev-harlot-5",
+      "old": "THY MERCHANDISE OF GOLD",
+      "new": "THE MERCHANDISE OF GOLD AND SILVER",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 18:12"
+    },
+    {
+      "id": "rev-victory-1",
+      "old": "FAITHFUL AND TRUE RIDER",
+      "new": "CALLED FAITHFUL AND TRUE",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 19:11"
+    },
+    {
+      "id": "rev-victory-2",
+      "old": "ARMIES IN HEAVEN FOLLOW",
+      "new": "THE ARMIES WHICH WERE IN HEAVEN FOLLOWED HIM",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 19:14"
+    },
+    {
+      "id": "rev-victory-3",
+      "old": "MARRIAGE OF LAMB COME",
+      "new": "THE MARRIAGE OF THE LAMB IS COME",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 19:7"
+    },
+    {
+      "id": "rev-victory-4",
+      "old": "LAKE OF FIRE BURNING",
+      "new": "CAST ALIVE INTO A LAKE OF FIRE BURNING WITH BRIMSTONE",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 19:20"
+    },
+    {
+      "id": "rev-victory-5",
+      "old": "DEVIL CAST INTO LAKE",
+      "new": "CAST INTO THE LAKE OF FIRE",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 20:10"
+    },
+    {
+      "id": "rev-new-creation-1",
+      "old": "TABERNACLE OF GOD WITH MEN",
+      "new": "TABERNACLE OF GOD IS WITH MEN",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 21:3"
+    },
+    {
+      "id": "rev-new-creation-2",
+      "old": "ALPHA AND OMEGA BEGINNING",
+      "new": "ALPHA AND OMEGA THE BEGINNING AND THE END",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 21:6"
+    },
+    {
+      "id": "rev-new-creation-3",
+      "old": "RIVER OF WATER OF LIFE",
+      "new": "PURE RIVER OF WATER OF LIFE",
+      "source": "verify",
+      "kjv_ok": true,
+      "verse": "Revelation 22:1"
+    },
+    {
+      "id": "rev-new-creation-4",
+      "old": "TREE OF LIFE FRUIT",
+      "new": "TREE OF LIFE WHICH BARE TWELVE MANNER OF FRUITS",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 22:2"
+    },
+    {
+      "id": "rev-new-creation-5",
+      "old": "SPIRIT AND BRIDE SAY COME",
+      "new": "THE SPIRIT AND THE BRIDE SAY COME",
+      "source": "override",
+      "kjv_ok": true,
+      "verse": "Revelation 22:17"
+    }
+  ],
+  "core_changes": [
+    {
+      "id": "signs-1",
+      "status": "unchanged",
+      "word": "WARS AND RUMOURS OF WARS"
+    },
+    {
+      "id": "time-of-trouble-3",
+      "status": "unchanged",
+      "word": "TIME OF JACOBS TROUBLE"
+    },
+    {
+      "id": "daniel-image-4",
+      "status": "unchanged",
+      "word": "STONE WAS CUT OUT WITHOUT HANDS"
+    },
+    {
+      "id": "daniel-image-3",
+      "status": "unchanged",
+      "word": "HIS FEET PART OF IRON AND PART OF CLAY"
+    },
+    {
+      "id": "daniel-beasts-2",
+      "status": "unchanged",
+      "word": "THE FIRST WAS LIKE A LION"
+    },
+    {
+      "id": "daniel-beasts-3",
+      "status": "unchanged",
+      "word": "RAISED UP ITSELF ON ONE SIDE"
+    },
+    {
+      "id": "daniel-beasts-4",
+      "status": "unchanged",
+      "word": "FOUR WINGS OF A FOWL"
+    },
+    {
+      "id": "daniel-horn-3",
+      "status": "unchanged",
+      "word": "TIME AND TIMES AND THE DIVIDING OF TIME"
+    },
+    {
+      "id": "daniel-sanctuary-1",
+      "status": "unchanged",
+      "word": "TWO THOUSAND AND THREE HUNDRED DAYS"
+    },
+    {
+      "id": "rev-seals-1",
+      "status": "unchanged",
+      "word": "SEALED WITH SEVEN SEALS"
+    },
+    {
+      "id": "rev-seals-3",
+      "status": "unchanged",
+      "word": "UNDER THE ALTAR"
+    },
+    {
+      "id": "rev-trumpets-2",
+      "status": "unchanged",
+      "word": "PRAYERS OF THE SAINTS"
+    },
+    {
+      "id": "rev-trumpets-4",
+      "status": "unchanged",
+      "word": "MYSTERY OF GOD SHOULD BE FINISHED"
+    },
+    {
+      "id": "rev-beast-1",
+      "status": "unchanged",
+      "word": "BEAST RISE UP OUT OF THE SEA"
+    },
+    {
+      "id": "rev-beast-2",
+      "status": "unchanged",
+      "word": "ANOTHER BEAST COMING UP OUT OF THE EARTH"
+    },
+    {
+      "id": "daniel-beasts-4",
+      "status": "clue_fixed"
+    },
+    {
+      "id": "daniel-beasts-3",
+      "status": "clue_fixed"
+    }
+  ],
+  "expansion_kjv_fail_count": 0,
+  "expansion_kjv_fail": []
+}

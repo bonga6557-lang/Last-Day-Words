@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "total_words": 230,
+    "chapters": 50,
+    "multi_word": 219,
+    "kjv_ok_multi": 208,
+    "study_terms": 13,
+    "in_seed": 230
+  },
+  "findings": {
+    "study_terms_not_kjv_quote": [
+      {
+        "id": "shaking-2",
+        "word": "STRAIGHT TESTIMONY",
+        "verse": "Revelation 3:19"
+      },
+      {
+        "id": "shaking-3",
+        "word": "REJECTION OF TRUTH",
+        "verse": "2 Thessalonians 2:10"
+      },
+      {
+        "id": "shaking-4",
+        "word": "SIFTING",
+        "verse": "Amos 9:9"
+      },
+      {
+        "id": "seal-of-god-3",
+        "word": "SUNDAY LAW",
+        "verse": "Revelation 13:16"
+      },
+      {
+        "id": "time-of-trouble-1",
+        "word": "CLOSE OF PROBATION",
+        "verse": "Revelation 22:11"
+      },
+      {
+        "id": "time-of-trouble-4",
+        "word": "DEATH DECREE",
+        "verse": "Revelation 13:15"
+      },
+      {
+        "id": "second-coming-1",
+        "word": "SECOND COMING",
+        "verse": "Titus 2:13"
+      },
+      {
+        "id": "second-coming-2",
+        "word": "EASTERN SKY",
+        "verse": "Matthew 24:30"
+      },
+      {
+        "id": "judgment-1",
+        "word": "INVESTIGATIVE JUDGMENT",
+        "verse": "Daniel 7:9-10"
+      },
+      {
+        "id": "judgment-2",
+        "word": "PRE ADVENT JUDGMENT",
+        "verse": "Daniel 8:14"
+      },
+      {
+        "id": "judgment-3",
+        "word": "BLOT OUT SINS",
+        "verse": "Acts 3:19"
+      },
+      {
+        "id": "judgment-4",
+        "word": "CLEANSING OF SANCTUARY",
+        "verse": "Hebrews 9:23"
+      },
+      {
+        "id": "deceptions-2",
+        "word": "SPIRITUALISM",
+        "verse": "Revelation 16:14"
+      }
+    ],
+    "duplicates": [],
+    "kjv_not_contiguous": [],
+    "scripture_quality": [],
+    "answer_not_in_scripture": [],
+    "clue_leaks": [],
+    "seed_mismatch": [],
+    "casing": []
+  }
+}

@@ -5,6 +5,8 @@ export const ALPHABET = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
 export const MAX_MISTAKES = 5;
 export const MAX_HINTS_PER_WORD = 2;
 export const HINT_MISTAKE_PENALTY = 1;
+export const MAX_DEPTH_HINT_TIERS = 3;
+export type DepthHintTier = 1 | 2 | 3;
 export const TEAMS_QUESTIONS_PER_SIDE = 10;
 export const SPEED_ROUND_TIME = 30;
 export const SPEED_SOLVE_BONUS = 8;
@@ -93,9 +95,8 @@ export function getChapterMastery(
 ): { percent: number; tier: MasteryTier; masteredCount: number; total: number } {
   const total = chapter.words.length;
   if (total === 0) return { percent: 0, tier: 0, masteredCount: 0, total: 0 };
-  const sumStars = chapter.words.reduce((acc, w) => acc + Math.min(3, stats?.[w.id]?.bestStars ?? 0), 0);
-  const percent = Math.round((sumStars / (total * 3)) * 100);
   const masteredCount = chapter.words.filter((w) => stats?.[w.id]?.mastered).length;
+  const percent = Math.round((masteredCount / total) * 100);
   const tier: MasteryTier = percent >= 100 ? 100 : percent >= 50 ? 50 : percent >= 25 ? 25 : 0;
   return { percent, tier, masteredCount, total };
 }
@@ -128,6 +129,30 @@ export function getDepthHint(word: WordTerm, mistakes: number, difficulty?: Diff
   if (word.expertClue && mistakes >= expertAt) return `Expert clue: ${word.expertClue}`;
   if (mistakes >= summaryAt) return word.summary.slice(0, 100) + (word.summary.length > 100 ? "…" : "");
   return null;
+}
+
+export function getDepthHintTierLabel(tier: DepthHintTier): string {
+  if (tier === 1) return "Summary";
+  if (tier === 2) return "Expert Clue";
+  return "Scripture Reference";
+}
+
+export function getDepthHintTierText(word: WordTerm, tier: DepthHintTier): string | null {
+  if (tier === 1) {
+    return word.summary.slice(0, 100) + (word.summary.length > 100 ? "…" : "");
+  }
+  if (tier === 2) {
+    return word.expertClue ? `Expert clue: ${word.expertClue}` : null;
+  }
+  return `Scripture: ${word.verse}`;
+}
+
+/** Next opt-in depth tier after `depthTier` (0 = none revealed yet). Skips expert when absent. */
+export function getNextDepthHintTier(word: WordTerm, depthTier: number): DepthHintTier | null {
+  if (depthTier >= MAX_DEPTH_HINT_TIERS) return null;
+  const next = (depthTier + 1) as DepthHintTier;
+  if (next === 2 && !word.expertClue) return depthTier >= 2 ? null : 3;
+  return next;
 }
 
 export function pickRandomHintLetter(wordText: string, guessedLetters: string[]): string | null {

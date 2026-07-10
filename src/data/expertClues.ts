@@ -1,17 +1,20 @@
 /** Expert-tier clues — cryptic, for players who need deeper challenge */
+import { expertClueExpansion } from "./expertCluesExpansion";
+import { expertClueExpansion2 } from "./expertCluesExpansion2";
+
 export const expertClueMap: Record<string, string> = {
   "signs-1": "Olivet discourse symptom: nations rise against nations before the end.",
   "signs-2": "Matthew 24 warns these deceivers may show wonders to mislead the elect.",
-  "signs-3": "Hated of all nations for His name — Matthew 24:9 affliction.",
+  "signs-3": "Matthew 13:21 — tribulation or persecution because of the word.",
   "signs-4": "Must reach every nation as a witness — then the end arrives.",
   "shaking-1": "Hebrews 12:27 — only what cannot be shaken will remain.",
   "shaking-2": "Laodicean rebuke: 'As many as I love, I rebuke and chasten.'",
   "shaking-3": "They received not the love of the truth — 2 Thessalonians 2:10.",
   "shaking-4": "Amos 9:9 — sifted like corn; not one grain falls to the earth.",
   "latter-rain-1": "Joel 2:23 — former rain moderately, latter rain at harvest end.",
-  "latter-rain-2": "Acts 2 — the early rain that launched the apostolic church.",
+  "latter-rain-2": "Acts 2:1 — when the day of Pentecost was fully come.",
   "latter-rain-3": "Acts 3:19 — sins blotted out when refreshing comes from His presence.",
-  "latter-rain-4": "Zechariah 10:1 — ask the LORD for rain in the time of the latter rain.",
+  "latter-rain-4": "Ephesians 1:13 — sealed with that holy Spirit of promise.",
   "loud-cry-1": "Revelation 18:1 — the earth lightened with His glory.",
   "loud-cry-2": "Revelation 14's threefold final warning of judgment and worship.",
   "loud-cry-3": "Second angel of Revelation 14 — great city fallen twice over.",
@@ -26,7 +29,7 @@ export const expertClueMap: Record<string, string> = {
   "time-of-trouble-4": "Revelation 13:15 — image speaks; refusers face execution.",
   "second-coming-1": "Titus 2:13 — the blessed hope and glorious appearing.",
   "second-coming-2": "Matthew 24:30 — sign of the Son of man seen in heaven's clouds.",
-  "second-coming-3": "1 Thessalonians 4:16 — trumpet; dead in Christ rise first.",
+  "second-coming-3": "1 Corinthians 15:42 — so also is the resurrection of the dead.",
   "second-coming-4": "1 Thessalonians 4:17 — living saints caught up to meet Him in the air.",
   "new-earth-1": "Revelation 12:17 — keep commandments and hold testimony of Jesus.",
   "new-earth-2": "Revelation 21:1 — first heaven and earth passed away.",
@@ -72,6 +75,8 @@ export const expertClueMap: Record<string, string> = {
   "rev-millennium-2": "Revelation 20:6 — blessed is he that hath part in the first resurrection.",
   "rev-millennium-3": "Revelation 20:14 — this is the second death.",
   "rev-millennium-4": "Revelation 20:15 — not found written in the book of life.",
+  ...expertClueExpansion,
+  ...expertClueExpansion2,
 };
 
 export function applyExpertClue<T extends { id: string; expertClue?: string }>(word: T): T {

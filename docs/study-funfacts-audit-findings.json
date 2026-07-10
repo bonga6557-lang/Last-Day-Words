@@ -1,0 +1,142 @@
+{
+  "ok": 71,
+  "failed": [
+    {
+      "id": "db-50",
+      "source": "kjv",
+      "citation": "Daniel 7:4 (KJV)",
+      "text": "The first was like a lion, and had eagle's wings: I beheld till the wings thereof were plucked, and it was lifted up from the earth, and made stand upon the feet as a man, and a man's heart was given to it.",
+      "locator": "src/data/words.ts daniel-beasts-2",
+      "hit": false,
+      "needle_len": 200
+    }
+  ],
+  "facts": [
+    {
+      "index": 0,
+      "fact": "The word \u201capocalypse\u201d simply means \u201cunveiling\u201d or \u201crevelation\u201d in Greek.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 1,
+      "fact": "Daniel and Revelation are the Bible\u2019s two great prophetic books, and they often share the same symbols.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 2,
+      "fact": "In Bible prophecy a \u201cbeast\u201d commonly represents a kingdom or political power (Daniel 7:23).",
+      "notes": [],
+      "ref": "Daniel 7:23"
+    },
+    {
+      "index": 3,
+      "fact": "\u201cArmageddon\u201d is named only once in the Bible \u2014 Revelation 16:16.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 4,
+      "fact": "Revelation promises a special blessing to anyone who reads and keeps its words (Revelation 1:3).",
+      "notes": [],
+      "ref": "Revelation 1:3"
+    },
+    {
+      "index": 5,
+      "fact": "The seventh-day Sabbath is rooted in the creation week of Genesis 2:2\u20133.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 6,
+      "fact": "In prophecy, \u201cwaters\u201d can symbolize peoples, nations, and tongues (Revelation 17:15).",
+      "notes": [],
+      "ref": "Revelation 17:15"
+    },
+    {
+      "index": 7,
+      "fact": "The number seven appears more than 50 times throughout the book of Revelation.",
+      "notes": [
+        "precise_count_claim"
+      ],
+      "ref": null
+    },
+    {
+      "index": 8,
+      "fact": "A prophetic \u201cday\u201d is often read as a literal year, drawing on Numbers 14:34 and Ezekiel 4:6.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 9,
+      "fact": "The 2300-day prophecy of Daniel 8:14 is the longest time prophecy in the Bible.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 10,
+      "fact": "The New Jerusalem is described as a cube-shaped city in Revelation 21:16.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 11,
+      "fact": "Jesus said that no one knows the day or hour of His return (Matthew 24:36).",
+      "notes": [],
+      "ref": "Matthew 24:36"
+    },
+    {
+      "index": 12,
+      "fact": "The three angels\u2019 messages of Revelation 14 are central to the Adventist mission.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 13,
+      "fact": "The \u201cseal of God\u201d in Revelation stands in contrast to the \u201cmark of the beast.\u201d",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 14,
+      "fact": "Ellen G. White helped found the Seventh-day Adventist Church, formally organized in 1863.",
+      "notes": [
+        "sda_history_ok"
+      ],
+      "ref": null
+    },
+    {
+      "index": 15,
+      "fact": "Adventist health work helped make Loma Linda, California one of the world\u2019s longevity \u201cBlue Zones.\u201d",
+      "notes": [
+        "modern_claim_review"
+      ],
+      "ref": null
+    },
+    {
+      "index": 16,
+      "fact": "\u201cBabylon\u201d in Revelation symbolizes end-time confusion, echoing the ancient city.",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 17,
+      "fact": "The Bible\u2019s closing promise is \u201cSurely I come quickly\u201d (Revelation 22:20).",
+      "notes": [],
+      "ref": "Revelation 22:20"
+    },
+    {
+      "index": 18,
+      "fact": "\u201cGospel\u201d literally means \u201cgood news.\u201d",
+      "notes": [],
+      "ref": null
+    },
+    {
+      "index": 19,
+      "fact": "The Olivet discourse (Matthew 24) is Jesus\u2019 own list of signs before His return.",
+      "notes": [],
+      "ref": null
+    }
+  ]
+}
