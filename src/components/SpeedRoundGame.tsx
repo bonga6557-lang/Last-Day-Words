@@ -269,20 +269,32 @@ export default function SpeedRoundGame({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isPlaying, isGameOver, makeGuess, showConfirmExit, reviewingScripture, continueAfterScripture]);
 
+  // Sound only when the round ends — progress/XP wait for manual Continue.
   useEffect(() => {
-    if (isGameOver && !finishedRef.current) {
-      finishedRef.current = true;
+    if (isGameOver) {
       playRoundEndSound();
-      onGameFinished({
-        finalScore: score,
-        wordsSolved,
-        perfectCount,
-        mode,
-      });
     }
-  }, [isGameOver, score, wordsSolved, perfectCount, mode, onGameFinished]);
+  }, [isGameOver]);
+
+  /** Commit XP (and board progress) once, after the player has seen the score. */
+  const commitRoundResult = useCallback(() => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    onGameFinished({
+      finalScore: score,
+      wordsSolved,
+      perfectCount,
+      mode,
+    });
+  }, [score, wordsSolved, perfectCount, mode, onGameFinished]);
+
+  const handleContinue = useCallback(() => {
+    commitRoundResult();
+    onBack();
+  }, [commitRoundResult, onBack]);
 
   const handleRestart = () => {
+    commitRoundResult();
     finishedRef.current = false;
     gameStartedRef.current = false;
     setScore(0);
@@ -333,8 +345,21 @@ export default function SpeedRoundGame({
       <GameFeedback text={feedback?.text ?? null} tone={feedback?.tone} />
 
       <div className="grid grid-cols-3 gap-2 pb-3 border-b border-[#e2d2ac] items-center">
-        <button onClick={() => isPlaying && !isGameOver ? setShowConfirmExit(true) : onBack()}
-          className="flex items-center gap-1 text-xs text-[#5c4a33] hover:text-[#2a2018] py-1 px-2.5 hover:bg-[#f0e3c8] rounded-lg cursor-pointer justify-self-start">
+        <button
+          type="button"
+          onClick={() => {
+            if (isGameOver) {
+              handleContinue();
+              return;
+            }
+            if (isPlaying) {
+              setShowConfirmExit(true);
+              return;
+            }
+            onBack();
+          }}
+          className="flex items-center gap-1 text-xs text-[#5c4a33] hover:text-[#2a2018] py-1 px-2.5 hover:bg-[#f0e3c8] rounded-lg cursor-pointer justify-self-start"
+        >
           <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" /> Quit
         </button>
         <div className={`flex items-center gap-1.5 justify-center px-3 py-1.5 rounded-lg border max-w-[130px] mx-auto transition-colors ${
@@ -468,6 +493,7 @@ export default function SpeedRoundGame({
               className="pcard rounded-2xl p-8 max-w-md w-full text-center space-y-6">
               <Clock className="w-10 h-10 mx-auto text-[#b45309]" aria-hidden="true" />
               <h3 className="text-xl font-display font-bold text-[#2a2018]">Time's Up!</h3>
+              <p className="text-xs text-[#6b5537]">Your run score — review it, then continue to bank XP.</p>
               <div className="grid grid-cols-2 gap-4 psunken p-4 rounded-xl">
                 <div><div className="text-2xl font-mono font-bold text-[#2a2018]">{score}</div><div className="text-[10px] text-[#6b5537] uppercase">Score</div></div>
                 <div><div className="text-2xl font-mono font-bold text-[#2a2018]">{wordsSolved}</div><div className="text-[10px] text-[#6b5537] uppercase">Solved</div></div>
@@ -484,8 +510,20 @@ export default function SpeedRoundGame({
                 <div className="text-[11px] text-[#6b5537]">Your best: {highScore} pts · {highestWordsSolved} words</div>
               )}
               <div className="flex flex-col gap-2">
-                <button onClick={handleRestart} className="w-full py-3 bg-[#2a2018] hover:bg-[#1c140d] text-[#f8f1e3] rounded-lg text-sm font-bold uppercase tracking-wider cursor-pointer">↻ Rematch</button>
-                <button onClick={onBack} className="w-full py-2 border border-[#e2d2ac] bg-[#fbf5e9] hover:bg-[#f3e8cf] text-[#2a2018] rounded-lg text-xs cursor-pointer">Back to Menu</button>
+                <button
+                  type="button"
+                  onClick={handleContinue}
+                  className="w-full py-3 bg-[#2a2018] hover:bg-[#1c140d] text-[#f8f1e3] rounded-lg text-sm font-bold uppercase tracking-wider cursor-pointer"
+                >
+                  Continue · bank XP
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRestart}
+                  className="w-full py-2 border border-[#e2d2ac] bg-[#fbf5e9] hover:bg-[#f3e8cf] text-[#2a2018] rounded-lg text-xs cursor-pointer"
+                >
+                  ↻ Rematch
+                </button>
               </div>
             </motion.div>
           </motion.div>
