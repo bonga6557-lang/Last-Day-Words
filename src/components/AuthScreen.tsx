@@ -3,6 +3,8 @@ import { ArrowLeft, Eye, EyeOff, LogIn, LogOut, UserPlus, Mail } from "lucide-re
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import type { Session } from "@supabase/supabase-js";
 import { mapAuthError } from "../utils/authErrors";
+import { InlineAlert } from "./ErrorState";
+import { logError } from "../utils/errors";
 
 interface AuthScreenProps {
   onBack: () => void;
@@ -175,6 +177,7 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
         setMessage("Signed in successfully.");
       }
     } catch (err: unknown) {
+      logError("AuthScreen.submit", err);
       const raw = err instanceof Error ? err.message : "Auth failed";
       setError(mapAuthError(raw));
     } finally {
@@ -189,7 +192,8 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
       await client.auth.signOut();
       setMessage("Signed out. Local progress on this device is unchanged.");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Sign out failed");
+      logError("AuthScreen.signOut", err);
+      setError(mapAuthError(err instanceof Error ? err.message : "Sign out failed"));
     } finally {
       setBusy(false);
     }
@@ -359,18 +363,15 @@ export default function AuthScreen({ onBack, onAuthed }: AuthScreenProps) {
         </form>
       )}
 
-      {message && (
-        <p className="text-sm text-emerald-800 text-center bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-          {message}
-        </p>
-      )}
+      {message && <InlineAlert tone="success" message={message} />}
       {error && (
-        <p
-          role="alert"
-          className="text-sm text-red-800 text-center bg-rose-50 border border-rose-200 rounded-lg px-3 py-2"
-        >
-          {error}
-        </p>
+        <InlineAlert
+          tone="error"
+          title="Account error"
+          message={error}
+          actionLabel="Dismiss"
+          onAction={() => setError(null)}
+        />
       )}
     </div>
   );

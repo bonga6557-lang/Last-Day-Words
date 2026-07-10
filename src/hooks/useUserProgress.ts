@@ -9,33 +9,55 @@ import {
 } from "../lib/supabase";
 import { initializeProgress, LOCAL_STORAGE_KEY } from "../utils/progressInit";
 import { unlockCosmeticsForXp } from "../utils/progression";
+import { logError, mapUserFacingError } from "../utils/errors";
 
-export function useUserProgress(defaults: UserProgress, todayKey: string) {
+export type ProgressNoticeHandler = (input: {
+  tone: "error" | "warning" | "info" | "success";
+  message: string;
+  sticky?: boolean;
+}) => void;
+
+export function useUserProgress(
+  defaults: UserProgress,
+  todayKey: string,
+  onNotice?: ProgressNoticeHandler
+) {
   const [progress, setProgress] = useState<UserProgress>(defaults);
-  const [syncWarning, setSyncWarning] = useState<string | null>(null);
 
-  const clearSyncWarning = useCallback(() => setSyncWarning(null), []);
+  const report = useCallback(
+    (tone: "error" | "warning" | "info" | "success", message: string, sticky = true) => {
+      onNotice?.({ tone, message, sticky });
+    },
+    [onNotice]
+  );
 
-  const syncProgressRemote = useCallback(async (p: UserProgress) => {
-    if (!supabase || !isSupabaseConfigured) return;
-    try {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) return;
-      const result = await upsertUserProgress(buildUserProgressRow(data.user.id, p));
-      if (!result.ok) {
-        setSyncWarning(
-          "Cloud save failed — progress is still stored on this device. Check your connection and sign-in."
+  const syncProgressRemote = useCallback(
+    async (p: UserProgress) => {
+      if (!supabase || !isSupabaseConfigured) return;
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (!data.user) return;
+        const result = await upsertUserProgress(buildUserProgressRow(data.user.id, p));
+        if (!result.ok) {
+          report(
+            "error",
+            "Cloud save failed — progress is still stored on this device. Check your connection and sign-in."
+          );
+          return;
+        }
+      } catch (e) {
+        logError("useUserProgress.sync", e);
+        report(
+          "error",
+          mapUserFacingError(
+            e,
+            "Cloud save failed — progress is still stored on this device"
+          )
         );
-        return;
       }
-      setSyncWarning(null);
-    } catch (e) {
-      console.error("Failed to sync user_progress:", e);
-      setSyncWarning(
-        "Cloud save failed — progress is still stored on this device. Check your connection and sign-in."
-      );
-    }
-  }, []);
+    },
+    [report]
+  );
 
   const saveProgress = useCallback(
     (newProgress: UserProgress) => {
@@ -44,12 +66,12 @@ export function useUserProgress(defaults: UserProgress, todayKey: string) {
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(normalized));
       } catch (e) {
-        console.error("Failed to save user progress to localStorage:", e);
-        setSyncWarning("Could not save progress on this device (storage full or blocked).");
+        logError("useUserProgress.localStorage", e);
+        report("error", "Could not save progress on this device (storage full or blocked).");
       }
       void syncProgressRemote(normalized);
     },
-    [syncProgressRemote]
+    [syncProgressRemote, report]
   );
 
   useEffect(() => {
@@ -69,15 +91,17 @@ export function useUserProgress(defaults: UserProgress, todayKey: string) {
         pushRemote: async (userId, p) => {
           const result = await upsertUserProgress(buildUserProgressRow(userId, p));
           if (!result.ok && !cancelled) {
-            setSyncWarning(
+            report(
+              "error",
               "Cloud save failed — progress is still stored on this device. Check your connection and sign-in."
             );
           }
         },
         onRemoteError: (message) => {
           if (!cancelled) {
-            console.error("Remote progress fetch failed:", message);
-            setSyncWarning(
+            logError("useUserProgress.fetchRemote", message);
+            report(
+              "warning",
               "Could not load cloud progress — showing this device's save. Your cloud data was not overwritten."
             );
           }
@@ -100,7 +124,7 @@ export function useUserProgress(defaults: UserProgress, todayKey: string) {
       cancelled = true;
       sub.subscription.unsubscribe();
     };
-  }, [todayKey, defaults]);
+  }, [todayKey, defaults, report]);
 
-  return { progress, saveProgress, setProgress, syncWarning, clearSyncWarning };
+  return { progress, saveProgress, setProgress };
 }

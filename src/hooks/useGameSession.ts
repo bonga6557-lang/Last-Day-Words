@@ -29,14 +29,17 @@ import {
 import { isValidSpeedScore } from "../utils/speedScoreLimits";
 import { computeDailyScore, isValidDailyScore } from "../utils/dailyScore";
 import { supabase, isSupabaseConfigured, upsertDailyScore } from "../lib/supabase";
+import { logError, mapUserFacingError } from "../utils/errors";
 
 type SaveProgress = (p: UserProgress) => void;
+type RemoteErrorHandler = (message: string) => void;
 
 export function useGameSession(
   progress: UserProgress,
   saveProgress: SaveProgress,
   chaptersData: Chapter[],
-  todayKey: string
+  todayKey: string,
+  onRemoteError?: RemoteErrorHandler
 ) {
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -258,7 +261,10 @@ export function useGameSession(
           if (data.user) {
             const result = await upsertDailyScore(data.user.id, todayKey, dailyScore);
             if (!result.ok) {
-              console.error("Failed to upsert daily score:", result.message);
+              logError("dailyScore.upsert", result.message);
+              onRemoteError?.(
+                mapUserFacingError(result.message, "Daily score could not be saved to the cloud")
+              );
             }
           }
         })();
@@ -292,6 +298,7 @@ export function useGameSession(
     exitGameplay,
     isDailyMode,
     isReviewMode,
+    onRemoteError,
     pendingFragment,
     progress,
     reviewChapter,
@@ -329,11 +336,16 @@ export function useGameSession(
             },
             { onConflict: "user_id,week_key" }
           );
-          if (error) console.error("Failed to upsert speed score:", error.message);
+          if (error) {
+            logError("speedScore.upsert", error);
+            onRemoteError?.(
+              mapUserFacingError(error, "Speed score could not be saved to the leaderboard")
+            );
+          }
         }
       }
     },
-    [progress, saveProgress]
+    [progress, saveProgress, onRemoteError]
   );
 
   const handleViewStudyGuide = useCallback(() => {

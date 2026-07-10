@@ -52,7 +52,11 @@ export async function fetchGameRoom(roomId: string): Promise<GameRoom | null> {
     .select("id, code, host_id, status, white_score, black_score, payload, created_at")
     .eq("id", roomId)
     .maybeSingle();
-  if (error || !data) return null;
+  if (error) {
+    console.error("fetchGameRoom failed:", error.message);
+    throw error;
+  }
+  if (!data) return null;
   return data as GameRoom;
 }
 

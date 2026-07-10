@@ -16,6 +16,8 @@ import {
   parseOnlineTeamsPayload,
   type OnlineTeamsPayload,
 } from "../utils/onlineTeams";
+import { InlineAlert } from "./ErrorState";
+import { logError, mapUserFacingError } from "../utils/errors";
 
 interface OnlineTeamsScreenProps {
   chapters: Chapter[];
@@ -48,11 +50,19 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
 
   const refreshMembers = useCallback(async (id: string) => {
     if (!supabase) return;
-    const { data } = await supabase.from("room_members").select("team, user_id").eq("room_id", id);
+    const { data, error } = await supabase
+      .from("room_members")
+      .select("team, user_id")
+      .eq("room_id", id);
+    if (error) {
+      logError("onlineTeams.refreshMembers", error);
+      return;
+    }
     const ids = (data ?? []).map((m) => m.user_id as string);
-    const { data: profiles } = ids.length
+    const { data: profiles, error: profileErr } = ids.length
       ? await supabase.from("profiles").select("id, display_name").in("id", ids)
-      : { data: [] as { id: string; display_name: string }[] };
+      : { data: [] as { id: string; display_name: string }[], error: null };
+    if (profileErr) logError("onlineTeams.profiles", profileErr);
     const nameById = new Map((profiles ?? []).map((p) => [p.id, p.display_name]));
     setMembers(
       (data ?? []).map((m) => ({
@@ -63,8 +73,14 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
   }, []);
 
   const refreshRoom = useCallback(async (id: string) => {
-    const next = await fetchGameRoom(id);
-    if (next) setRoom(next);
+    try {
+      const next = await fetchGameRoom(id);
+      if (next) setRoom(next);
+      else setError((prev) => prev ?? "Could not refresh room. Reconnect or rejoin with the code.");
+    } catch (e) {
+      logError("onlineTeams.refreshRoom", e);
+      setError(mapUserFacingError(e, "Could not refresh room"));
+    }
   }, []);
 
   useEffect(() => {
@@ -136,7 +152,8 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
       setStatus(`Room ${data.code} created. Share the code with your youth group.`);
       await refreshRoom(data.id);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Could not create room");
+      logError("onlineTeams.createRoom", e);
+      setError(mapUserFacingError(e, "Could not create room"));
     }
   };
 
@@ -146,6 +163,10 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
     try {
       const user = await ensureAuth();
       const normalized = joinCode.trim().toUpperCase();
+      if (!normalized || normalized.length < 4) {
+        setError("Enter a valid room code.");
+        return;
+      }
       const { data: found, error: err } = await supabase!
         .from("game_rooms")
         .select("id, code")
@@ -153,11 +174,12 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
         .maybeSingle();
       if (err) throw err;
       if (!found) throw new Error("No room with that code.");
-      const { count } = await supabase!
+      const { count, error: countErr } = await supabase!
         .from("room_members")
         .select("*", { count: "exact", head: true })
         .eq("room_id", found.id)
         .eq("team", "black");
+      if (countErr) throw countErr;
       const team = (count ?? 0) === 0 ? "black" : "white";
       const { error: joinErr } = await supabase!
         .from("room_members")
@@ -168,7 +190,8 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
       setStatus(`Joined room ${found.code} as ${team}.`);
       await refreshRoom(found.id);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Could not join room");
+      logError("onlineTeams.joinRoom", e);
+      setError(mapUserFacingError(e, "Could not join room"));
     }
   };
 
@@ -182,7 +205,8 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
       await refreshRoom(roomId);
       setStatus("Match started — pass the device between teams.");
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Could not start game");
+      logError("onlineTeams.startGame", e);
+      setError(mapUserFacingError(e, "Could not start game"));
     } finally {
       setStarting(false);
     }
@@ -193,18 +217,28 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
     scores: { white: number; black: number }
   ) => {
     if (!roomId) return;
-    await updateOnlineTeamsRoom(roomId, {
-      payload: payload as unknown as Record<string, unknown>,
-      white_score: scores.white,
-      black_score: scores.black,
-      status: payload.phase === "finished" ? "finished" : "playing",
-    });
+    try {
+      await updateOnlineTeamsRoom(roomId, {
+        payload: payload as unknown as Record<string, unknown>,
+        white_score: scores.white,
+        black_score: scores.black,
+        status: payload.phase === "finished" ? "finished" : "playing",
+      });
+    } catch (e: unknown) {
+      logError("onlineTeams.update", e);
+      setError(mapUserFacingError(e, "Could not sync match state"));
+    }
   };
 
   const copyCode = async () => {
     if (!code) return;
-    await navigator.clipboard.writeText(code);
-    setStatus("Room code copied.");
+    try {
+      await navigator.clipboard.writeText(code);
+      setStatus("Room code copied.");
+    } catch (e) {
+      logError("onlineTeams.copyCode", e);
+      setError("Could not copy to clipboard. Select the code and copy manually.");
+    }
   };
 
   const parsedPayload = room ? parseOnlineTeamsPayload(room.payload) : null;
@@ -236,18 +270,35 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
       </div>
 
       {!isSupabaseConfigured && (
-        <p className="text-sm text-red-800">Configure Supabase to use room codes.</p>
+        <InlineAlert
+          tone="warning"
+          title="Cloud rooms unavailable"
+          message="Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to use room codes. Local Teams mode still works offline."
+        />
       )}
+
+      {error && (
+        <InlineAlert
+          tone="error"
+          title="Something went wrong"
+          message={error}
+          actionLabel="Dismiss"
+          onAction={() => setError(null)}
+        />
+      )}
+      {status && !error && <InlineAlert tone="success" message={status} />}
 
       <div className="pcard rounded-2xl p-6 space-y-4">
         <p className="text-sm text-[#5c4a33]">
-          Create a room for Friday youth group, or join with a 6-character code. When the host starts the match, everyone in the room sees the same synced pass-and-play board.
+          Create a room for Friday youth group, or join with a 6-character code. When the host starts the match, everyone in the room sees the same synced pass-and-play board. Sign in under Account first.
         </p>
         <button
+          type="button"
           onClick={createRoom}
-          className="w-full flex items-center justify-center gap-2 py-3 bg-[#2a2018] text-[#f8f1e3] rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer"
+          disabled={!isSupabaseConfigured}
+          className="w-full flex items-center justify-center gap-2 py-3 bg-[#2a2018] text-[#f8f1e3] rounded-lg text-xs font-bold uppercase tracking-wider cursor-pointer disabled:opacity-50"
         >
-          <Users className="w-3.5 h-3.5" /> Create Room
+          <Users className="w-3.5 h-3.5" aria-hidden="true" /> Create Room
         </button>
 
         <div className="flex gap-2">
@@ -256,11 +307,14 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
             maxLength={6}
             placeholder="ROOM CODE"
-            className="flex-1 px-3 py-2 rounded-lg border border-[#e2d2ac] bg-[#fbf5e9] text-sm font-mono tracking-widest uppercase"
+            disabled={!isSupabaseConfigured}
+            className="flex-1 px-3 py-2 rounded-lg border border-[#e2d2ac] bg-[#fbf5e9] text-sm font-mono tracking-widest uppercase disabled:opacity-50"
           />
           <button
+            type="button"
             onClick={joinRoom}
-            className="px-4 py-2 bg-[#f0e3c8] border border-[#e2d2ac] rounded-lg text-xs font-bold uppercase cursor-pointer"
+            disabled={!isSupabaseConfigured}
+            className="px-4 py-2 bg-[#f0e3c8] border border-[#e2d2ac] rounded-lg text-xs font-bold uppercase cursor-pointer disabled:opacity-50"
           >
             Join
           </button>
@@ -297,8 +351,6 @@ export default function OnlineTeamsScreen({ chapters, onBack }: OnlineTeamsScree
         </div>
       )}
 
-      {status && <p className="text-sm text-emerald-800 text-center">{status}</p>}
-      {error && <p className="text-sm text-red-800 text-center">{error}</p>}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { mapUserFacingError } from "./errors";
+
 /** Map Supabase auth error strings to short, user-facing messages. */
 export function mapAuthError(message: string): string {
   const m = message.toLowerCase();
@@ -19,5 +21,5 @@ export function mapAuthError(message: string): string {
   if (m.includes("confirm") || m.includes("not confirmed")) {
     return "Confirm your email first (check your inbox), then sign in.";
   }
-  return message || "Authentication failed.";
+  return mapUserFacingError(message, "Authentication failed");
 }

@@ -3,6 +3,9 @@ import { Volume2, VolumeX, Flame, BookOpen, LogIn, UserRound } from "lucide-reac
 import { DEFAULT_CANDLE_ID } from "./data/cosmetics";
 import { GameMode, UserProgress } from "./types";
 import ScreenFlash from "./components/ScreenFlash";
+import AppNoticeStack from "./components/AppNoticeStack";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { LoadingBlock } from "./components/ErrorState";
 import { requestNotificationPermission } from "./utils/notifications";
 import { selectCosmetic } from "./utils/progression";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
@@ -13,6 +16,7 @@ import { useContentCatalog } from "./hooks/useContentCatalog";
 import { useStreakReminder } from "./hooks/useStreakReminder";
 import { useGameSession } from "./hooks/useGameSession";
 import { useAuth } from "./hooks/useAuth";
+import { useNoticeQueue } from "./hooks/useNoticeQueue";
 
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const ChapterSelect = lazy(() => import("./components/ChapterSelect"));
@@ -28,9 +32,7 @@ const ShareCardScreen = lazy(() => import("./components/ShareCardScreen"));
 const OnlineTeamsScreen = lazy(() => import("./components/OnlineTeamsScreen"));
 
 function ScreenFallback() {
-  return (
-    <div className="flex items-center justify-center py-16 text-sm text-[#6b5537]">Loading…</div>
-  );
+  return <LoadingBlock label="Loading screen…" />;
 }
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -55,10 +57,14 @@ const DEFAULT_PROGRESS: UserProgress = {
 
 export default function App() {
   const todayKey = useTodayKey();
-  const { progress, saveProgress, syncWarning, clearSyncWarning } = useUserProgress(
-    DEFAULT_PROGRESS,
-    todayKey
-  );
+  const notices = useNoticeQueue();
+  const { progress, saveProgress } = useUserProgress(DEFAULT_PROGRESS, todayKey, (n) => {
+    notices.pushNotice({
+      tone: n.tone,
+      message: n.message,
+      autoDismissMs: n.sticky === false ? 7000 : n.tone === "error" ? 0 : 8000,
+    });
+  });
   const { chaptersData, seasons, wordOfTheWeek, featuredAnnouncement } = useContentCatalog();
   const auth = useAuth();
   useStreakReminder(progress, todayKey);
@@ -66,7 +72,9 @@ export default function App() {
   const [currentMode, setCurrentMode] = useState<GameMode>("menu");
   const rm = useReducedMotion();
 
-  const session = useGameSession(progress, saveProgress, chaptersData, todayKey);
+  const session = useGameSession(progress, saveProgress, chaptersData, todayKey, (message) => {
+    notices.pushError(message, true);
+  });
   const candleStyle = progress.selectedCandle ?? DEFAULT_CANDLE_ID;
 
   const handleToggleSound = () => {
@@ -146,22 +154,7 @@ export default function App() {
   return (
     <div className="min-h-screen candlelit-page text-[#2a2018] font-sans flex flex-col justify-between">
       <ScreenFlash />
-      {syncWarning && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="sticky top-0 z-40 border-b border-amber-300 bg-[#fbeccb] text-[#92400e] text-xs md:text-sm px-4 py-2.5 flex items-start gap-3 justify-between"
-        >
-          <span className="leading-relaxed">{syncWarning}</span>
-          <button
-            type="button"
-            onClick={clearSyncWarning}
-            className="shrink-0 font-bold uppercase tracking-wide text-[10px] px-2 py-1 rounded border border-amber-400/60 hover:bg-amber-100 cursor-pointer"
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
+      <AppNoticeStack notices={notices.notices} onDismiss={notices.dismissNotice} />
       <div className="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
         <header className="flex items-center justify-between gap-3 py-4 mb-6 pcard px-4 md:px-6 rounded-2xl parchment-glow">
           <div
@@ -223,6 +216,7 @@ export default function App() {
         </header>
 
         <main className="flex-1 flex flex-col justify-center">
+          <ErrorBoundary name="screen">
           <Suspense fallback={<ScreenFallback />}>
           <AnimatePresence mode="wait">
             {currentMode === "menu" && (
@@ -353,6 +347,7 @@ export default function App() {
             )}
           </AnimatePresence>
           </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
 
