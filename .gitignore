@@ -19,7 +19,15 @@ docs/_kjv_norm_cache.txt
 docs/_gc_norm_cache.txt
 docs/_ed_norm_cache.txt
 
-# Intermediate expansion migration artifacts (superseded by final migrations)
-supabase/_batch*_out.txt
-supabase/_expansion_migration_payload.txt
+# Intermediate expansion / MCP apply artifacts (never commit)
+supabase/_*
 supabase/migrations/_expansion_word_batches/
+scripts/_*
+scripts/apply_batch2_part.py
+scripts/chunk_part.py
+scripts/emit_apply_migration.py
+scripts/prepare_mcp_exec.py
+
+# Local Supabase CLI runtime (remote-only workflow; no config.toml)
+supabase/.branches
+supabase/.temp
