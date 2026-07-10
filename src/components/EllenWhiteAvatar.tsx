@@ -11,9 +11,9 @@ interface EllenWhiteAvatarProps {
  * Animated Ellen White writing at her desk beneath a flickering oil lamp.
  * The oil lamp is decorative ambient light (always lit). When `reaction`
  * changes she nods & smiles ("correct") or shakes her head & frowns
- * ("incorrect"). Idle breathing, blinking, head-sway, eye-glances and the
- * lamp flame all loop, and are auto-disabled under prefers-reduced-motion
- * via the rules in index.css.
+ * ("incorrect"). Idle breathing, blinking, head-sway, downcast reading
+ * glances, the writing hand and the lamp flame all loop, and are
+ * auto-disabled under prefers-reduced-motion via the rules in index.css.
  */
 export default function EllenWhiteAvatar({
   reaction = "idle",
@@ -62,23 +62,29 @@ export default function EllenWhiteAvatar({
           </linearGradient>
           {/* Skin lit from the lower-left (the desk lamp) */}
           <radialGradient id="ewSkinGrad" cx="40%" cy="60%" r="68%">
-            <stop offset="0%" stopColor="#fbdcc2" />
-            <stop offset="55%" stopColor="#eab793" />
-            <stop offset="100%" stopColor="#c88a67" />
+            <stop offset="0%" stopColor="#f7d6bc" />
+            <stop offset="55%" stopColor="#e4b18d" />
+            <stop offset="100%" stopColor="#bd8262" />
           </radialGradient>
           <radialGradient id="ewIris" cx="45%" cy="40%" r="60%">
-            <stop offset="0%" stopColor="#7a5a34" />
-            <stop offset="70%" stopColor="#4a3320" />
-            <stop offset="100%" stopColor="#2c1d10" />
+            <stop offset="0%" stopColor="#75633f" />
+            <stop offset="70%" stopColor="#463522" />
+            <stop offset="100%" stopColor="#2a1e12" />
           </radialGradient>
+          {/* Greying hair of her later years */}
           <linearGradient id="ewHairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#4a3728" />
-            <stop offset="55%" stopColor="#2e2118" />
-            <stop offset="100%" stopColor="#17110c" />
+            <stop offset="0%" stopColor="#8d7b67" />
+            <stop offset="50%" stopColor="#5d4d3e" />
+            <stop offset="100%" stopColor="#332822" />
           </linearGradient>
           <linearGradient id="ewLip" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#b56a5c" />
-            <stop offset="100%" stopColor="#8f4438" />
+            <stop offset="0%" stopColor="#ad6d5c" />
+            <stop offset="100%" stopColor="#8a4d3e" />
+          </linearGradient>
+          <linearGradient id="ewQuillVane" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#d8d0bc" />
+            <stop offset="55%" stopColor="#efe9da" />
+            <stop offset="100%" stopColor="#f8f5ec" />
           </linearGradient>
           <filter id="ewBlurBg" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="3" />
@@ -111,7 +117,7 @@ export default function EllenWhiteAvatar({
         </g>
 
         {/* Lamp aura + volumetric light beam */}
-        <circle cx="50" cy="50" r="140" fill="url(#ewLampGlow)" />
+        <circle className="ew-lamp-glow" cx="50" cy="50" r="140" fill="url(#ewLampGlow)" />
         <polygon
           className="ew-cinematic-light"
           points="-20,-20 120,-20 270,250 -20,250"
@@ -145,65 +151,74 @@ export default function EllenWhiteAvatar({
 
           {/* Head */}
           <g id="ew-head" filter="url(#ewDropShadow)">
-            {/* Back hair: center-parted crown swept to a low nape bun + ponytail */}
+            {/* Back hair: pinned-up volume ending in a low nape bun (no loose hair) */}
             <g id="ew-hair-back">
-              {/* Smooth volume pulled back from the temples */}
               <path
-                d="M 93,108 C 90,86 102,68 125,66 C 148,68 160,86 157,108
-                   C 152,96 142,88 125,87 C 108,88 98,96 93,108 Z"
+                d="M 91,112 C 87,84 101,64 125,63 C 149,64 163,84 159,112
+                   C 156,122 152,127 148,129 C 152,112 152,96 143,86
+                   C 133,78 117,78 107,86 C 98,96 98,112 102,129
+                   C 98,127 94,122 91,112 Z"
                 fill="url(#ewHairGrad)"
               />
-              {/* Low chignon knot at the nape */}
-              <ellipse cx="125" cy="93" rx="15" ry="13" fill="url(#ewHairGrad)" stroke="#140f0c" strokeWidth="0.7" />
-              {/* Traditional ponytail tail hanging behind the head */}
-              <path
-                d="M 118,99 C 114,112 113,128 116,148
-                   C 120,152 125,153 130,152
-                   C 134,148 137,128 136,112
-                   C 134,102 130,98 125,98
-                   C 121,98 120,99 118,99 Z"
-                fill="url(#ewHairGrad)"
-              />
-              <path
-                d="M 120,104 C 118,120 119,136 122,146
-                   C 125,148 128,146 130,136
-                   C 131,120 130,104 128,102"
-                fill="none"
-                stroke="#5a4535"
-                strokeWidth="1"
-                opacity="0.35"
-              />
+              {/* Low chignon peeking out at each side of the nape */}
+              <ellipse cx="99" cy="126" rx="8" ry="11" fill="url(#ewHairGrad)" stroke="#241b14" strokeWidth="0.6" />
+              <ellipse cx="151" cy="126" rx="8" ry="11" fill="url(#ewHairGrad)" stroke="#241b14" strokeWidth="0.6" />
+              <path d="M 95,120 C 98,116 102,116 104,120" fill="none" stroke="#9d8b76" strokeWidth="0.8" opacity="0.5" />
+              <path d="M 146,120 C 148,116 152,116 155,120" fill="none" stroke="#8a7761" strokeWidth="0.8" opacity="0.45" />
             </g>
 
             {/* Neck */}
-            <path d="M 116,144 L 134,144 L 134,161 C 134,169 116,169 116,161 Z" fill="url(#ewSkinGrad)" />
-            <path d="M 116,144 L 134,144 L 134,151 C 125,158 116,151 116,144 Z" fill="#95583a" opacity="0.4" filter="url(#ewSoftBlur)" />
+            <path d="M 116,145 L 134,145 L 134,162 C 134,170 116,170 116,162 Z" fill="url(#ewSkinGrad)" />
+            <path d="M 116,145 L 134,145 L 134,152 C 125,159 116,152 116,145 Z" fill="#95583a" opacity="0.4" filter="url(#ewSoftBlur)" />
+            <path d="M 119,153 C 120,158 121,161 122,163" fill="none" stroke="#a86e4b" strokeWidth="0.7" opacity="0.35" />
+            <path d="M 131,153 C 130,158 129,161 128,163" fill="none" stroke="#a86e4b" strokeWidth="0.7" opacity="0.3" />
 
-            {/* Face base */}
-            <path d="M 92,104 C 92,80 104,66 125,66 C 146,66 158,80 158,104 C 158,132 146,151 125,151 C 104,151 92,132 92,104 Z" fill="url(#ewSkinGrad)" />
+            {/* Face base: high cheekbones tapering to a soft jaw and chin */}
+            <path
+              d="M 94,102 C 94,79 106,66 125,66 C 144,66 156,79 156,102
+                 C 156,117 151,131 143,141 C 137,148 131,152 125,152
+                 C 119,152 113,148 107,141 C 99,131 94,117 94,102 Z"
+              fill="url(#ewSkinGrad)"
+            />
 
             {/* Form shadows (shaded side away from the lamp) */}
-            <path d="M 140,74 C 156,84 158,104 154,126 C 149,143 139,150 130,150 C 145,139 149,120 147,100 C 145,86 143,79 140,74 Z" fill="#b0764f" opacity="0.30" filter="url(#ewBlurBg)" />
+            <path d="M 140,74 C 155,84 157,104 152,126 C 147,142 138,150 130,151 C 143,139 148,120 146,100 C 144,86 143,79 140,74 Z" fill="#b0764f" opacity="0.30" filter="url(#ewBlurBg)" />
             {/* Warm highlight on the lit cheek */}
             <path d="M 101,80 C 96,98 99,120 109,136 C 101,122 100,100 106,84 Z" fill="#ffe8d3" opacity="0.35" filter="url(#ewBlurBg)" />
-            {/* Cheek blush */}
-            <ellipse cx="107" cy="121" rx="8" ry="5" fill="#e28f77" opacity="0.20" filter="url(#ewBlurBg)" />
-            <ellipse cx="143" cy="121" rx="8" ry="5" fill="#d98063" opacity="0.16" filter="url(#ewBlurBg)" />
+            {/* Cheekbone hollows */}
+            <path d="M 102,118 C 106,124 111,128 116,130 C 110,130 104,126 102,118 Z" fill="#a3663f" opacity="0.20" filter="url(#ewBlurBg)" />
+            <path d="M 148,118 C 144,124 139,128 134,130 C 140,130 146,126 148,118 Z" fill="#96593a" opacity="0.22" filter="url(#ewBlurBg)" />
+            {/* Faint cheek warmth */}
+            <ellipse cx="108" cy="121" rx="7" ry="4.5" fill="#dd8b70" opacity="0.15" filter="url(#ewBlurBg)" />
+            <ellipse cx="142" cy="121" rx="7" ry="4.5" fill="#cf7c5e" opacity="0.12" filter="url(#ewBlurBg)" />
             {/* Chin / jaw shading */}
-            <ellipse cx="125" cy="147" rx="13" ry="6" fill="#a3663f" opacity="0.22" filter="url(#ewBlurBg)" />
+            <ellipse cx="125" cy="147" rx="11" ry="5" fill="#a3663f" opacity="0.22" filter="url(#ewBlurBg)" />
+            <path d="M 120,143.5 Q 125,141.5 130,143.5" fill="none" stroke="#a06b4b" strokeWidth="0.7" opacity="0.3" />
             {/* Temple / hairline soft shadow */}
-            <path d="M 96,96 C 96,84 102,78 110,78" fill="none" stroke="#a86e4b" strokeWidth="3" opacity="0.25" filter="url(#ewSoftBlur)" />
+            <path d="M 97,96 C 97,84 103,78 111,78" fill="none" stroke="#a86e4b" strokeWidth="3" opacity="0.25" filter="url(#ewSoftBlur)" />
 
-            {/* Nasolabial hints */}
-            <path d="M 114,127 Q 111,134 114,139" fill="none" stroke="#a06b4b" strokeWidth="0.8" opacity="0.35" />
-            <path d="M 136,127 Q 139,134 136,139" fill="none" stroke="#a06b4b" strokeWidth="0.8" opacity="0.35" />
+            {/* Age lines: forehead, nasolabial, under-eye */}
+            <path d="M 110,88 Q 125,85 140,88" fill="none" stroke="#a06b4b" strokeWidth="0.7" opacity="0.22" />
+            <path d="M 112,92 Q 125,89.5 138,92" fill="none" stroke="#a06b4b" strokeWidth="0.6" opacity="0.16" />
+            <path d="M 113,126 Q 110,133 113.5,139" fill="none" stroke="#a06b4b" strokeWidth="0.8" opacity="0.35" />
+            <path d="M 137,126 Q 140,133 136.5,139" fill="none" stroke="#a06b4b" strokeWidth="0.8" opacity="0.35" />
+            <path d="M 105,111.5 Q 111,114 117,111.5" fill="none" stroke="#a06b4b" strokeWidth="0.6" opacity="0.25" />
+            <path d="M 133,111.5 Q 139,114 145,111.5" fill="none" stroke="#a06b4b" strokeWidth="0.6" opacity="0.25" />
+            {/* Crow's feet at the outer corners */}
+            <path d="M 101.5,105 L 98.5,103.8 M 101.5,107 L 98.5,107.6" stroke="#a06b4b" strokeWidth="0.5" opacity="0.3" />
+            <path d="M 148.5,105 L 151.5,103.8 M 148.5,107 L 151.5,107.6" stroke="#a06b4b" strokeWidth="0.5" opacity="0.3" />
 
             {/* Nose */}
-            <path d="M 123,100 C 121,110 120,118 121,124" fill="none" stroke="#b47c57" strokeWidth="1" opacity="0.45" filter="url(#ewSoftBlur)" />
-            <ellipse cx="124" cy="122" rx="3.5" ry="2.4" fill="#ffe8d3" opacity="0.45" filter="url(#ewSoftBlur)" />
-            <path d="M 118,125 Q 125,130 132,125" fill="none" stroke="#9c5f3d" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
-            <ellipse cx="120.5" cy="125.5" rx="1.3" ry="0.9" fill="#7a4a30" opacity="0.5" />
-            <ellipse cx="129.5" cy="125.5" rx="1.3" ry="0.9" fill="#7a4a30" opacity="0.5" />
+            <path d="M 122.5,98 C 121,108 120.3,116 121,122" fill="none" stroke="#b47c57" strokeWidth="1.1" opacity="0.4" filter="url(#ewSoftBlur)" />
+            <path d="M 127,104 C 128,110 128.4,116 128,120" fill="none" stroke="#9c5f3d" strokeWidth="1" opacity="0.3" filter="url(#ewSoftBlur)" />
+            <ellipse cx="123.8" cy="121" rx="3.2" ry="2.2" fill="#ffe8d3" opacity="0.45" filter="url(#ewSoftBlur)" />
+            <path d="M 117.5,124.5 Q 116,122.5 118.2,120.8" fill="none" stroke="#9c5f3d" strokeWidth="0.8" opacity="0.5" />
+            <path d="M 132.5,124.5 Q 134,122.5 131.8,120.8" fill="none" stroke="#9c5f3d" strokeWidth="0.8" opacity="0.5" />
+            <path d="M 118,125 Q 125,129.5 132,125" fill="none" stroke="#9c5f3d" strokeWidth="1.1" strokeLinecap="round" opacity="0.55" />
+            <ellipse cx="120.7" cy="125.3" rx="1.2" ry="0.8" fill="#7a4a30" opacity="0.5" />
+            <ellipse cx="129.3" cy="125.3" rx="1.2" ry="0.8" fill="#7a4a30" opacity="0.5" />
+            {/* Philtrum */}
+            <path d="M 125,128 L 125,132.2" fill="none" stroke="#b47c57" strokeWidth="0.6" opacity="0.3" />
 
             {/* Center-parted front hair framing the face */}
             <path
@@ -212,83 +227,108 @@ export default function EllenWhiteAvatar({
               fill="url(#ewHairGrad)"
             />
             {/* Center part */}
-            <path d="M 125,66 L 125,84" fill="none" stroke="#1a120c" strokeWidth="1.3" opacity="0.45" />
-            <path d="M 99,94 C 108,84 118,82 125,84" fill="none" stroke="#6b503b" strokeWidth="1.2" opacity="0.5" />
-            <path d="M 151,94 C 142,84 132,82 125,84" fill="none" stroke="#6b503b" strokeWidth="1.2" opacity="0.5" />
+            <path d="M 125,66 L 125,84" fill="none" stroke="#241b14" strokeWidth="1.3" opacity="0.45" />
+            {/* Smooth sweep of the hair, drawn as strand lines */}
+            <path d="M 99,94 C 108,84 118,82 125,84" fill="none" stroke="#77644f" strokeWidth="1.1" opacity="0.5" />
+            <path d="M 151,94 C 142,84 132,82 125,84" fill="none" stroke="#6a573f" strokeWidth="1.1" opacity="0.5" />
+            <path d="M 95,101 C 101,88 112,83 122,83.6" fill="none" stroke="#51422f" strokeWidth="0.8" opacity="0.45" />
+            <path d="M 155,101 C 149,88 138,83 128,83.6" fill="none" stroke="#51422f" strokeWidth="0.8" opacity="0.4" />
             {/* Silver strands (age) */}
-            <path d="M 96,102 C 98,90 106,84 116,84" fill="none" stroke="#c3b6a4" strokeWidth="0.9" opacity="0.4" />
-            <path d="M 154,102 C 152,90 144,84 134,84" fill="none" stroke="#c3b6a4" strokeWidth="0.9" opacity="0.35" />
+            <path d="M 96,102 C 98,90 106,84 116,84" fill="none" stroke="#cfc4b3" strokeWidth="0.9" opacity="0.5" />
+            <path d="M 154,102 C 152,90 144,84 134,84" fill="none" stroke="#cfc4b3" strokeWidth="0.9" opacity="0.45" />
+            <path d="M 100,96 C 105,88 113,84.5 120,84.5" fill="none" stroke="#d9cfbf" strokeWidth="0.6" opacity="0.4" />
+            <path d="M 150,96 C 145,88 137,84.5 130,84.5" fill="none" stroke="#d9cfbf" strokeWidth="0.6" opacity="0.35" />
+            {/* Wispy flyaway strands catching the lamplight */}
+            <path d="M 94,90 C 92,84 94,78 98,74" fill="none" stroke="#bdb09c" strokeWidth="0.5" opacity="0.35" />
+            <path d="M 156,90 C 158,84 156,78 152,74" fill="none" stroke="#a5977f" strokeWidth="0.5" opacity="0.3" />
 
-            {/* Spectacles */}
+            {/* Spectacles: thin round wire rims */}
             <g opacity="0.92">
-              <ellipse cx="111" cy="106" rx="12.5" ry="10.5" fill="rgba(255,255,255,0.05)" stroke="#a9640f" strokeWidth="1.4" filter="url(#ewSoftShadow)" />
-              <ellipse cx="139" cy="106" rx="12.5" ry="10.5" fill="rgba(255,255,255,0.05)" stroke="#a9640f" strokeWidth="1.4" filter="url(#ewSoftShadow)" />
-              <path d="M 103,99 Q 108,97 113,99" fill="none" stroke="#ffffff" strokeWidth="1.4" opacity="0.35" />
-              <path d="M 131,99 Q 136,97 141,99" fill="none" stroke="#ffffff" strokeWidth="1.4" opacity="0.35" />
-              <path d="M 123.5,106 Q 125,104 126.5,106" fill="none" stroke="#a9640f" strokeWidth="1.4" />
-              <line x1="98.5" y1="106" x2="89" y2="101" stroke="#a9640f" strokeWidth="1.4" />
-              <line x1="151.5" y1="106" x2="161" y2="101" stroke="#a9640f" strokeWidth="1.4" />
+              <ellipse cx="111" cy="106.5" rx="12" ry="10" fill="rgba(255,255,255,0.05)" stroke="#a9640f" strokeWidth="1.2" filter="url(#ewSoftShadow)" />
+              <ellipse cx="139" cy="106.5" rx="12" ry="10" fill="rgba(255,255,255,0.05)" stroke="#a9640f" strokeWidth="1.2" filter="url(#ewSoftShadow)" />
+              <path d="M 103,100 Q 108,98 113,100" fill="none" stroke="#ffffff" strokeWidth="1.3" opacity="0.3" />
+              <path d="M 131,100 Q 136,98 141,100" fill="none" stroke="#ffffff" strokeWidth="1.3" opacity="0.3" />
+              <path d="M 123.5,106.5 Q 125,104.5 126.5,106.5" fill="none" stroke="#a9640f" strokeWidth="1.2" />
+              <line x1="99" y1="106.5" x2="90" y2="102" stroke="#a9640f" strokeWidth="1.2" />
+              <line x1="151" y1="106.5" x2="160" y2="102" stroke="#a9640f" strokeWidth="1.2" />
             </g>
 
             {/* Eyes */}
             <g id="ew-eyes">
-              {/* Upper-lid cast shadow */}
-              <path d="M 104,104 Q 111,99 118,104 Q 111,106 104,104 Z" fill="#a06b4b" opacity="0.25" filter="url(#ewSoftBlur)" />
-              <path d="M 132,104 Q 139,99 146,104 Q 139,106 132,104 Z" fill="#a06b4b" opacity="0.25" filter="url(#ewSoftBlur)" />
+              {/* Hooded upper lids casting soft shadow over the eyes */}
+              <path d="M 103.5,104.5 Q 111,99 118.5,104.5 Q 111,101.8 103.5,104.5 Z" fill="#c98d66" opacity="0.5" filter="url(#ewSoftBlur)" />
+              <path d="M 131.5,104.5 Q 139,99 146.5,104.5 Q 139,101.8 131.5,104.5 Z" fill="#bd8159" opacity="0.5" filter="url(#ewSoftBlur)" />
+              {/* Lid crease lines */}
+              <path d="M 104,102.5 Q 111,98.6 118,102.5" fill="none" stroke="#a86e4b" strokeWidth="0.7" opacity="0.45" />
+              <path d="M 132,102.5 Q 139,98.6 146,102.5" fill="none" stroke="#a86e4b" strokeWidth="0.7" opacity="0.45" />
 
               <g id="ew-eye-left">
-                <path d="M 104,106 Q 111,100.5 118,106 Q 111,110.5 104,106 Z" fill="#f4efe6" />
-                <circle cx="111" cy="106" r="3.4" fill="url(#ewIris)" />
-                <circle cx="111" cy="106" r="3.4" fill="none" stroke="#241608" strokeWidth="0.7" opacity="0.7" />
-                <circle cx="111" cy="106" r="1.5" fill="#140d07" />
-                <circle cx="109.9" cy="104.8" r="0.9" fill="#ffffff" opacity="0.9" />
-                <path d="M 104,105.6 Q 111,100.3 118,105.6" fill="none" stroke="#3f2a1b" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M 105,102.4 Q 111,99.4 117,102.4" fill="none" stroke="#b98c6d" strokeWidth="0.7" opacity="0.45" />
-                <path d="M 105.5,108 Q 111,110 116.5,108" fill="none" stroke="#cf9d7d" strokeWidth="0.8" opacity="0.5" />
+                <path d="M 104,106 Q 111,101.5 118,106 Q 111,109.8 104,106 Z" fill="#f1ece1" />
+                <circle cx="111" cy="106.4" r="3.1" fill="url(#ewIris)" />
+                <circle cx="111" cy="106.4" r="3.1" fill="none" stroke="#241608" strokeWidth="0.6" opacity="0.7" />
+                <circle cx="111" cy="106.4" r="1.4" fill="#120c06" />
+                <circle cx="110" cy="105.2" r="0.8" fill="#ffffff" opacity="0.9" />
+                <circle cx="112.2" cy="107.4" r="0.45" fill="#f3d9a4" opacity="0.5" />
+                {/* Upper lid overlapping the top of the iris */}
+                <path d="M 104,106 Q 111,101.5 118,106 L 118,103.6 Q 111,100 104,103.6 Z" fill="#e0ab84" />
+                <path d="M 104,105.7 Q 111,101 118,105.7" fill="none" stroke="#3f2a1b" strokeWidth="1.3" strokeLinecap="round" />
+                <path d="M 105.5,108.2 Q 111,110 116.5,108.2" fill="none" stroke="#cf9d7d" strokeWidth="0.8" opacity="0.5" />
               </g>
 
               <g id="ew-eye-right">
-                <path d="M 132,106 Q 139,100.5 146,106 Q 139,110.5 132,106 Z" fill="#f4efe6" />
-                <circle cx="139" cy="106" r="3.4" fill="url(#ewIris)" />
-                <circle cx="139" cy="106" r="3.4" fill="none" stroke="#241608" strokeWidth="0.7" opacity="0.7" />
-                <circle cx="139" cy="106" r="1.5" fill="#140d07" />
-                <circle cx="137.9" cy="104.8" r="0.9" fill="#ffffff" opacity="0.9" />
-                <path d="M 132,105.6 Q 139,100.3 146,105.6" fill="none" stroke="#3f2a1b" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M 133,102.4 Q 139,99.4 145,102.4" fill="none" stroke="#b98c6d" strokeWidth="0.7" opacity="0.45" />
-                <path d="M 133.5,108 Q 139,110 144.5,108" fill="none" stroke="#cf9d7d" strokeWidth="0.8" opacity="0.5" />
+                <path d="M 132,106 Q 139,101.5 146,106 Q 139,109.8 132,106 Z" fill="#f1ece1" />
+                <circle cx="139" cy="106.4" r="3.1" fill="url(#ewIris)" />
+                <circle cx="139" cy="106.4" r="3.1" fill="none" stroke="#241608" strokeWidth="0.6" opacity="0.7" />
+                <circle cx="139" cy="106.4" r="1.4" fill="#120c06" />
+                <circle cx="138" cy="105.2" r="0.8" fill="#ffffff" opacity="0.9" />
+                <circle cx="140.2" cy="107.4" r="0.45" fill="#f3d9a4" opacity="0.5" />
+                <path d="M 132,106 Q 139,101.5 146,106 L 146,103.6 Q 139,100 132,103.6 Z" fill="#d9a077" />
+                <path d="M 132,105.7 Q 139,101 146,105.7" fill="none" stroke="#3f2a1b" strokeWidth="1.3" strokeLinecap="round" />
+                <path d="M 133.5,108.2 Q 139,110 144.5,108.2" fill="none" stroke="#cf9d7d" strokeWidth="0.8" opacity="0.5" />
               </g>
             </g>
 
-            {/* Eyebrows (feathered) */}
+            {/* Eyebrows (feathered, lightly greyed) */}
             <g id="ew-eyebrow-left">
-              <path d="M 101,97 C 106,93 115,93.5 120,98" fill="none" stroke="#2a1d12" strokeWidth="2.4" strokeLinecap="round" />
-              <path d="M 102,95.5 C 107,92 114,92.5 119,96.5" fill="none" stroke="#3c2a1a" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
+              <path d="M 101,97.5 C 106,93.8 115,94.2 120,98.4" fill="none" stroke="#3a2c1e" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 102,96 C 107,92.8 114,93.2 119,97" fill="none" stroke="#5c4a36" strokeWidth="0.9" strokeLinecap="round" opacity="0.6" />
+              <path d="M 104,95.6 C 108,93.4 113,93.4 117,95.4" fill="none" stroke="#9c8b76" strokeWidth="0.5" strokeLinecap="round" opacity="0.5" />
             </g>
             <g id="ew-eyebrow-right">
-              <path d="M 149,97 C 144,93 135,93.5 130,98" fill="none" stroke="#2a1d12" strokeWidth="2.4" strokeLinecap="round" />
-              <path d="M 148,95.5 C 143,92 136,92.5 131,96.5" fill="none" stroke="#3c2a1a" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
+              <path d="M 149,97.5 C 144,93.8 135,94.2 130,98.4" fill="none" stroke="#3a2c1e" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 148,96 C 143,92.8 136,93.2 131,97" fill="none" stroke="#5c4a36" strokeWidth="0.9" strokeLinecap="round" opacity="0.6" />
+              <path d="M 146,95.6 C 142,93.4 137,93.4 133,95.4" fill="none" stroke="#9c8b76" strokeWidth="0.5" strokeLinecap="round" opacity="0.5" />
             </g>
 
             {/* Mouth — neutral / smile / sad (toggled by CSS opacity) */}
             <g id="ew-neutral-mouth">
-              <path d="M 114,136 Q 119,133.6 125,134.6 Q 131,133.6 136,136 Q 131,137.4 125,137.4 Q 119,137.4 114,136 Z" fill="url(#ewLip)" />
-              <path d="M 115,137 Q 125,141.6 135,137 Q 130,139.8 125,140 Q 120,139.8 115,137 Z" fill="#b56a5c" />
-              <path d="M 114,136 Q 125,137.4 136,136" fill="none" stroke="#6f322a" strokeWidth="1" strokeLinecap="round" />
+              <path d="M 114.5,135 Q 119.5,132.8 125,133.6 Q 130.5,132.8 135.5,135 Q 130.5,136.2 125,136.2 Q 119.5,136.2 114.5,135 Z" fill="url(#ewLip)" />
+              <path d="M 115.5,136 Q 125,139.4 134.5,136 Q 130,138 125,138.2 Q 120,138 115.5,136 Z" fill="#ad6d5c" />
+              <path d="M 114.5,135 Q 125,136.4 135.5,135" fill="none" stroke="#6f322a" strokeWidth="0.9" strokeLinecap="round" />
+              <ellipse cx="125" cy="139.8" rx="5" ry="1.2" fill="#ffe8d3" opacity="0.25" filter="url(#ewSoftBlur)" />
             </g>
             <g id="ew-smile">
-              <path d="M 112,134 Q 125,137 138,134 Q 131,133 125,133.4 Q 119,133 112,134 Z" fill="url(#ewLip)" />
-              <path d="M 114,135.4 Q 125,138.4 136,135.4 Q 125,137 114,135.4 Z" fill="#fbf6ef" opacity="0.85" />
-              <path d="M 112,134 Q 125,147 138,134 Q 125,143 112,134 Z" fill="#b56a5c" />
-              <path d="M 112,134 Q 125,138 138,134" fill="none" stroke="#6f322a" strokeWidth="1" strokeLinecap="round" />
+              {/* Gentle closed-lip smile with raised cheeks */}
+              <path d="M 112,133.2 Q 118.5,131 125,131.8 Q 131.5,131 138,133.2 Q 131.5,134.8 125,134.8 Q 118.5,134.8 112,133.2 Z" fill="url(#ewLip)" />
+              <path d="M 113,133.8 Q 125,139.6 137,133.8 Q 130.5,137.4 125,137.6 Q 119.5,137.4 113,133.8 Z" fill="#ad6d5c" />
+              <path d="M 112,133.2 Q 125,137.6 138,133.2" fill="none" stroke="#6f322a" strokeWidth="0.9" strokeLinecap="round" />
+              {/* Deepened nasolabial folds and lifted cheeks */}
+              <path d="M 111.5,125 Q 107.5,132 111.5,138.5" fill="none" stroke="#a06b4b" strokeWidth="0.9" opacity="0.45" />
+              <path d="M 138.5,125 Q 142.5,132 138.5,138.5" fill="none" stroke="#a06b4b" strokeWidth="0.9" opacity="0.45" />
+              <ellipse cx="107" cy="118" rx="6.5" ry="4" fill="#f0b593" opacity="0.3" filter="url(#ewBlurBg)" />
+              <ellipse cx="143" cy="118" rx="6.5" ry="4" fill="#e3a582" opacity="0.25" filter="url(#ewBlurBg)" />
             </g>
             <g id="ew-sad-mouth">
-              <path d="M 114,141 Q 125,135.5 136,141 Q 131,139 125,139.2 Q 119,139 114,141 Z" fill="url(#ewLip)" />
-              <path d="M 115,141 Q 125,138.4 135,141 Q 130,140 125,140.2 Q 120,140 115,141 Z" fill="#b56a5c" />
-              <path d="M 114,141 Q 125,136 136,141" fill="none" stroke="#6f322a" strokeWidth="1" strokeLinecap="round" />
+              <path d="M 115,140 Q 125,135.8 135,140 Q 130,138.2 125,138.4 Q 120,138.2 115,140 Z" fill="url(#ewLip)" />
+              <path d="M 116,140 Q 125,138 134,140 Q 129.5,139.4 125,139.5 Q 120.5,139.4 116,140 Z" fill="#ad6d5c" />
+              <path d="M 115,140 Q 125,136.2 135,140" fill="none" stroke="#6f322a" strokeWidth="0.9" strokeLinecap="round" />
+              {/* Downturned corner creases */}
+              <path d="M 114,140.5 L 111.5,143" fill="none" stroke="#a06b4b" strokeWidth="0.7" opacity="0.4" />
+              <path d="M 136,140.5 L 138.5,143" fill="none" stroke="#a06b4b" strokeWidth="0.7" opacity="0.4" />
             </g>
 
             {/* Left-edge warm rim light */}
-            <path d="M 93,104 C 93,82 104,68 122,66.4" fill="none" stroke="#ffdca8" strokeWidth="2.4" opacity="0.30" filter="url(#ewSoftBlur)" />
+            <path d="M 95,102 C 95,81 105,68 122,66.4" fill="none" stroke="#ffdca8" strokeWidth="2.4" opacity="0.30" filter="url(#ewSoftBlur)" />
           </g>
         </g>
 
@@ -299,12 +339,12 @@ export default function EllenWhiteAvatar({
           <line x1="88" y1="236" x2="112" y2="236" stroke="#64748b" strokeWidth="1" />
           <line x1="86" y1="240" x2="114" y2="240" stroke="#64748b" strokeWidth="1" />
           <line x1="84" y1="244" x2="110" y2="244" stroke="#64748b" strokeWidth="1" />
-          <line x1="138" y1="236" x2="162" y2="236" stroke="#64748b" strokeWidth="1" />
-          <line x1="136" y1="240" x2="164" y2="240" stroke="#64748b" strokeWidth="1" />
+          <line x1="138" y1="236" x2="150" y2="236" stroke="#64748b" strokeWidth="1" />
+          <line x1="136" y1="240" x2="146" y2="240" stroke="#64748b" strokeWidth="1" />
         </g>
 
         {/* Ink bottle */}
-        <g filter="url(#ewSoftShadow)" transform="translate(100, 0)">
+        <g filter="url(#ewSoftShadow)" transform="translate(22, 0)">
           <rect x="180" y="215" width="16" height="18" rx="3" fill="#0f172a" stroke="#475569" strokeWidth="1" />
           <rect x="181" y="222" width="14" height="10" rx="1" fill="#000000" />
           <rect x="184" y="212" width="8" height="4" fill="#94a3b8" />
@@ -322,14 +362,56 @@ export default function EllenWhiteAvatar({
           <path d="M -7,0 L -7,22" stroke="#ffffff" strokeWidth="1" opacity="0.3" />
         </g>
 
-        {/* Writing hand + quill */}
-        <g id="ew-hand-quill" filter="url(#ewDropShadow)">
-          <path d="M 75,190 C 65,130 90,110 93,105 C 98,125 95,160 77,192 Z" fill="#f1f5f9" />
-          <path d="M 75,190 C 70,140 85,115 88,110 C 93,125 90,165 77,192 Z" fill="#e2e8f0" opacity="0.8" />
-          <line x1="90" y1="108" x2="72" y2="225" stroke="#cbd5e1" strokeWidth="1.5" />
-          <path d="M 68,225 C 65,215 70,205 75,205 C 80,205 85,215 85,225 C 85,235 75,235 68,225 Z" fill="url(#ewSkinGrad)" stroke="#a66e51" strokeWidth="0.5" />
-          <path d="M 72,205 C 75,210 75,218 72,222" fill="none" stroke="#a66e51" strokeWidth="1" />
-          <path d="M 76,206 C 79,210 79,218 76,222" fill="none" stroke="#a66e51" strokeWidth="1" />
+        {/* Writing arm, hand and feather quill (slow line-drift + quick pen strokes) */}
+        <g id="ew-arm">
+          <g id="ew-hand-quill" filter="url(#ewSoftShadow)">
+            {/* Feather vane */}
+            <path
+              d="M 152,231 C 156,221 163,209 172,199 C 176,195 180,194 182,196
+                 C 183,200 180,208 174,216 C 168,224 161,230 156,234 Z"
+              fill="url(#ewQuillVane)"
+            />
+            {/* Barb lines */}
+            <path d="M 158,226 C 163,219 169,211 175,204" fill="none" stroke="#cfc7b2" strokeWidth="0.6" opacity="0.8" />
+            <path d="M 156,230 C 162,224 169,216 176,208" fill="none" stroke="#c4bba4" strokeWidth="0.6" opacity="0.7" />
+            <path d="M 161,222 C 165,216 170,210 175,205" fill="none" stroke="#dbd3c0" strokeWidth="0.5" opacity="0.7" />
+            {/* Rachis (shaft) down to the nib */}
+            <line x1="177" y1="198" x2="146" y2="240" stroke="#b7aa8f" strokeWidth="1.3" />
+            <line x1="146" y1="240" x2="143.5" y2="243" stroke="#3b3b3b" strokeWidth="1.4" />
+            {/* Fresh ink at the nib */}
+            <circle cx="143.8" cy="242.6" r="0.7" fill="#1e293b" opacity="0.7" />
+
+            {/* Sleeve and cuff */}
+            <path d="M 195,250 C 191,237 182,229 170,228 C 162,228 156,232 152.5,239 L 162,250 Z" fill="url(#ewDressGrad)" />
+            <path d="M 153,237 C 156,231.5 162,228.6 168,229.2 L 168.6,235.4 C 163,235.2 158,237.6 155.8,241.6 Z" fill="#f4efe4" />
+
+            {/* Hand gripping the quill */}
+            <path
+              d="M 154,241 C 152,234 156,229.6 161,230.4 C 166,231.2 168.4,236 166.6,241
+                 C 164.4,245.4 157,245.6 154,241 Z"
+              fill="url(#ewSkinGrad)"
+              stroke="#a66e51"
+              strokeWidth="0.5"
+            />
+            {/* Index finger extended along the shaft */}
+            <path
+              d="M 157,232.5 C 152.5,233.5 148.5,236 147.2,238.8 C 147.8,240.6 149.8,241.2 151.8,240.2
+                 C 153.6,238 156.2,236 158.6,235 Z"
+              fill="url(#ewSkinGrad)"
+              stroke="#a66e51"
+              strokeWidth="0.5"
+            />
+            {/* Thumb wrapping over */}
+            <path
+              d="M 159,238.5 C 155,239.5 151.5,240.8 150.4,242.4 C 151.4,244 154.4,244 157.4,242.8 Z"
+              fill="#dba680"
+              stroke="#a66e51"
+              strokeWidth="0.5"
+            />
+            {/* Knuckle creases */}
+            <path d="M 160,233 C 161.5,235 161.8,238 160.8,240.5" fill="none" stroke="#a66e51" strokeWidth="0.6" opacity="0.7" />
+            <path d="M 163.5,233.8 C 165,236 165.2,238.8 164.2,241" fill="none" stroke="#a66e51" strokeWidth="0.6" opacity="0.6" />
+          </g>
         </g>
       </svg>
     </div>
