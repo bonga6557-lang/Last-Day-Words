@@ -10,6 +10,7 @@ Outputs: wordsExpansion2.ts, expertCluesExpansion2.ts, topup patches applied to 
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -17,7 +18,7 @@ from pathlib import Path
 from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
-KJV_PDF = Path(r"c:\Users\fanel\Downloads\kjv.pdf")
+KJV_PDF = Path(os.environ.get("KJV_PDF", str(Path.home() / "Downloads" / "kjv.pdf")))
 OUT_TS = ROOT / "src" / "data" / "wordsExpansion2.ts"
 OUT_EXPERT = ROOT / "src" / "data" / "expertCluesExpansion2.ts"
 OUT_LEDGER = ROOT / "docs" / "expansion-batch2-ledger.json"
@@ -556,7 +557,7 @@ def main() -> None:
                 "kjv_pdf_page": e["page"],
                 "grade": "VERIFIED",
                 "kind": "topup",
-                "source": str(KJV_PDF),
+                "source": KJV_PDF.name,
             }
         )
         expert[e["id"]] = f"{e['verse']} — {e['verify'][:60]}"
@@ -578,7 +579,7 @@ def main() -> None:
                     "kjv_pdf_page": e["page"],
                     "grade": "VERIFIED",
                     "kind": "new-chapter",
-                    "source": str(KJV_PDF),
+                    "source": KJV_PDF.name,
                 }
             )
             expert[e["id"]] = f"{e['verse']} — {e['verify'][:60]}"

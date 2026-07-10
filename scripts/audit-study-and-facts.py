@@ -6,6 +6,7 @@ Writes docs/STUDY_FUNFACTS_AUDIT_REPORT.md and findings JSON.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -13,8 +14,8 @@ from pathlib import Path
 from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
-GC_PDF = Path(r"C:\Users\fanel\Downloads\en_GC (1).pdf")
-ED_PDF = Path(r"C:\Users\fanel\Downloads\en_Ed (1).pdf")
+GC_PDF = Path(os.environ.get("GC_PDF", str(Path.home() / "Downloads" / "en_GC (1).pdf")))
+ED_PDF = Path(os.environ.get("ED_PDF", str(Path.home() / "Downloads" / "en_Ed (1).pdf")))
 KJV_CACHE = ROOT / "docs" / "_kjv_norm_cache.txt"
 GC_CACHE = ROOT / "docs" / "_gc_norm_cache.txt"
 ED_CACHE = ROOT / "docs" / "_ed_norm_cache.txt"
@@ -177,9 +178,9 @@ def main() -> None:
     lines += [
         "",
         "## Sources",
-        f"- GC: `{GC_PDF}`",
-        f"- Education: `{ED_PDF}`",
-        f"- KJV cache: `{KJV_CACHE}`",
+        f"- GC: `{GC_PDF.name}`",
+        f"- Education: `{ED_PDF.name}`",
+        f"- KJV cache: `{KJV_CACHE.relative_to(ROOT).as_posix()}`",
         "",
     ]
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")

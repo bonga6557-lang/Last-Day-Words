@@ -5,6 +5,7 @@ Outputs: src/data/wordsExpansion.ts, src/data/expertCluesExpansion.ts, expansion
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -12,7 +13,7 @@ from pathlib import Path
 from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
-KJV_PDF = Path(r"c:\Users\fanel\Downloads\kjv.pdf")
+KJV_PDF = Path(os.environ.get("KJV_PDF", str(Path.home() / "Downloads" / "kjv.pdf")))
 OUT_TS = ROOT / "src" / "data" / "wordsExpansion.ts"
 OUT_EXPERT = ROOT / "src" / "data" / "expertCluesExpansion.ts"
 OUT_LEDGER = ROOT / "docs" / "expansion-research-ledger.json"
@@ -480,7 +481,7 @@ def main() -> None:
                 "verify_substring": w["verify"],
                 "kjv_pdf_page": page,
                 "grade": "VERIFIED",
-                "source": str(KJV_PDF),
+                "source": KJV_PDF.name,
                 "retrieved": "2026-07-09",
             })
             ch_words.append({

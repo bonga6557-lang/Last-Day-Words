@@ -41,7 +41,7 @@
 - [19] (ok) The Olivet discourse (Matthew 24) is Jesus’ own list of signs before His return.
 
 ## Sources
-- GC: `C:\Users\fanel\Downloads\en_GC (1).pdf`
-- Education: `C:\Users\fanel\Downloads\en_Ed (1).pdf`
-- KJV cache: `C:\Users\fanel\Downloads\last-day-words\docs\_kjv_norm_cache.txt`
+- GC: `en_GC (1).pdf`
+- Education: `en_Ed (1).pdf`
+- KJV cache: `docs/_kjv_norm_cache.txt`
 

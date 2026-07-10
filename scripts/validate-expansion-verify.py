@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 from pathlib import Path
 
 from pypdf import PdfReader
@@ -14,7 +15,7 @@ spec = importlib.util.spec_from_file_location(
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
-KJV_PDF = Path(r"c:\Users\fanel\Downloads\kjv.pdf")
+KJV_PDF = Path(os.environ.get("KJV_PDF", str(Path.home() / "Downloads" / "kjv.pdf")))
 pages = [(p.extract_text() or "") for p in PdfReader(str(KJV_PDF)).pages]
 
 failed: list[tuple[str, str]] = []

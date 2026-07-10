@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -18,7 +19,7 @@ from pathlib import Path
 from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
-KJV_PDF = Path(r"c:\Users\fanel\Downloads\kjv.pdf")
+KJV_PDF = Path(os.environ.get("KJV_PDF", str(Path.home() / "Downloads" / "kjv.pdf")))
 CACHE = ROOT / "docs" / "_kjv_norm_cache.txt"
 WORDS_TS = ROOT / "src" / "data" / "words.ts"
 OUT_EXP = ROOT / "src" / "data" / "wordsExpansion.ts"
@@ -393,7 +394,7 @@ def regenerate_expansion(kjv: str) -> list[dict]:
                     "verify_substring": w["verify"],
                     "kjv_pdf_page": page,
                     "grade": "VERIFIED" if ok else "NEEDS_REVIEW",
-                    "source": str(KJV_PDF),
+                    "source": KJV_PDF.name,
                     "retrieved": "2026-07-10",
                 }
             )
