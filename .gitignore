@@ -6,3 +6,20 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Python / audit tooling
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+
+# Regenerable PDF text caches from audit scripts
+docs/_*_cache.txt
+docs/_kjv_norm_cache.txt
+docs/_gc_norm_cache.txt
+docs/_ed_norm_cache.txt
+
+# Intermediate expansion migration artifacts (superseded by final migrations)
+supabase/_batch*_out.txt
+supabase/_expansion_migration_payload.txt
+supabase/migrations/_expansion_word_batches/
