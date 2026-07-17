@@ -9,7 +9,9 @@ export const HINT_MISTAKE_PENALTY = 1;
 export const MAX_DEPTH_HINT_TIERS = 2;
 export type DepthHintTier = 1 | 2;
 export const TEAMS_QUESTIONS_PER_SIDE = 10;
-export const SPEED_ROUND_TIME = 30;
+export const SPEED_ROUND_TIME = 60;
+/** Final seconds where the timer ticks audibly and the countdown animates. */
+export const COUNTDOWN_ALERT_SECONDS = 10;
 export const SPEED_SOLVE_BONUS = 8;
 export const SPEED_SKIP_PENALTY = 7;
 export const EXPERT_MODE_LAMP_TIME = 20;
@@ -305,6 +307,16 @@ export function computeSpeedWordTotalScore(
 
 export function isPerfectSpeedSolve(mistakes: number): boolean {
   return mistakes === 0;
+}
+
+/** True while the countdown is in its final alert window (drives tick SFX + animation). */
+export function isCountdownAlert(secondsLeft: number): boolean {
+  return secondsLeft > 0 && secondsLeft <= COUNTDOWN_ALERT_SECONDS;
+}
+
+/** Whether to play the timer tick this second — only inside the final alert window. */
+export function shouldPlayCountdownTick(secondsLeft: number): boolean {
+  return isCountdownAlert(secondsLeft);
 }
 
 export function vibrate(pattern: number | number[]): void {

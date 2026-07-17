@@ -20,6 +20,8 @@ import {
   SPEED_SOLVE_BONUS,
   SPEED_SKIP_PENALTY,
   isQuoteRecall,
+  shouldPlayCountdownTick,
+  isCountdownAlert,
 } from "../utils/gameLogic";
 import { rollSpeedEvent, SpeedEvent, DOUBLE_TIME_BONUS, GOLDEN_WORD_SCORE_MULT } from "../utils/rewards";
 import type { SpeedRoundResult } from "../hooks/useGameSession";
@@ -92,6 +94,9 @@ export default function SpeedRoundGame({
   const eventMultRef = useRef(1);
   const speedEventRef = useRef<SpeedEvent>("none");
   speedEventRef.current = speedEvent;
+  // Mirror timeLeft so the 1s interval can gate the tick SFX without re-subscribing.
+  const timeLeftRef = useRef(timeLeft);
+  timeLeftRef.current = timeLeft;
 
   const difficulty = currentWordObj ? getWordDifficulty(currentWordObj) : "medium";
   const maxMistakes = getMaxMistakes(difficulty);
@@ -164,7 +169,8 @@ export default function SpeedRoundGame({
       return;
     }
     timerRef.current = setInterval(() => {
-      playTickSound();
+      // Timer sound only in the final countdown window (last 10s).
+      if (shouldPlayCountdownTick(timeLeftRef.current)) playTickSound();
       setTimeLeft((prev) => {
         if (prev <= 1) {
           setIsGameOver(true);
@@ -419,6 +425,31 @@ export default function SpeedRoundGame({
             className={`absolute top-16 left-1/2 -translate-x-1/2 font-bold px-4 py-2 rounded-full text-sm z-30 shadow-lg ${
               timeBonusFeedback.includes("-") ? "bg-rose-700 text-white" : "bg-emerald-700 text-white"
             }`}>{timeBonusFeedback}</motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Final-10-seconds animated countdown: a big number pulses each second. */}
+      <AnimatePresence>
+        {isPlaying && !reviewingScripture && !isGameOver && isCountdownAlert(timeLeft) && (
+          <motion.div
+            key="countdown"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="pointer-events-none fixed inset-0 z-20 flex items-center justify-center"
+            aria-hidden="true"
+          >
+            <motion.span
+              key={timeLeft}
+              initial={rm ? { opacity: 0.35 } : { scale: 0.5, opacity: 0 }}
+              animate={rm ? { opacity: 0.35 } : { scale: 1.5, opacity: [0, 0.5, 0] }}
+              transition={{ duration: rm ? 0 : 0.95, ease: "easeOut" }}
+              className="font-mono font-black leading-none text-rose-500"
+              style={{ fontSize: "min(44vw, 44vh)" }}
+            >
+              {timeLeft}
+            </motion.span>
+          </motion.div>
         )}
       </AnimatePresence>
 

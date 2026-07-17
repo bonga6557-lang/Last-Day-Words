@@ -18,6 +18,10 @@ import {
   normalizeForCompare,
   answerInScripture,
   isQuoteRecall,
+  SPEED_ROUND_TIME,
+  COUNTDOWN_ALERT_SECONDS,
+  isCountdownAlert,
+  shouldPlayCountdownTick,
 } from "./gameLogic";
 import { chaptersData } from "../data/words";
 import type { WordTerm } from "../data/words";
@@ -70,6 +74,27 @@ describe("gameLogic", () => {
     if (word.expertClue) {
       expect(getDepthHintTierText(word, 2)).toContain("Expert clue");
     }
+  });
+
+  it("speed round runs for one minute", () => {
+    expect(SPEED_ROUND_TIME).toBe(60);
+    expect(COUNTDOWN_ALERT_SECONDS).toBe(10);
+  });
+
+  it("countdown alert only fires in the final ten seconds", () => {
+    expect(isCountdownAlert(11)).toBe(false);
+    expect(isCountdownAlert(10)).toBe(true);
+    expect(isCountdownAlert(1)).toBe(true);
+    expect(isCountdownAlert(0)).toBe(false); // round over — no tick/animation
+    expect(isCountdownAlert(-1)).toBe(false);
+  });
+
+  it("tick SFX plays exactly once per second across the alert window", () => {
+    const ticks: number[] = [];
+    for (let s = SPEED_ROUND_TIME; s > 0; s--) {
+      if (shouldPlayCountdownTick(s)) ticks.push(s);
+    }
+    expect(ticks).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
   });
 
   it("normalizeForCompare folds apostrophes and punctuation", () => {

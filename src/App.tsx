@@ -12,6 +12,7 @@ import {
 import { DEFAULT_CANDLE_ID } from "./data/cosmetics";
 import { GameMode, UserProgress } from "./types";
 import ScreenFlash from "./components/ScreenFlash";
+import BackgroundVideo from "./components/BackgroundVideo";
 import AppNoticeStack from "./components/AppNoticeStack";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { EmptyState, LoadingBlock } from "./components/ErrorState";
@@ -255,17 +256,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen candlelit-page text-[#f4f1ea] font-sans flex flex-col justify-between">
-      <video
-        className="bg-video"
-        src="/bg-loop.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        disablePictureInPicture
-        aria-hidden="true"
-      />
+      <BackgroundVideo />
       <div className="bg-video-veil" aria-hidden="true" />
       <ScreenFlash />
       <AppNoticeStack notices={notices.notices} onDismiss={notices.dismissNotice} />
