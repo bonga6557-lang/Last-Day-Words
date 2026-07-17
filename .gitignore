@@ -22,6 +22,7 @@ docs/_ed_norm_cache.txt
 # Intermediate expansion / MCP apply artifacts (never commit)
 supabase/_*
 supabase/migrations/_expansion_word_batches/
+supabase/migrations/_sync*
 scripts/_*
 scripts/apply_batch2_part.py
 scripts/chunk_part.py

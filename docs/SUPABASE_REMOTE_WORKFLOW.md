@@ -195,12 +195,14 @@ node scripts/configure-production-auth.mjs
 
 The app sends `emailRedirectTo` / `redirectTo` as `window.location.origin` (`AuthScreen.tsx`), so allowlisting production enables password-reset and confirm-email links on Vercel.
 
-### Vercel env (Production)
+### Vercel env (Production, Preview, Development)
+
+Configured on project `last-day-words_` (2026-07-17):
 
 - `VITE_SUPABASE_URL` = `https://haoghddjcstxanrtggvb.supabase.co`
-- `VITE_SUPABASE_ANON_KEY` = anon key from Dashboard → API
+- `VITE_SUPABASE_ANON_KEY` = anon key from Dashboard → API (same as local `.env.local`)
 
-Redeploy after env changes. PWA/theme updates on one refresh; background video caches after first visit (~4 MB).
+Redeploy after env changes — Vite inlines `VITE_*` at build time. PWA/theme updates on one refresh; background video caches after first visit (~4 MB).
 
 ### Vercel deploy (GitHub → production)
 
