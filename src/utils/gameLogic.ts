@@ -15,6 +15,10 @@ export const COUNTDOWN_ALERT_SECONDS = 10;
 export const SPEED_SOLVE_BONUS = 8;
 export const SPEED_SKIP_PENALTY = 7;
 export const EXPERT_MODE_LAMP_TIME = 20;
+/** Time penalty per wrong letter to visually dim the lamp. */
+export const SPEED_WRONG_LETTER_PENALTY = 1;
+/** Extra time added on a perfect solve to flare the lamp. */
+export const SPEED_PERFECT_FLARE_BONUS = 2;
 
 export type TeamId = "white" | "black";
 export type Difficulty = "easy" | "medium" | "hard";

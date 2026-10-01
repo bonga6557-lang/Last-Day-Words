@@ -22,6 +22,8 @@ import {
   isQuoteRecall,
   shouldPlayCountdownTick,
   isCountdownAlert,
+  SPEED_WRONG_LETTER_PENALTY,
+  SPEED_PERFECT_FLARE_BONUS,
 } from "../utils/gameLogic";
 import { rollSpeedEvent, SpeedEvent, DOUBLE_TIME_BONUS, GOLDEN_WORD_SCORE_MULT } from "../utils/rewards";
 import type { SpeedRoundResult } from "../hooks/useGameSession";
@@ -47,6 +49,8 @@ interface SpeedRoundGameProps {
   /** First Mixed/Chapter run: more time, shorter terms, no chaos events. */
   introMode?: boolean;
   candleStyle?: string;
+  /** When true, play words strictly in the given order (prophetic chain). */
+  sequenceMode?: boolean;
   onGameFinished: (result: SpeedRoundResult) => void;
   onBack: () => void;
 }
@@ -59,6 +63,7 @@ export default function SpeedRoundGame({
   poolLabel,
   introMode = false,
   candleStyle = "classic",
+  sequenceMode = false,
   onGameFinished,
   onBack,
 }: SpeedRoundGameProps) {
@@ -98,6 +103,9 @@ export default function SpeedRoundGame({
   const timeLeftRef = useRef(timeLeft);
   timeLeftRef.current = timeLeft;
 
+  // For prophetic chain runs (ordered, not shuffled)
+  const sequenceIndexRef = useRef(0);
+
   const difficulty = currentWordObj ? getWordDifficulty(currentWordObj) : "medium";
   const maxMistakes = getMaxMistakes(difficulty);
   const allWordsList = useMemo(() => words, [words]);
@@ -115,6 +123,25 @@ export default function SpeedRoundGame({
   }, []);
 
   const loadNextWord = useCallback(() => {
+    if (sequenceMode) {
+      const idx = sequenceIndexRef.current;
+      if (idx >= allWordsList.length) {
+        // Chain complete — end the run
+        setIsGameOver(true);
+        if (timerRef.current) clearInterval(timerRef.current);
+        return;
+      }
+      const selected = allWordsList[idx];
+      sequenceIndexRef.current = idx + 1;
+      setSpeedEvent("none");
+      eventMultRef.current = 1;
+      setCurrentWordObj(selected);
+      setGuessedLetters([]);
+      setMistakes(0);
+      mistakesAtStartRef.current = 0;
+      solvedRef.current = false;
+      return;
+    }
     setUsedWordIds((prevUsed) => {
       let available = allWordsList.filter((w) => !prevUsed.includes(w.id));
       let nextUsed = prevUsed;
@@ -144,7 +171,7 @@ export default function SpeedRoundGame({
       solvedRef.current = false;
       return [...nextUsed, selected.id];
     });
-  }, [allWordsList, introMode]);
+  }, [allWordsList, introMode, sequenceMode]);
 
   const loadNextWordRef = useRef(loadNextWord);
   loadNextWordRef.current = loadNextWord;
@@ -209,6 +236,17 @@ export default function SpeedRoundGame({
       } else {
         flashScreen(false);
         flashReaction("incorrect");
+        // Dim the lamp immediately on a wrong guess.
+        setTimeLeft((t) => {
+          const next = Math.max(0, t - SPEED_WRONG_LETTER_PENALTY);
+          setTimeBonusFeedback(`-${SPEED_WRONG_LETTER_PENALTY}s`);
+          window.setTimeout(() => setTimeBonusFeedback(null), 1000);
+          if (next === 0) {
+            setIsGameOver(true);
+            if (timerRef.current) clearInterval(timerRef.current);
+          }
+          return next;
+        });
         setMistakes((prev) => {
           const next = prev + 1;
           if (next >= maxMistakes) {
@@ -249,6 +287,8 @@ export default function SpeedRoundGame({
         if (m === 0) {
           setPerfectCount((pc) => pc + 1);
           showFeedback("+25 XP Perfect!", "success");
+          // Flare the lamp a bit extra for perfect solves.
+          setTimeLeft((p) => p + SPEED_PERFECT_FLARE_BONUS);
         }
         const solveBonus = computeSpeedSolveBonus(m, maxMistakes, nextStreak, multAtSolve);
         setScore((p) => p + solveBonus);
@@ -337,6 +377,7 @@ export default function SpeedRoundGame({
     setStartCountdown(3);
     setIsPlaying(false);
     solvedRef.current = false;
+    sequenceIndexRef.current = 0;
   };
 
   if (allWordsList.length === 0) {
@@ -405,14 +446,8 @@ export default function SpeedRoundGame({
         >
           <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" /> Quit
         </button>
-        <div className={`flex items-center gap-1.5 justify-center px-3 py-1.5 rounded-lg border max-w-[130px] mx-auto transition-colors ${
-          timeLeft <= 10 ? "bg-rose-500/10 border-rose-300 danger-pulse" : "pcard"
-        }`}>
-          <Clock className={`w-4 h-4 ${timeLeft <= 10 ? "text-rose-700 animate-pulse" : "text-[#a49b8d]"}`} aria-hidden="true" />
-          <span className={`font-mono text-sm font-extrabold ${timeLeft <= 10 ? "text-rose-700" : "text-[#f4f1ea]"}`}>
-            0:{timeLeft < 10 ? `0${timeLeft}` : timeLeft}
-          </span>
-        </div>
+        {/* Lamp is the clock — numeric timer shown beneath the lamp */}
+        <div />
         <div className="text-right justify-self-end">
           <div className="text-[10px] text-[#a49b8d] uppercase font-bold">Score</div>
           <div className="text-lg font-extrabold font-mono text-[#f4f1ea]">{score}</div>
