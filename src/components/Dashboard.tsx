@@ -28,6 +28,7 @@ interface DashboardProps {
   featuredAnnouncement?: string | null;
   onStartMixedSpeed: () => void;
   onStartChapterSpeed: () => void;
+  onStartChainRun: (chapterId: string) => void;
   onStartTeamsMode: () => void;
   onStartOnlineTeams: () => void;
   onViewStudyGuide: () => void;
@@ -50,6 +51,7 @@ export default function Dashboard({
   featuredAnnouncement,
   onStartMixedSpeed,
   onStartChapterSpeed,
+  onStartChainRun,
   onStartTeamsMode,
   onStartOnlineTeams,
   onViewStudyGuide,
@@ -203,6 +205,28 @@ export default function Dashboard({
         <p className="relative text-[11px] text-[#a49b8d] mt-2">
           30s · combos · perfect word = +25 XP · disjoint pools
         </p>
+        <div className="relative w-full max-w-md mx-auto grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+          <button
+            type="button"
+            onClick={() => onStartChainRun("ephesians-armour")}
+            className="flex flex-col items-center justify-center gap-1.5 py-3 px-3 bg-white/[0.06] hover:bg-white/10 text-[#f8f1e3] rounded-xl text-xs font-bold uppercase tracking-[0.12em] cursor-pointer border border-white/10"
+          >
+            Armor of God
+            <span className="text-[10px] font-medium normal-case tracking-normal text-[#cbb487]">
+              Ephesians 6 · ordered chain
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onStartChainRun("daniel-image")}
+            className="flex flex-col items-center justify-center gap-1.5 py-3 px-3 bg-white/[0.06] hover:bg-white/10 text-[#f8f1e3] rounded-xl text-xs font-bold uppercase tracking-[0.12em] cursor-pointer border border-white/10"
+          >
+            Daniel’s Image
+            <span className="text-[10px] font-medium normal-case tracking-normal text-[#cbb487]">
+              Daniel 2 · ordered chain
+            </span>
+          </button>
+        </div>
       </motion.div>
 
       {wordOfTheWeek && (

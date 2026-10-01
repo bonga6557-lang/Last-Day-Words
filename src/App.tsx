@@ -94,9 +94,10 @@ export default function App() {
   const auth = useAuth();
   useStreakReminder(progress, todayKey);
 
-  const [currentMode, setCurrentMode] = useState<GameMode>("menu");
+  const [currentMode, setCurrentMode] = useState<GameMode>("speed-round");
   const [speedBoardMode, setSpeedBoardMode] = useState<SpeedBoardMode>("mixed");
   const [speedChapterId, setSpeedChapterId] = useState<string | null>(null);
+  const [sequenceMode, setSequenceMode] = useState(false);
   const rm = useReducedMotion();
 
   const session = useGameSession(progress, saveProgress, chaptersData, todayKey, (message) => {
@@ -140,18 +141,27 @@ export default function App() {
   const startMixedSpeed = () => {
     setSpeedBoardMode("mixed");
     setSpeedChapterId(null);
+    setSequenceMode(false);
     setCurrentMode("speed-round");
   };
 
   const startChapterSpeedSelect = () => {
     setSpeedBoardMode("chapter");
     setSpeedChapterId(null);
+    setSequenceMode(false);
     setCurrentMode("speed-chapter-select");
   };
 
   const startChapterSpeed = (chapterId: string) => {
     setSpeedBoardMode("chapter");
     setSpeedChapterId(chapterId);
+    setSequenceMode(false);
+    setCurrentMode("speed-round");
+  };
+  const startChainRun = (chapterId: string) => {
+    setSpeedBoardMode("chapter");
+    setSpeedChapterId(chapterId);
+    setSequenceMode(true);
     setCurrentMode("speed-round");
   };
 
@@ -388,6 +398,7 @@ export default function App() {
                       authLoading={auth.loading}
                       onStartMixedSpeed={startMixedSpeed}
                       onStartChapterSpeed={startChapterSpeedSelect}
+                      onStartChainRun={startChainRun}
                       onStartTeamsMode={() => setCurrentMode("teams-mode")}
                       onStartOnlineTeams={() => setCurrentMode("online-teams")}
                       onViewStudyGuide={handleViewStudyGuide}
@@ -479,6 +490,7 @@ export default function App() {
                       }
                       introMode={speedIntroActive}
                       candleStyle={candleStyle}
+                      sequenceMode={sequenceMode}
                       onGameFinished={session.handleSpeedRoundFinished}
                       onBack={() => setCurrentMode("menu")}
                     />
